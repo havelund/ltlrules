@@ -105,7 +105,7 @@ we can always change that if we want to.}
 \newcommand\setof[1]{\mathcal{P}(#1)}
 
 
-\section{Propositional Linear Temporal Logic}
+\section{Propositional LTL}
 
 The classical definition of linear temporal logic~\cite{MP} has the following syntax:
 \[ \varphi ::= \true \, | \,  p \, | \, ( \varphi \wedge \varphi ) \, |  \, \neg  \varphi \, |   \, \bigcirc \varphi \, |  
@@ -173,7 +173,7 @@ When PLTL is interpreted over finite sequences, its
 expressive power is the same as star-free regular expressions, first-order monadic logic over finite sequences and counting-free automata.
 
 
-\section{Making propositional LTL more Expressive}
+\section{Extending Propositional LTL}
 
 \subsubsection{Quantified LTL}
 
@@ -404,7 +404,7 @@ appear in Figure~\ref{prop}.
 
 
 
-\section{Runtime Verification for PLTL and its extensions}
+\section{RV for Propositional Past-Time LTL and its Extension}
 \label{LTLruntime}
 
 Runtime verification of temporal temporal specification often
@@ -505,7 +505,7 @@ the statement $\psi$.
 
 
 
-\section{First-Order Linear Temporal Logic FLTL}
+\section{First-Order LTL}
 
 %section*{Syntax and Semantics}
 \label{sec:syntax-semantics}
@@ -830,7 +830,7 @@ We will henceforth sometimes abuse notation, as is very often done in logic, and
 symbols both for the relations (semantics) and their representation in
 the logic (syntax).
 
-\section{Extending First-Order Temporal Logic}
+\section{Extending First-Order LTL}
 
 %%this is specification formalism that is very expressive and yet monitorable under run time verification~\cite{HPU}.
 
@@ -997,7 +997,7 @@ formula strictly weakens its expressive power.
 \end{figure}
 
 
-\section{A Runtime Verification Algorithm for EPFLTL}
+\section{RV for First-Order Past-Time LTL and its Extension}
 \label{EPLTLRV}
 
 Runtime verification of FLTL is performed on an
