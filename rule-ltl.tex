@@ -40,8 +40,8 @@ logics and present an extension of the
 realizes the extended first-order past temporal logic verification.
 Finally, we provide some experimental results.
 
-\noindent {\bf Related work.}
-%
+\subsubsection{Related Work}
+
 For propositional LTL, the logic ETL~\cite{WVS,Wolper} extends
 the set of temporal operators 
 by using automata (or, equivalently a right linear grammar). Each automaton defines a temporal operator,
@@ -89,7 +89,14 @@ or over relations (for the first-order version). These objects can have differen
 new auxiliary predicates (for the propositional versions) or relations (for the first-order cases).
 \end{itemize}
 
-\klaus{You above introduce some concepts before they really are explained. I wonder whether the reader will understand. Specifically the E, but also the Q. Why not just introduce as we go along?}
+\klaus{You above introduce some concepts before they really are explained. Q and E. I understand why you do this (to have it in one place), but it may be too difficult for the reader to grasp if not "initiated".
+Especially the E.}
+
+\klaus{We use ELTL (etc) to denote Extended LTL. 
+But QLTL is also an extension of LTL. These logics 
+are all extensions of LTL. Perhaps RLTL (for Rule-based 
+LTL) would have been better ... or something. Not urgent, 
+we can always change that if we want to.}
 
 %\klaus{The explanation of Q and E could be improved.}
 
@@ -167,6 +174,8 @@ expressive power is the same as star-free regular expressions, first-order monad
 
 
 \section{Making propositional LTL more Expressive}
+
+\subsubsection{Quantified LTL}
 
 Wolper~\cite{Wolper} showed that the expressive power of LTL is lacking with respect
 to some important properties. As a canonical example, he demonstrated that it is impossible to
@@ -463,7 +472,9 @@ and perform, between steps 3 and 4, the following, per each $a_j$: \\
 
 \ \ \ \ -\ $\current ( a_j ) = \current ( \varphi_j )$ \\
 
-\noindent {\bf Evaluation order.} The order of calculating $\current$ is subtle here, because
+\subsubsection{Evaluation Order} 
+
+The order of calculating $\current$ is subtle here, because
 auxiliary variables can appear both on the left and right of their
 definition. For PLTL, one can start calculating the subformulas
 bottom up or top down. But for EPLTL, this would not work. To see this, consider, for example, the formula~(\ref{form3}). It contains
@@ -524,7 +535,8 @@ the logic with relations $R$ that have exactly two parameters
 
 
 
-\noindent {\bf Syntax.} 
+\subsubsection{Syntax} 
+
 The formulas of the core FLTL logic are 
 defined by the following grammar,
 where $p$ denotes to a relation $R$,
@@ -562,10 +574,11 @@ the assigned value is independent of the state in the execution. We
 denote static quantification with $\exists$ and $\forall$, while
 dynamic quantification uses $\Exists$ and $\Forall$.
 
-\noindent {\bf Semantics.} 
+\subsubsection{Semantics} 
+
 A model is a set of
  relations ${\cal R} = \{ R_1 \, \ldots , R_m \}$, where each of these relations has a last parameter $i$ that is a natural number. 
- 
+% 
 It it standard, and more intuitive (in particular for runtime verification) to cast models of temporal logic in terms of sequences states rather than temporal relations. To do that,
  we denote by $R_k [ i ]$ the restriction of
  the relation $R_k$ to the value $i$ of the last parameter. A model ${\cal R}$ is then a sequence ${\cal R} [ 1 ]\, {\cal R} [ 2 ] \ldots$, where

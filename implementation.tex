@@ -9,8 +9,8 @@ This program takes as input the
 trace file and analyzes it.
 The tool uses the JavaBDD library for BDD manipulations \cite{javabdd}.
 
-\noindent {\bf Example properties.}
-%
+\subsubsection{Example Properties}
+
 Figure \ref{fig:properties} shows three properties in the 
 input format of the tool, which are not expressible in the original first-order logic of \dejavu{}. The first property \idsl{telemetry1} is a variant of
 formula \ref{eq:wolper-first-order}, illustrating the use of a 
@@ -68,8 +68,8 @@ ensure that all threads are spawned by the main program or are spawned by a thre
 \idsl{spawn(x,y)} (thread \idsl{x} spawns thread \idsl{y}).
 For this we need to compute a transitive closure of spawning relationships, here expressed with the rule \idsl{leadsto(z,y)}.
 
-\noindent {\bf Monitor synthesis.}
-%
+\subsubsection{Monitor Synthesis}
+
 Consider the first \idsl{telemetry1} property. The property-specific 
 part\footnote{An additional 600+ lines of property independent 
 boilerplate code is generated.} of the synthesized monitor, is shown 
@@ -124,8 +124,8 @@ which is the interpretation of the formula
 \idsl{closed(x) -> !telem(x)} corresponding to the Boolean law:
 $p \rightarrow q = \neg p \vee q$.
 
-\noindent {\bf Example execution.}
-%
+\subsubsection{Example Execution}
+
 As an example of how a trace is processed consider the following simple (correct) trace containing two events, turning on low and high frequency channels:
 $\mathit{toggle}(``low").\mathit{toggle}(``high")$. The value $``low"$ is assigned the binary enumeration $110$ in node 6, shown in Figure \ref{fig:bdd1}. A dashed line leaving a node means the node has value 0, and a fully drawn line means it has value 1. The BDD represents all assignments to the bit positions 0, 1 and 2 that lead to 1 (shaded square leaf node), in this case 110, read from left to right. Likewise, Figure \ref{fig:bdd2} shows the BBD assigned to node 6 for the second value $``high"$, corresponding to the enumeration 101. Finally Figure \ref{fig:bdd3} shows the BDD representing the rule \idsl{closed(x)} in node 5 after the two events. Since channels $``low"$ and $``high"$, corresponding to enumerations 110 and 101, are now open, this BDD represents all other enumerations. That is, all enumerations except 110 and 110 lead to 1 in this BDD.
 
@@ -152,8 +152,8 @@ $\mathit{toggle}(``low").\mathit{toggle}(``high")$. The value $``low"$ is assign
     \label{fig:bdds}
 \end{figure}
 
-\noindent {\bf Evaluation}
-%
+\subsubsection{Evaluation}
+
 We evaluated the three properties in Figure 
 \ref{fig:properties}. Table \ref{tab:evaluation} shows the  
 analysis time (excluding time to compile the generated 
