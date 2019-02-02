@@ -509,17 +509,20 @@ and perform the following between steps 3 and 4 for each $a_j$: \\
 \subsubsection{Evaluation Order} 
 
 The order of calculating $\current$ is subtle here, because
-auxiliary variables can appear both on the left and right of their
-definition. For PLTL, one can start calculating the subformulas
+auxiliary variables can appear recursively on the right-hand 
+side of their definition. For PLTL, one can start calculating the subformulas
 bottom up or top down. But for EPLTL, this would not work. To see this, consider, for example, the formula~(\ref{form3}). It contains
 the definition $q := \ominus \neg q$. Now, we cannot calculate this
-bottom up, since the left-hand $q$ is not calculated yet.
+bottom up, since the left-hand $q$ is not calculated yet, and we need its value to compute the right-hand side $q$ leaf node.
 If we calculate it top down, we will encounter the same problem.
 However, notice that the top down calculation does not need the
 value of $q$ to calculate $\ominus \neg q$; this value should already be available as $\old ( \neg q )$.
 
+\klaus{I don't see that we need to talk about the top-down evaluation.}
+
 Under {\em mixed evaluation order}, one calculates $\current$ in the following order. The calculation within each of the four categories can be performed top down or bottom up.
-\begin{itemize}
+
+\begin{enumerate}
 \item Calculate 
 $\current ( \delta )$ for each subformula $\delta$
 that appears in $\varphi_j$ of rule
@@ -529,13 +532,13 @@ a problem since for $\delta = \ominus \gamma$,
 $\current ( \delta )$ is set to $\old ( \gamma )$.)
 \item Set 
 $\current ( a_j )$ to $\current ( \varphi_j )$ for each $j$.
-\item Calculate $\current ( \delta )$ for each subformulas $\delta$
-that appear in $\varphi_j$ of a rule
+\item Calculate $\current ( \delta )$ for each subformula $\delta$
+that appears in $\varphi_j$ of a rule
 $a_j = \varphi_j$ {\em  within} the scope of
 a $\ominus$ operator.
-\item Calculate $now ( \psi )$ (using $\current ( a_j )$) for
-the statement $\psi$.
-\end{itemize}
+\item Calculate $\current ( \delta )$ for each subformula $\delta$
+that appears in the statement $\psi$ - using $\current ( a_j )$.
+\end{enumerate}
 
 
 
@@ -556,11 +559,15 @@ its associated domain $\domain ( x )$, where multiple variables (or all of them)
 can be related to the same domain. For example
 $[ x \rightarrow 5 , y \rightarrow \text{``abc''} ]$ assigns
 the values $5$ to $x$ and the value ``abc'' to $y$.
-Let $T$ a set of {\em relation} 
+Let $T$ be a set of {\em relations} 
 with typical instances $R$.
 Each relation is associated with some position-dependent domains.
 
-We defined models for FLTL based on {\em temporal} relations~\cite{Chomicki}. That is,
+\klaus{Above: let T be ... Is T used later? The relations are used in the next paragraph, why not introduce them there? Also, relations are not defined really.}
+
+\klaus{I don't quite understand the motivation below for this way of modeling events: relations with a time stamp, and the whole story of the time stamp not being mentioned etc. Why not just the usual models: traces? Too late to change now for CAV though.}
+
+We define models for FLTL based on {\em temporal} relations~\cite{Chomicki}. That is,
 their last parameter
 is a natural number. For a relation $R$, $R [ i ]$ is the relation obtained from $R$ by
 restricting it to the value $i$ in the last parameter. For simplicity, we will describe henceforth
