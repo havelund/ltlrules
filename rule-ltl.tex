@@ -211,6 +211,8 @@ quantifiers, it holds that $\sigma \models \varphi$
 the scope of quantifiers)
 iff $\sigma |_A \models \varphi$.
 
+\klaus{Are the last two lines above needed?}
+
 This kind of quantification is considered to be ``dynamic'', since the quantified variables can have different truth values depending on the states, or, "second order", the quantification establishes the {\em set} of states in which a propositional variable has the value $\true$.
 Extending LTL with such quantification, the logic QLTL has the same expressive power as regular expressions, full B\"{u}chi
 automata, or monadic second order logic with unary predicates over the naturals, see again~\cite{Thomas}.
@@ -235,13 +237,13 @@ PQLTL property into a deterministic
 automaton.
 
 
-
+\subsubsection{Rule-based LTL}
 
 We present now an extension of LTL, which we call ELTL. It has the same
 expressive power as  QLTL.
 It has a form that puts it, conceptually, in between temporal
-logic and automata: on the one hand, it is possible to simply represent
-a pure PLTL formula, and on the other hand, one can represent a specification that resembles a finite automaton. As will be showed later, this extension is
+logic and automata: on the one hand, it is possible to simply write
+a pure LTL formula, and on the other hand, one can write a specification that resembles a finite automaton. As will be showed later, this extension is
 is very natural for runtime verification.
 
 We partition again, as in QLTL, the propositions $P$ into
@@ -298,15 +300,17 @@ that uses $a_1$ and $a_2$ uniformly $\false$.
 
 \begin{lemma} \label{fourone}
 Let $\varphi$ be an ELTL formula as in~(\ref{ELTL}),
-over the auxiliary propositions $A$ and basic propositions $B$ 
-and a model $\sigma$ with states over the $B$, such that
+over the auxiliary propositions $A$ and basic propositions $B$, 
+and let $\sigma$ be a model with states over the $B$, such that
 $\sigma \models \psi$.
 Then there is a unique
 model $\sigma'$ such that $\sigma' |_A = \sigma$.
 
 \end{lemma}
 
-%\klaus{I think this lemma needs to tie the trace to the formula. Doron: I do not understand this comment.}
+\klaus{(1) is this lemma saying the right thing? (2) is the proof really a proof of that lemma, (3) 
+should $\varphi$ be $\psi$, (4) now $\psi$ is not the whole spec (it is missing the rules). What do we call the whole thing? It is not a formula like the 
+$\varphi$s and the $\psi$s. Do we need a special greek symbol for it?}
 
 \noindent {\bf Sketch of proof.} By induction on the state index. Each auxiliary variable
 is defined, via a PLTL formula by the current state of the model over the values of the propositions $B$, and by the values of $A \cup B$ in previous states. A PLTL
@@ -324,7 +328,7 @@ ELTL is the same as QLTL.
 \noindent {\bf Proof.}
 Each ELTL formula $\eta$, as defined above,
 is expressible in QLTL using the following formula:
-\[   \Exists a_1 \ldots \Exists a_n  ( \varphi  \wedge   \Box \bigwedge_{1 \leq j \leq n} ( a_j \leftrightarrow \varphi_j))
+\[   \Exists a_1 \ldots \Exists a_n  ( \psi  \wedge   \Box \bigwedge_{1 \leq j \leq n} ( a_j \leftrightarrow \varphi_j))
 \]
 For the other direction, one can translate any QLTL property into an $\omega$ automaton\footnote{The past operators of a QLTL property do not change this fact, since the translation can be done first to second order monadic logic, which can be translated into an $\omega$-automaton}.
 We assume that the property is given as a deterministic Muller automaton $M = (S, i , \Sigma, \Delta, {\cal F})$ (a B\"{u}chi automaton may not always be deterministic), where $S$ is the set of states, $i \in S$ is the initial state, the set $\Sigma$ consists of the inputs, each represented as a Boolean combination of the variables $B$, $\Delta : S \times \Sigma \mapsto S$, and ${\cal F} = \{ F_1 , \ldots , F_k \}$ is the accepting set, 
