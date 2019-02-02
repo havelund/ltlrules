@@ -1,0 +1,14 @@
+digraph G {
+ 
+init [shape=point]
+err  [label = "err", style = filled];
+
+init -> a
+a -> b [label =" list(i)"]
+b -> b [label = " bid(i)"]
+b -> c [label = " sell(i)"]
+a -> err [label = " bid(i) | sell(i)", style = dotted]
+b -> err [label = " list(i)", style = dotted]
+c -> err [label = " list(i) | bid(i) | sell(i)", style = dotted]
+
+}

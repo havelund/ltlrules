@@ -1,0 +1,192 @@
+\documentclass{llncs}
+%\documentclass[converence,10pt]{IEEEtran}
+%\IEEEoverridecommandlockouts
+%\usepackage{cite}
+%\usepackage{amsmath,amssymb,amsfonts}
+%\usepackage{algorithmic}
+%\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{bm}
+%\usepackage{xcolor}
+%\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+%    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\newcommand{\Exists}{\bm{\exists}\kern-0.6em\bm{\exists}}
+\newcommand{\Forall}{\bm{\forall}\kern-0.6em\bm{\forall}}
+
+\input{macros}
+
+\begin{document}
+
+\title{An Extension of LTL with Rules 
+and its Application to Runtime Verification}
+
+\ignore{\author{
+\begin{tabular}{ccc}
+Klaus Havelund & \vspace{0.2cm} & 
+Doron Peled \\
+NASA Jet Propulsion Laboratory, Pasadena, USA & & 
+Bar Ilan University, Ramat Gan, Israel \\
+klaus.havelund@jpl.nasa.gov & & doron.peled@gmail.com
+\end{tabular}
+}
+}
+
+\ignore{
+\author{\IEEEauthorblockN{Klaus Havelund} 
+\IEEEauthorblockA{\textit{Laboratory for Reliable 
+Software} \\
+\textit{NASA Jet Propulsion Laboratory}\\
+Pasadena, USA \\
+klaus.havelund@jpl.nasa.gov}\\\mbox{}\\
+\and
+\IEEEauthorblockN{Doron Peled} 
+\IEEEauthorblockA{\textit{Dep. of Computer Science} \\
+\textit{Bar Ilan University}\\
+Ramat Gan, Israel \\
+doron.peled@gmail.com}
+}
+}
+
+%\thanks{Copyright 2018. All rights reserved.}
+
+\author{ 
+Klaus Havelund~\thanks{The research performed by this author was carried out at Jet Propulsion Laboratory, California Institute of Technology, under a contract with the National Aeronautics and Space Administration.} 
+\and
+Doron Peled~\thanks{The research performed by this author was partially funded by Israeli Science Foundation grant 2239/15: 
+``Runtime Measuring and Checking of Cyber Physical Systems''.
+}
+}
+
+
+
+
+\institute{
+Jet Propulsion Laboratory, \\
+California Institute of Technology, USA 
+\and
+Department of Computer Science \\
+Bar Ilan University, Israel
+}
+
+
+
+
+%\hfill
+\maketitle
+
+\begin{abstract}
+
+Runtime Verification (RV) consists of analyzing execution 
+traces using formal techniques. RV is scalable and 
+therefore has a big potential for infusion in software 
+engineering practices. It includes e.g. monitoring the 
+execution of a system against properties formulated in 
+Linear Temporal Logic (LTL). 
+LTL offers a succinct notation for writing useful 
+specification properties. However, it is limited in 
+expressiveness in the propositional case, and several 
+theoretic (non-operational) extensions have therefore been proposed. Furthermore, for many practical cases, there is a need to monitor properties 
+that carry data, where one can use formalisms like 
+first-order LTL. We show that 
+first-order LTL has similar expressive
+limitations as the propositional version. We suggest here 
+two related extensions for increasing the expressive power: 
+one for propositional LTL and one for 
+first-order LTL. These extensions have a simple incremental operational 
+semantics that is more suitable for RV than previously 
+suggested extensions. We show that the 
+propositional extension has the same expressiveness as the 
+classical extensions, and demonstrate its
+adoption for runtime verification of first-order safety 
+properties. Finally, we expand the BDD-based runtime verification 
+tool \dejavu{}  to support our extension and we perform some 
+experiments.
+
+\end{abstract}
+
+\input{rule-ltl}
+
+\input{implementation}
+
+\input{conclusion}
+
+\input{prop.bib}
+
+\appendix
+
+\noindent {\bf Sketch of proof of Theorem~\ref{theo2}.}
+As we defined the semantics of
+EFLTL by translating into QFLTL, QFLTL is at least as
+expressive as EFLTL. We show here that 
+the expressive power of EFLTL is strictly smaller than that of
+QFLTL through the following example. It consists of
+a temporal relation\footnote{We abuse notation and
+use the same name for the relation and for its
+denotation in the logic. Also, $r [ i ]$ has zero
+parameters; as noted before, this is a natural extension to the syntax and semantics presented above.} $r$ with only one parameter, so $r [ i ]$
+has a Boolean value. We will henceforth say that $r$ occurs
+in state $i$. Another relation is $v$, with
+two parameters. For each $i$, if $r$ does not appear in the
+state, 
+then there is a value $a$ from some (infinite) domain,
+such that $v ( a, i )$, 
+i.e., $v(a)$ appears in $i$.
+The property requires that there are no two sets of values appearing within the relation $v$ (as $v(a)$) between successive occurrences of $r$ that are the same.
+
+Hence, the sequence of states 
+\[ \{ r \} \{ v(1) \}  \{ v(2) \} \{ v(3) \}  \{ r\}  \{ v(2) \}  \{  v(1) \}  \{  v(3) \} \{  r \} \] is a model of this formula, while \[ \{ r \} \{ v(1) \}  \{ v(2) \}  \{ v(2) \}  \{ r\}  \{ v(2) \}  \{  v(1) \}  \{  v(5) \}  \{  r \}\] is not.
+The formula is a bit involved, hence given in several parts (macros).
+\begin{itemize}
+\item $add(P) ::= \forall x \, (P(x) \leftrightarrow (v(x) \vee \ominus P(x))$ [The set $P$ differs in the current state from the previous one only by values $a$ that appear in $v(a)$.]
+\item $same(P) ::= \forall x \, (P(x) \leftrightarrow \ominus P(x))$ 
+[The set of elements $x$ for which
+$P (x)$ holds
+contains the same elements as in the previous state.]
+\item $empty (P) ::= \forall x \neg P(x)$ [The set $P$ is empty.]
+\item $equal (P,Q) ::= \forall x (P(x) \leftrightarrow Q(x))$ 
+[The sets represented by the relations
+$P$ and $Q$ contain the same elements {\em in the current state}.]
+\item $collect(P, \varphi, \psi) ::=
+       q \wedge same(P) \wedge \varphi \wedge 
+       \ominus ((add(P)\wedge \neg q \wedge \varphi) \since (q \wedge empty(P) \wedge \psi))$  [Collect elements $a$ in $v(a)$, while $\varphi$ holds, 
+       since the previous state where $q$ 
+       and $\psi$ held. ]
+\item $init ::= r \wedge \Box (r \leftrightarrow \neg \exists x \, v(x))$ [$r$ holds in the first state, and $v(a)$ with some value $a$ holds in states where $q$ does not hold.]
+\item $init \wedge \neg \Exists A \Exists B (equal (A, B) \wedge \\
+collect(B, same(A),\, same(A) \since collect(A, true, true))$
+[There are no two sequences of states where $v(a)$ holds
+with various values $a$, between a pair of states satisfying $r$ that contain exactly the same elements (regardless of repetition).]
+\end{itemize}
+We prove that the above property cannot be expressed in EFLTL.
+We use a combinatorial argument.
+In EFLTL, after every prefix of the input, it is
+sufficient to keep a finite set of (non temporal) relations over the
+data elements seen in the input, which
+summarizes the prefix. This follows from the set
+semantics, which appears in Section~\ref{EPLTLRV}, 
+where the interpretation of
+each subformula, and the auxiliary relations,
+at a particular state is a relation, and the interpretation 
+of a property a prefix of length $i$ only depends on
+these relations. Now, the number of such possible relations
+for a fixed number of data elements $N$ is polynomial
+in $N$. However, the above property checks whether
+a set of values that appear within the relation $v$, between two consecutive appearances
+of $r$'s, are the same. For that, one needs to keep a set of
+subsets of the elements that appeared in the input so far. 
+But the number of such subsets is exponential in $N$. \qed
+
+
+\iffalse
+{\bf Comments.} First, note that the reason that QFLTL {\em can} express the property in Theorem~\ref{theo2}, is that it allows to augment the input relations with auxiliary relations that are not fixed. That is, for an auxiliary relation $R$,
+$R [ i ]$ is not fixed, and can change per different
+prefixes (of length at least $i$), or even in different
+subformulas. Second, given a simple extension to EFLTL, where 
+one can use a variable that represents an updatable
+counter (or a generator of distinct values), one can express the property used in~\ref{theo2}, by
+keeping a relation where values between different occurrences of the event $r$ are paired with distinct values, hence, representing an unbounded set of sets.
+\fi
+
+\end{document}
+
+

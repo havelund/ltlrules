@@ -1,0 +1,358 @@
+%\IEEEoverridecommandlockouts
+%\usepackage{cite}
+%\usepackage{llncs}
+\def\arrow#1{\stackrel{#1}{\longrightarrow}}
+\def\inp#1{^{\bullet}{#1}}
+\def\out#1{{#1}^{\bullet}\!}
+\def\exec#1{{[#1\rangle}}
+\def\prioexec#1{{(#1\rangle}}
+\def\free#1{\mathit{free} ( {#1} )}
+\def\procs{\Pi}
+\def\proc{\pi}
+\def\subformula#1{\mathit{sub} (#1)}
+\def\Pt{{\cal P}_t}
+\def\avail{\mathit{avail}}
+\def\F{\Diamond}
+\def\G{\Box}
+\pagestyle{plain}
+\thispagestyle{plain}
+\usepackage{color,epsfig}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{framed}
+\usepackage{syntax}
+\usepackage{listings}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+%\usepackage{subfig}
+\usepackage[utf8]{inputenc}
+\usepackage{units}
+\usepackage{mathtools}
+%\usepackage{multirow} 
+\usepackage{amsmath}
+%\usepackage{amsfonts}
+\usepackage{amssymb}
+%\usepackage{gastex}
+%\usepackage{stmaryrd}
+%\usepackage{framed}
+\def\cl{\mathit{cl}}
+\def\arrow#1{\stackrel{#1}{\longrightarrow}}
+\def\undef{\mathit{undef}}
+%\def\best{\mathit{better}}
+\def\true{\mathit{true}}
+\def\btrue{\mathrm{BDD}(\top)}
+\def\bfalse{\mathrm{BDD}(\bot)}
+\def\max{\mathrm{BDD}(11\ldots11)}
+\def\terms{\tt{terms}}
+\def\counting{\mathit{count}}
+\def\vars{\mathit{free}}
+\def\proj{\mathit{hide}}
+\def\ext{\mathit{ext}}
+\def\domain{\mathit{domain}}
+\def\extend{\mathit{extend}}
+\def\lookup{\mathbf{lookup}}
+\def\bddwedge{\mathbf{and}}
+\def\bddvee{\mathbf{or}}
+\def\bddexists{\mathbf{exists}}
+\def\bddset{\mathbf{build}}
+\def\rename{\mathbf{rename}}
+\def\bddneg{\mathbf{not}}
+\def\comp{\mathit{comp}}
+\def\old{\mathsf{pre}}
+\def\current{\mathsf{now}}
+\def\false{\mathit{false}}
+\def\maybe{\mathit{maybe}}
+\def\pol{\mathit{pol}}
+\def\tree#1{\mathit{tree}(#1)}
+\def\asgn#1{\mathit{asgn}(#1)}
+\def\var#1{\mathit{var}(#1)}
+\def\lbl#1{\mathit{lbl}(#1)}
+\def\since{{\cal S}}
+\def\wsince{{\cal S}}
+\def\empty{\mathit{empty}}
+\def\released{{\cal P}}
+\def\LTLsquare{\Box}
+\def\LTLdiamond{\Diamond}
+\def\LTLcircle{{\bigcirc}}
+%\usepackage{ltlfonts}
+\newcommand\lola{\textsc{Lola}}
+\newcommand\B{{\mathbb B}}
+\newcommand\AP{\mathit{AP}}
+\newcommand\buchi{B\"uchi}
+\newcommand\cla{\mathsf{cone}}
+\newcommand\sla{\mathsf{sla}}
+\newcommand\suc{\mathsf{suc}}
+\newcommand\clr{\mathsf{clr}}
+\newcommand\cobuchi{Co-B\"uchi}
+\newcommand\frag{\mathsf{frag}}
+\newcommand\res{\mathsf{res}}
+\newcommand\safe{\mathsf{safe}}
+\newcommand\tempt{\mathsf{tempt}}
+\newcommand\opt{\textrm{opt}}
+\newcommand\best{\textrm{best}}
+\newcommand\worst{\textrm{worst}}
+% \newcommand\qed{\hfill\ensuremath{\Box}}
+
+%\usepackage{times}
+\newcommand\scalalang{{\sc Scala}}
+\newcommand\java{{\sc Java}}
+\newcommand\qtl{{\sc Qtl}}
+\newcommand\dejavu{{\sc DejaVu}}
+\newcommand\monpoly{{\sc MonPoly}}
+\newcommand\ltlfo{{\sc Ltl}$^{{\rm FO}}$}
+\newcommand\tracematches{{\sc TraceMatches}}
+\newcommand\mop{{\sc Mop}}
+\newcommand\qea{{\sc Qea}}
+\newcommand\orchids{{\sc Orhcids}}
+\newcommand\beepbeep{{\sc BeepBeep}}
+\newcommand\tracecontract{{\sc TraceContract}}
+\newcommand\eagle{{\sc Eagle}}
+\newcommand\ruler{{\sc Ruler}}
+\newcommand\logfire{{\sc LogFire}}
+\newcommand\mmt{{\sc Mmt}}
+\newcommand\larva{{\sc Larva}}
+
+\renewcommand\uplus{\dot{\cup}}
+
+\sloppy
+
+\pagestyle{plain}
+\thispagestyle{empty}
+\usepackage{eepic}
+\usepackage{pslatex}
+\usepackage{latexsym}
+\usepackage{amsfonts}
+
+
+\newcommand \until {\mathbin{\mathcal{U}}}
+\newcommand \release {\mathbin{\mathcal{R}}}
+
+\usepackage{pstricks, pst-node, pst-tree}
+\usepackage{graphicx}
+\usepackage{dsfont}
+
+
+%\newtheorem{observation}{Observation}[section]
+
+\iffalse
+\newtheorem{theorem}{Theorem}[section]
+\newenvironment{Theorem}{\begin{theorem}\upshape}{\end{theorem}}
+
+\newtheorem{corollary}[theorem]{Corollary}
+\newenvironment{Corollary}{\begin{corollary}\upshape}{\end{corollary}}
+
+\newtheorem{lemma}[theorem]{Lemma}
+\newenvironment{Lemma}{\begin{lem}\upshape}{\end{lem}}
+
+\newtheorem{proposition}[theorem]{Proposition}
+\newenvironment{Proposition}{\begin{lem}\upshape}{\end{lem}}
+
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{Definition}{\begin{lem}\upshape}{\end{lem}}
+
+\newcommand\qed{\hfill\ensuremath{\Box}}
+%\newcommand\qed{}
+\fi
+%\newenvironment{proof}{
+         %\noindent {\bf Proof: }}{}
+
+\usepackage{xcolor}
+\def\comment#1{\marginpar{{\color{green!75!black} #1}}}
+\newcommand\donotshow[1]{}
+
+\newcommand\AutoMeasure{{\sc AutoMeasure}}
+
+\definecolor{light-gray}{gray}{0.95}
+
+%%%%%%%%%%%%%%%%
+% Mathematics: %
+%%%%%%%%%%%%%%%%
+
+\newcommand{\boolty}{\mathbb{B}}
+
+%%%%%%%%%%%%
+% Symbols: %
+%%%%%%%%%%%%
+
+\newcommand\event[2]{{\em #1}(\text{#2})}
+\newcommand\eventname[1]{{\em #1}}
+\newcommand\args[1]{\text{#1}}
+\newcommand{\symb}[1]{`$#1$'}
+\newcommand{\seen}[1]{\mathit{}{seen}(#1)}
+\newcommand{\alreadyseen}[1]{\mathit{}{\Theta}(#1)}
+
+%%%%%%%%%%%
+% Colors: %
+%%%%%%%%%%%
+
+\newcommand\colred[1]{{\color{red} #1}}
+
+%%%%%%%%%%%%%
+% Comments: %
+%%%%%%%%%%%%%
+
+\newcommand\ignore[1]{}
+
+\newif\ifcomments
+\commentstrue
+%\commentsfalse
+
+\ifcomments
+
+
+\newcommand{\doron}[1]{
+  \color{blue}
+  %\vspace{0.1cm}
+  \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}\\
+  {\sc Doron: } #1\\
+  \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}\\
+  %\vspace{0.1cm}
+  \color{black}
+}
+
+
+\newcommand{\klaus}[1]{
+  \color{red}
+  %\vspace{0.1cm}
+  \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}\\
+  {\sc Klaus: } #1\\
+  \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}\\
+  %\vspace{0.1cm}
+  \color{black}
+}
+
+\else
+
+\newcommand{\klaus}[1]{}
+\newcommand{\doron}[1]{}
+
+\fi
+
+%%%%%%%%%%%%%
+% Listings: %
+%%%%%%%%%%%%%
+
+%%% DSL: %%%
+
+\lstdefinelanguage{dsl}{
+morekeywords={prop,where,pred,preds,event,events,true,false,exists,Exists,forall,Forall,S,P,H}, 
+  literate=
+      {<->}{{$\leftrightarrow$ }}2
+      {->}{{$\rightarrow$ }}2
+      {@}{@}2
+  ,
+  sensitive=true, 
+  morecomment=[l]{//}, 
+  morecomment=[s]{/*}{*/},
+  escapeinside={(*}{*)},
+  stringstyle=\ttfamily,
+  %aboveskip=1mm,
+  %belowskip=1mm,
+  showstringspaces=false,
+  columns=flexible,
+  morestring=[b]",
+  basicstyle={\scriptsize},
+  %numbers=left,
+  numberstyle=\scriptsize,
+  %moredelim=[is][\bf\em]{|}{|},
+  %moredelim=[is][\bf\em]{+}{+},
+  moredelim=[is][\em]{@}{@},
+  basicstyle=\sffamily
+}
+
+\newcommand{\dsl}{\lstset{language=dsl,backgroundcolor=\color{white}, frame=none}}
+\newcommand{\idsl}{\dsl\lstinline}
+
+%%% MONPOLY: %%%
+
+\lstdefinelanguage{mpoly}{
+morekeywords={FORALL,EXISTS,IMPLIES,NOT,SINCE,PREVIOUS,ONCE,AND,OR}, 
+  literate=
+      {->}{{$\rightarrow$ }}2
+      {@}{@}2
+  ,
+  sensitive=true, 
+  morecomment=[l]{//}, 
+  morecomment=[s]{/*}{*/},
+  escapeinside={(*}{*)},
+  stringstyle=\ttfamily,
+  %aboveskip=1mm,
+  %belowskip=1mm,
+  showstringspaces=false,
+  columns=flexible,
+  morestring=[b]",
+  %basicstyle={\scriptsize},
+  %numbers=left,
+  numberstyle=\scriptsize,
+  %moredelim=[is][\bf\em]{|}{|},
+  %moredelim=[is][\bf\em]{+}{+},
+  moredelim=[is][\em]{@}{@},
+  basicstyle=\sffamily
+}
+
+\newcommand{\mpoly}{\lstset{language=mpoly,backgroundcolor=\color{white}, frame=none}}
+\newcommand{\imonpoly}{\monpoly\lstinline}
+
+%%% SCALA: %%%
+
+\lstdefinelanguage{scala}{
+  morekeywords=
+    {package,import,class,object,trait,extends,with,match,
+     new,if,else,while,for,yield,def,val,var,this,case,
+     type,implicit,override,private,protected,abstract,final}, 
+  literate=
+      {=>}{{$\Rightarrow$ }}2
+      {\#\#}{{$\oplus\;$}}2
+      %{|->}{{$\longmapsto\;$}}2
+      {-->}{{$\Longrightarrow\;$}}2
+      {->}{{$\rightarrow\;$}}2
+      {<-}{{$\leftarrow\;$}}2
+      {>>}{{$\gg$}}2
+      {++}{{$++$}}2
+      {|==}{{$\models$}}2
+      {p1}{{$p_1$}}2
+      {pm}{{$p_m$}}2
+      {q1}{{$q_1$}}2
+      {qn}{{$q_n$}}2
+  ,
+  sensitive=true,
+  morecomment=[l]{//}, 
+  morecomment=[s]{/*}{*/},
+  escapeinside={(*}{*)},
+  stringstyle=\ttfamily,
+  %aboveskip=1mm,
+  %belowskip=1mm,
+  showstringspaces=false,
+  columns=flexible,
+  morestring=[b]",
+  basicstyle={\scriptsize},
+  %numbers=left,
+  numberstyle=\scriptsize,
+  %moredelim=[is][\bf\em]{|}{|},
+  %moredelim=[is][\bf\em]{+}{+},
+  moredelim=[is][\em]{@}{@},
+  basicstyle=\sffamily
+} 
+
+\newcommand{\scala}{\lstset{language=scala,backgroundcolor=\color{white}, frame=none}}
+\newcommand{\iscala}{\scala\lstinline}
+
+\newcommand\oom{{\bf OOM}}
+\newcommand\gc[1]{{\bf dr}}
+
+\pagestyle{plain}
+\thispagestyle{plain}
+\usepackage{eepic}
+\usepackage{latexsym}
+\usepackage{pst-all}
+
+
+\newcommand\ex{\mathsf{ex}}
+\newcommand\gen{\mathsf{gen}}
+\newcommand\len{\mathsf{len}}
+\newcommand\lpf{\mathsf{mixp}}
+\newcommand\lstf{\mathsf{mixt}}
+\newcommand\try{\mathsf{try}}
+
+\sloppy
+% \hyphenation{}

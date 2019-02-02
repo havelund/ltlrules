@@ -1,0 +1,10 @@
+digraph G {
+ 
+init [shape=point]
+
+init -> a
+a -> b [label = " list(i)"]
+b -> a [label = " abort(i)"]
+b -> b [label = " bid(i)"]
+b -> c [label = " sell(i)"]
+}
