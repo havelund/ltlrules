@@ -328,25 +328,43 @@ ELTL is the same as QLTL.
 \noindent {\bf Proof.}
 Each ELTL formula $\eta$, as defined above,
 is expressible in QLTL using the following formula:
+
 \[   \Exists a_1 \ldots \Exists a_n  ( \psi  \wedge   \Box \bigwedge_{1 \leq j \leq n} ( a_j \leftrightarrow \varphi_j))
 \]
-For the other direction, one can translate any QLTL property into an $\omega$ automaton\footnote{The past operators of a QLTL property do not change this fact, since the translation can be done first to second order monadic logic, which can be translated into an $\omega$-automaton}.
-We assume that the property is given as a deterministic Muller automaton $M = (S, i , \Sigma, \Delta, {\cal F})$ (a B\"{u}chi automaton may not always be deterministic), where $S$ is the set of states, $i \in S$ is the initial state, the set $\Sigma$ consists of the inputs, each represented as a Boolean combination of the variables $B$, $\Delta : S \times \Sigma \mapsto S$, and ${\cal F} = \{ F_1 , \ldots , F_k \}$ is the accepting set, 
+
+\klaus{How do we know that the ``other direction'' below is possible?}
+
+For the other direction, one can translate any QLTL property into an $\omega$ automaton\footnote{The past operators of a QLTL property do not change this fact, since the translation can be done first to second order monadic logic, which can be translated into an $\omega$-automaton.}.
+We assume that the property is given as a deterministic Muller automaton $M = (S, i , \Sigma, \Delta, {\cal F})$ (a B\"{u}chi automaton may not always be deterministic), where $S$ is the set of states, $i \in S$ is the initial state, $\Sigma$ is the set of inputs, each represented as a Boolean combination of the variables $B$, $\Delta : S \times \Sigma \mapsto S$ is the transition function, and ${\cal F} = \{ F_1 , \ldots , F_k \}$ is the accepting set, 
 where an accepted input needs to pass infinitely often in exactly
 one of the specified sets. To formulate an ELTL formula,
 he auxiliary variables represent the states $S$ of $M$, i.e., $a_s$ represents the state $s \in S$.
 
+\klaus{The following formulation above is not not clear: ``where an accepted input needs to pass infinitely often in exactly
+one of the specified sets''.}
+
+\noindent
 Then we translate $M$ into an ELTL formula
-of the form \begin{tabbing}
-$\bigvee_{F \in {\cal F}} (\bigwedge_{s \in F} \Box\Diamond a_s \wedge \bigwedge_{s \not\in F} \Diamond \Box \neg a_s)$
+of the form: 
+
+\begin{tabbing}
+\ \ \ \ \ $\bigvee_{F \in {\cal F}} (\bigwedge_{s \in F} \Box\Diamond a_s \wedge \bigwedge_{s \not\in F} \Diamond \Box \neg a_s)$
 where \\
-\ \ \ \ \ $a_s := \vee _{\Delta ( s'
+\ \ \ \ \ \ \ \ \ \ $a_s := \vee _{\Delta ( s'
 , \alpha ) = s } 
 \alpha \wedge \ominus a_{s'} )
 \wedge (s=i \rightarrow \neg \ominus \true)
 \, :\,  s \in S
 $
 \end{tabbing}
+
+\klaus{Above: should $s=i \rightarrow \neg \ominus \true$ instead be (note: two changes):
+$\neg \ominus \true \rightarrow a_s=i$
+}
+
+\klaus{Above: can't judge whether the $\bigwedge_{s \not\in F} \Diamond \Box \neg a_s)$ is correct.}
+
+\noindent
 With $(s=i)$ is $\true$ when $s$ is $i$, and $\false$ otherwise.
 Basically, the assignments to the auxiliary variables are used to simulate the change of states\footnote{It is possible to use only $\lceil \log ( | S | ) \rceil$
 variables, at the expense of longer and more complicated formulas.}, and the main formula expresses the Muller acceptance condition. \qed
@@ -354,8 +372,7 @@ variables, at the expense of longer and more complicated formulas.}, and the mai
 The use of the auxiliary variables $a_1 \ldots a_n$ in the
 rules of an ELTL specification 
 $\eta$ can be viewed as representing a
-state machine, in particular, in
-particular when the only modality that is used in the rules part is $\ominus$.
+state machine, in particular when the only modality that is used in the rules part is $\ominus$.
 In that case, we can consider an ELTL specification $\eta$ as consisting with two synchronous parts: an LTL property 
 (the statement) $\psi$
 and a finite automaton, whose states correspond to combinations
@@ -367,10 +384,14 @@ incrementally calculate the values of the auxiliary variables.
 Similarly, it can be
 used for extending the expressiveness of LTL model checking.
 
+\klaus{First sentence below sounds wrong: (1) PLTL already does not have future time operators, and (2) why mention infinite sequences?}
+
 We can extend PLTL into EPLTL by disallowing the future temporal operators (except a prefixing $\Box$, when interpreted over infinite sequences). We obtain
 a formalism that is equivalent to finite automata. In this case, 
 we replace the first part of the construction in the proof of Theorem~\ref{theo1}
 with the simpler formula $\vee_{s \in A} a_s$, where $A$ are the accepting states of the finite automaton.
+
+\klaus{Last sentence above: perhaps say with words that we are always in an acceptance state - if that's what the point is.}
 
 For representing safety properties that can be expressed in QPLTL, we can use a restricted version as shown in the following simple Lemma.
 \begin{lemma}
@@ -383,7 +404,13 @@ ELTL form:
 \end{lemma}
 \noindent {\bf Proof.} The proof of the Lemma follows from the
 axiomatization of QLTL in~\cite{MP}, e.g.,
-$\varphi \since \psi \leftrightarrow ( \psi \vee ( \varphi \wedge \varphi \since \psi) ) )$. \qed
+$\varphi\ \since\ \psi \leftrightarrow \psi \vee ( \varphi \wedge (\varphi\ \since\ \psi))$. \qed
+
+\klaus{In the axiom above, isn't there missing a $\ominus$ before
+the second $(\varphi\ \since\ \psi)$?}
+
+\klaus{Above: is the following really correct?: 
+``with $p$ being one of the auxiliary variables $a_j$''.}
 
 While this Lemma makes the use of the temporal operators
 besides $\ominus$ redundant, we believe that it is still
@@ -411,8 +438,8 @@ appear in Figure~\ref{prop}.
 \section{RV for Propositional Past-Time LTL and its Extension}
 \label{LTLruntime}
 
-Runtime verification of temporal temporal specification often
-concentrates on the past portion of the logic.  Past specifications have the important property that one can distinguish when they are violated. For an extended discussion of this issue of {\em monitorability}, see e.g.,~\cite{Ugly,FFM}.
+Runtime verification of temporal specifications often
+concentrates on the past portion of the logic.  Past-time  specifications have the important property that one can distinguish when they are violated. For an extended discussion of this issue of {\em monitorability}, see e.g.,~\cite{Ugly,FFM}.
 
 The algorithm for PLTL, first presented in \cite{HR}, 
 is based on the observation that the semantics of the 
@@ -430,7 +457,8 @@ $( \sigma , i)  \models \varphi$ and
 $(\sigma , i-1 ) \models ( \varphi \, \since \, \psi )$.
 \end{itemize}
 
-The runtime verification exploits the fact that
+\noindent
+Runtime verification exploits the fact that
 the semantic definition is recursive in both the structure of the property, where subformulas
 are evaluated based on smaller subformulas, and the
 evaluation of subformulas in the previous state.
@@ -462,8 +490,10 @@ $\current ( \varphi ) := \false$.
 \item Goto step~2.
 \end{enumerate}
 
+\noindent
 Runtime verification of QPLTL can be done by translating a
-formula into a deterministic finite automaton. Then the sequence of states to be checked forms the input for this automaton. QPLTL can be extremely compact, in particular when using alternating existential and universal 
+formula into a deterministic finite automaton. Then the sequence of states to be checked forms the input for this automaton. 
+However, QPLTL can be extremely compact, in particular when using alternating existential and universal 
 quantifiers, which can result in a huge (non-elementary) explosion of
 the automaton representing the same
 specification~\cite{Thomas}.
@@ -471,10 +501,10 @@ specification~\cite{Thomas}.
 The well foundedness of the formulas defining the new auxiliary variables in EPLTL makes the extension of the above
 runtime algorithm simple.
 In order to extend the algorithm to perform runtime verification of an EPLTL formula $\psi$, as defined in~(\ref{ELTL}),  we need to  add to the above
-algorithm memory for $\current ( a_j )$ and $\old ( a_j )$
-and perform, between steps 3 and 4, the following, per each $a_j$: \\
+algorithm memory for $\current ( a_j )$ and $\old ( a_j )$,
+and perform the following between steps 3 and 4 for each $a_j$: \\
 
-\ \ \ \ -\ $\current ( a_j ) = \current ( \varphi_j )$ \\
+\ \ \ \ \ $\current ( a_j ) := \current ( \varphi_j )$ \\
 
 \subsubsection{Evaluation Order} 
 
