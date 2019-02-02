@@ -174,8 +174,9 @@ expressive power is the same as star-free regular expressions, first-order monad
 
 
 \section{Extending Propositional LTL}
+\label{sec:extending-prop-ltl}
 
-\subsubsection{Quantified LTL}
+\subsubsection{Extending with Dynamic Quantification}
 
 Wolper~\cite{Wolper} showed that the expressive power of LTL is lacking with respect
 to some important properties. As a canonical example, he demonstrated that it is impossible to
@@ -237,7 +238,7 @@ PQLTL property into a deterministic
 automaton.
 
 
-\subsubsection{Rule-based LTL}
+\subsubsection{Extending with Rules}
 
 We present now an extension of LTL, which we call ELTL. It has the same
 expressive power as  QLTL.
@@ -571,16 +572,19 @@ We define models for FLTL based on {\em temporal} relations~\cite{Chomicki}. Tha
 their last parameter
 is a natural number. For a relation $R$, $R [ i ]$ is the relation obtained from $R$ by
 restricting it to the value $i$ in the last parameter. For simplicity, we will describe henceforth
-the logic with relations $R$ that have exactly two parameters
-, hence $R [ i ]$ will have just one parameter whose domain will be denoted as $d ( R )$; this domain is fixed over all the value of the second parameter $i$. The the definition of the logic over other number of parameters is quite straightforward, and our implementation of runtime verification fully supports it.
+the logic with relations $R$ that have exactly two parameters, 
+hence $R [ i ]$ will have just one parameter whose domain will be denoted as $d ( R )$; this domain is fixed over all the values of the second parameter $i$. The definition of the logic over other numbers of parameters is quite straightforward, and our implementation of runtime verification fully supports it.
 
+\klaus{Above, what about instead of writing: ``this domain is fixed over all the values of the second parameter $i$'' to write:
+``this domain is independent of the values of the second parameter $i$'' - if that is what you mean to say.}
 
+\klaus{Above: we need to say explicitly what $i$ intuitively is meant to represent: positions, time, ....}
 
 \subsubsection{Syntax} 
 
 The formulas of the core FLTL logic are 
 defined by the following grammar,
-where $p$ denotes to a relation $R$,
+where $p$ denotes a relation $R$,
 $a$ is a constant representing a value in $d ( R )$ and $x$ is a variable with $\domain ( x ) = d ( p )$.
 \begin{center}
 $\varphi ::= \true  \; | \;
@@ -589,7 +593,7 @@ $\varphi ::= \true  \; | \;
     ( \varphi \wedge \varphi ) \;  |   \;
    \neg \varphi \; | \;
    \bigcirc \varphi \; | \; 
-   ( \varphi \; \until \; \varphi ) \; | $ \\
+   ( \varphi \; \until \; \varphi ) \; | $ %\\
    $ \ominus \; \varphi \; | \;
     ( \varphi  \; \since  \; \varphi ) \; | \;
     \exists x \; \varphi$
@@ -610,22 +614,25 @@ $\forall x \; \varphi = \neg \exists x \neg \varphi$.
 Restricting the modal operators to the past ones
 ($\since$, $\ominus$ and the ones obtained from them) 
 forms the logic PFLTL.
-The quantification over values of variables here is `static' in the sense that
-the assigned value is independent of the state in the execution. We
+The quantification over values of variables here is `static' in the sense that values quantified over are independent of the state in the execution. We
 denote static quantification with $\exists$ and $\forall$, while
-dynamic quantification uses $\Exists$ and $\Forall$.
+dynamic quantification is expressed with $\Exists$ and $\Forall$
+(see e.g. Section \ref{sec:extending-prop-ltl}).
 
 \subsubsection{Semantics} 
 
 A model is a set of
  relations ${\cal R} = \{ R_1 \, \ldots , R_m \}$, where each of these relations has a last parameter $i$ that is a natural number. 
 % 
-It it standard, and more intuitive (in particular for runtime verification) to cast models of temporal logic in terms of sequences states rather than temporal relations. To do that,
+It is standard, and more intuitive (in particular for runtime verification) to cast models of temporal logic in terms of sequences states rather than temporal relations. To do that,
  we denote by $R_k [ i ]$ the restriction of
  the relation $R_k$ to the value $i$ of the last parameter. A model ${\cal R}$ is then a sequence ${\cal R} [ 1 ]\, {\cal R} [ 2 ] \ldots$, where
- each {\em state} ${\cal R} [ i ] = {\cal R} [i] = \{ R_1 [i], \ldots , R_m [ i ] \}$  (a set of relations).
+ each {\em state} ${\cal R} [i] = \{ R_1 [i], \ldots , R_m [ i ] \}$  (a set of relations).
  The denotation $p_k$ will correspond to the relation $R_k$.
 
+\klaus{Above, did you not already say the following before:
+``we denote by $R_k [ i ]$ the restriction of
+ the relation $R_k$ to the value $i$ of the last parameter.''.}
 
 \iffalse
 At a given state the formula
@@ -878,9 +885,9 @@ the logic (syntax).
 We first demonstrate that the lack of expressiveness
 carries over from LTL (PLTL) to FLTL (PFLTL).
 
-\noindent {\bf Example 1.}
-Let $p$ and $q$ be temporal reations, where their
-restrictions to the state $s_i$ is $p[i]$ and $q[i]$, respectively, are unary relations $q(x)$ and $p(x)$. The
+\noindent {\bf Example.}
+Let $p$ and $q$ be temporal relations, where their
+restrictions to the state $s_i$, $p[i]$ and $q[i]$, respectively, are unary relations $p(x)$ and $q(x)$. The
 specification that we want to monitor is that for each value
 $a$, $p(a)$ appears in all the states where $q(a)$ has appeared an even number of times so far (for the odd occurrences, $p(a)$ can also appear, but does not have to). This is an extension of
 Wolper's example over LTL, carried over to the first-order case. To show that this is not expressible in FLTL (and PFLTL),
@@ -894,24 +901,21 @@ an LTL formula that is obtained by replacing
 the occurrences of $p(a)$ and $q(a)$ by propositions
 $p_a$ and $p_b$, respectively. However, by~\cite{Wolper},
 such a formula cannot express the said property.
-
 This example demonstrates that the so called ``non-counting''~\cite{Thomas} property of LTL carries over
-to FLTL. This lack of expressiveness can be resolved by
+to FLTL. 
+
+\subsubsection{Extending with Quantification}
+
+This lack of expressiveness can be resolved by
 adding propositional variables (i.e., predicates that are
 only state dependent) with dynamic quantification over them.
 Using parametric automata as a specification formalism, as in~\cite{Grum,havelund-rv-data-2018,Meredith2011,Reger2015} can also express this property.
-
-\noindent {\bf Example 2.}
-%%%%
-
-
-
 
 Extending FLTL (PFLTL) with quantifiers over relations, we obtain QFLTL
 (and the past-restricted version QPFLTL, respectively). 
 The syntax includes $\Exists p \, \varphi$, 
 where $p$ denotes an auxiliary relation.
-We also allow $\Forall p \varphi = \neg \Exists \neg \varphi$. The semantics is as follows.
+We also allow $\Forall p\ \varphi = \neg \Exists \neg \varphi$. The semantics is as follows.
 
 
 
@@ -924,6 +928,7 @@ $( \gamma, {\cal R}' , i) \models \varphi$.
 \end{itemize}
 Consequently, quantification over relations effectively extends the model ${\cal R}$ into a model ${\cal R}'$ within the scope of the quantifier. Note that quantification here is dynmaic (as in QLTL and QPLTL).
 
+\subsubsection{Extending with Rules}
 
 We now extend FLTL into EFLTL in a way that was motivated by the the propositional extension from LTL (PLTL) to ELTL (PELTL). We thus allow the following formula:
 \begin{equation}
