@@ -1271,8 +1271,7 @@ to a leaf node that is marked by either a $0$ or a $1$, representing the
 Boolean value returned by the function for the Boolean values on the path.
 
 The use of BDDs can be replaced by other representations that
-can compactly and efficiently represent sets of values (e.g., ZDDs) and
-apply set operations like complementation, intersection,union (which are simply negation, conjunction and disjunction
+can compactly and efficiently represent sets of values (e.g., ZDDs), and to which one can apply set operations like complementation, intersection, union (which are simply negation, conjunction and disjunction
 in BDDs) and projection (for the quantification).
 The marriage of BDDs and Boolean enumeration is in particular
 efficient, since collections of adjacent Boolean enumerations tend to compact well.
@@ -1321,11 +1320,6 @@ $( \gamma , \sigma , i-1 ) \models ( \varphi \, \since \, \psi )$.
 %then this is the Boolean function 
 %$(\neg b_0 \wedge b_1) \vee (b_0 \wedge \neg b_1)$.
 
-
-
-
-
-
 Given some ground predicate $p ( a )$ observed in the execution 
 matching with $p ( x )$ in the monitored property,
 let $\lookup ( x, a )$ be the enumeration of $a$. If this
@@ -1335,10 +1329,11 @@ a Boolean representation. Enumerations that were not yet used represent
 the values not seen yet. 
 %In particular, we always leave at least
 %one enumeration, $11\ldots 11$, for this purpose.
-In the next section we introduce data reclaiming, which allows 
-reusing enumerations for values that no longer affect the checked property. 
-This involves a more
-complicated enumeration mechanism.
+%In the next section we introduce data reclaiming, which allows 
+%reusing enumerations for values that no longer affect the checked 
+%property. 
+%This involves a more
+%complicated enumeration mechanism.
 
 
 The function $\bddset (x, A)$ returns
@@ -1347,12 +1342,12 @@ a BDD that represents the set of assignments where $x$ is mapped to
 $v \in A$. This BDD is independent
 of the values assigned to any variable
 other than $x$, i.e., they can have any value.
-For example, assume that we use three Boolean variables (bits) $x_0$, $x_1$ and $x_2$
+For example, assume that we use the three Boolean variables (bits) $x_0$, $x_1$ and $x_2$
 for representing enumerations over $x$ (with $x_0$ being the least significant bit), and
 assume that $A = \{ a , b \}$, 
-$\lookup ( x, a ) = 011$, and $\lookup ( x , b ) = 001$.
+$\lookup ( x, a ) = 000$, and $\lookup ( x , b ) = 001$.
 Then $\bddset ( x , A )$ is a BDD representation of the Boolean function 
-$x_0 \wedge \neg x_2$. 
+$(\neg x_1 \wedge \neg x_2)$. 
 %But the BDD function will be independent of the values of Boolean variables
 %representing other variables.
 %Notice that $p ( x )$ is
@@ -1416,13 +1411,13 @@ $\current ( \varphi ) := \bfalse$.
   \item $\current ( p_k ( a ) )$ := if $R_k [ i ] ( a )$ then
   $\btrue$ else $\bfalse$.
   \item $\current ( p_k ( x ) )$ :=
-     $\bddset ( x ,  \{ a | R_k[i] ( a  ) \} )$.
+     $\bddset ( x ,  \{ a \ | \ R_k[i] ( a  ) \} )$.
   \item $\current ( ( \varphi \wedge \psi ) ) := 
   \bddwedge ( \current ( \varphi ) , \current ( \psi ))$.
   \item $\current ( \neg \varphi  ) := \bddneg ( \current ( \varphi ))$.
   \item $\current ( ( \varphi\ \since\ \psi ) ) := \\ 
   \bddvee ( \current ( \psi  ) , \bddwedge ( \current ( \varphi ) ,
-      \old ( ( \varphi \since  \psi ))))$.
+      \old ( ( \varphi \ \since \ \psi ))))$.
 %DAP: I removed the \; around \since, since it penetrated the 2nd column!
   \item $\current ( \ominus \; \varphi ) := \old ( \varphi )$.
   \item $\current ( \exists x \; \varphi ) := 
@@ -1440,10 +1435,10 @@ $\old (r_j)$ for each relation $r_j$. We also need to calculate the subformulas 
 a specification, as part of the runtime verification,
 as per the above FPLTL algorithm. The auxiliary relations $r_j$ are calculated with respect to
 a variable $x_j$, which is the one appearing
-free in $\varphi_j$(this can be generalized to any number of variables). However, $r_j$ can be used
+free in $\varphi_j$ (this can be generalized to any number of variables). However, $r_j$ can be used
 as a subformula with other parameters in other rules or in the statement. Thus,
 $r_j ( y )$ constructing a relation
-that is the same as $r_j$, but over the variable $y$. This can be achieved by BDD renaming function $\rename ( r_j (x_j ) , y)$, which is easy to implement in BDDs.
+that is the same as $r_j$, but over the variable $y$. This can be achieved by the BDD renaming function $\rename ( r_j (x_j ) , y)$, which is easy to implement in BDDs.
 
 
 We then have to add
@@ -1452,14 +1447,16 @@ $\psi$.
 
 \noindent \begin{description}
 \item For each $r_j ( x_j ) = \varphi_j ( x_j )$:
-\item{\ \ }  calculate $\current ( \varphi_j )$.
-\item{\ \ }  $\current ( r_j )  := \current (\varphi_j)$
-\item{\ \ } $\current ( r_j ( y ) )$ := $\rename ( r_j(x_j) ,  y )$.
+\item{\ \ }  calculate $\current ( \varphi_j )$;
+\item{\ \ }  $\current ( r_j )  := \current (\varphi_j)$;
+\item{\ \ } $\current ( r_j ( y ) )$ := $\rename ( r_j(x_j) ,  y )$;
 \item{\ \ } $\current ( r_j ( a ) )$ := if $\current ( r_j ) ( a )$
-then $\btrue$ 
-\item{\ \ \ \ \ \ \ \ \ } else $\bfalse$.
+then $\btrue$ else $\bfalse$; 
 \end{description}
 
+\klaus{Above: $\current ( r_j ) ( a )$ has not been defined I think.}
+
+\noindent
 As in the propositional case, the evaluation order cannot be
 simply top down or bottom up, since relations can appear
 both on the left and the right of a definition
