@@ -40,6 +40,9 @@ logics and present an extension of the
 realizes the extended first-order past temporal logic verification.
 Finally, we provide some experimental results.
 
+\klaus{I think that the structure of the paper should be
+crystal clear so that the reader does not get lost. A lost reader leads to rejection. If a reader understand the structure, but perhaps not the details, the reader may still be happy.}
+
 \subsubsection{Related Work}
 
 For propositional LTL, the logic ETL~\cite{WVS,Wolper} extends
@@ -919,7 +922,7 @@ We also allow $\Forall p\ \varphi = \neg \Exists \neg \varphi$. The semantics is
 
 
 
-
+\klaus{Below, has the notation ${\cal R}' |_{\{ q \} }$ been defined?}
 
 \begin{itemize}
 \item $(\gamma ,  {\cal R}, i) \models \Exists q \, \varphi$ iff there exists
@@ -930,33 +933,37 @@ Consequently, quantification over relations effectively extends the model ${\cal
 
 \subsubsection{Extending with Rules}
 
-We now extend FLTL into EFLTL in a way that was motivated by the the propositional extension from LTL (PLTL) to ELTL (PELTL). We thus allow the following formula:
+We now extend FLTL into EFLTL in a way that is motivated by the  propositional extension from LTL (PLTL) to ELTL (EPLTL). We thus allow the following formula:
+
 \begin{equation}
 \label{EFLTL}
 \psi \mathit{\ where\ } r_j  ( x_j ) := 
-\varphi_j (x_j) : j \in \{ 1 , \ldots , n \end{equation}
+\varphi_j (x_j) : j \in \{ 1 , \ldots , n 
+\end{equation}
+
 \begin{enumerate}
 \item $\psi$, the {\em statement}, is a FLTL formula with
 no free variables, 
-\item $\varphi_j$ are PFLTL formula with a single
+\item $\varphi_j$ are PFLTL formulas with a single
 free variable $x_j$,
-\item $r_j$ is an auxiliary temporal relations with $2$ parameters; the first parameter is of the same 
-type as $x$ and the second one is, as usual in this paper,
+\item $r_j$ is an auxiliary temporal relation with $2$ parameters; the first parameter is of the same 
+type as $x_j$ and the second one is, as usual,
 a natural number that is omitted in the temporal formulas. 
-An auxiliary relations $r_j$ can appear within $\psi$. It can also appears in $\varphi_k$ of a {\em rule} $r_k := \varphi_k$, only within the
-scope\footnote{This restricted has the same motivation as
+An auxiliary relation $r_j$ can appear within $\psi$. It can also appear in $\varphi_k$ of a {\em rule} $r_k := \varphi_k$, but only within the
+scope\footnote{This restriction has the same motivation as in
 the propositional version ELTL (and EPLTL): to avoid making the
 formula $\false$ just by means of the definition of the auxiliary relations.}
 of a previous-time operator $\ominus$. 
 \end{enumerate}
+
 
 Again, it
 is simple to extend the syntax and semantics to include
 relations $r_j$ with different number of arguments, and, correspondingly, formulas $\varphi_j$ with corresponding number of free
 variables\footnote{We chose not to do that here (and in the definition of the semantics of FLTL above), because it
 requires multi-indexing notation that is trivial and adds no further insight. Our implementation indeed uses
-this more general capabilities.}.
-The logic EPFLTL is obtain by restricting the temporal modalities of EFLTL to the past ones:
+this more general capability.}.
+The logic EPFLTL is obtained by restricting the temporal modalities of EFLTL to the past ones:
 $\since$ and $\ominus$, and those obtained from them.
 
 \begin{lemma} \label{samesame}
@@ -973,21 +980,24 @@ r(x) = ( q(x) \leftrightarrow \ominus \neg  r(x))
 \label{eq:wolper-first-order}
 \end{equation}
 
+\noindent
 We define\footnote{This is done for lack of space. Formal semantics 
-can be given by constructing a set of temporal relation extended
+can be given by constructing a set of temporal relations extended
 with the auxiliary ones
-inductively, as would be done in a detailed proof of Lemma~\ref{samesame}.} the semantics for the EFLTL specification by using the following equivalent
+inductively, as would be done in a detailed proof of Lemma~\ref{samesame}.} the semantics for the EFLTL 
+specification (\ref{EFLTL}) 
+by using the following equivalent
 QFLTL formula:
+
 \begin{equation} \label{equiv}
 \Exists r_1  \, \ldots \, \Exists r_n \,  ( \psi \wedge \Box \bigwedge_{j \in \{ 1, \ldots , n\}} (r_j ( x_j )  \leftrightarrow 
 \varphi_i ( x_j) )
 \end{equation}
 
-
-
- 
+\noindent 
 The analogous of Lemma~\ref{simplecase} shows that EPFLTL does not
 need the past temporal operators besides $\ominus$.
+
 \begin{lemma}
 The full expressive power of EPFLTL can be obtained by allowing only 
 specifications of the form
@@ -996,20 +1006,17 @@ specifications of the form
 where $\psi$ consists of a fully quantified single occurrence of some
 auxiliary relation $r_j$.
 \end{lemma}
+
+\klaus{Something seems wrong in the above formulation.
+E.g.: Is the $\Box$ a restriction?, what is ``fully quantified single occurrence of some auxiliary relation $r_j$''?}
+
 \noindent {\bf Proof.} Basically, the proof is the same as Lemma~\ref{simplecase}, based on the axiomatization of the
 past temporal operators. \qed
 
-%\klaus{Something seems wrong above.}
-
-
-
-
-
-
 %\klaus{Is the formula above really correct?}
 
-We showed in Theorem~\ref{theo1} that although ELTL
-can be translated into QLTL, both have the same
+We showed in Theorem~\ref{theo1} that ELTL
+and QLTL have the same
 expressive power. We study now the relationship between
 EFLTL and QFLTL.
 
@@ -1057,11 +1064,27 @@ per each state just some finite tuples, and, quite commonly, have a single tuple
 A set of assignments over the same variables, which has some fixed order
 (say alphabetical) also forms a relation.
 
+\klaus{In the text above there are some imprecisions, such as
+(1) ``tuples of relations'' - relations are sets of tuples, we don't have tuples of relations. 
+(2) ``${\cal R}[i]$ consists of some relations'': it is a set of
+relations (I think).
+(3) ``to have, per each state just some finite tuples'': tuples are finite. You mean: to contain a finite set of tuples?
+(4) what is the story about a set of assignments also being a relation? Needed?
+}
+
+\subsubsection{Syntax}
+
+\klaus{Below: (\ref{EFLTL}) was not a EPFLTL form of specification.}
+
 Consider again the EPFLTL form
-of specification, described in~(\ref{EFLTL}), restricted to the past operators. As syntax and semantics of various versions
-of LTL are given in this paper, we repeat now the concrete definitions for EPFLTL. The syntax is as follows:
+of specification, described in~(\ref{EFLTL}), restricted to the past operators. We now present the definition of EPFLTL, the final main logic proposed in this paper. 
+The syntax is as follows:
 
 
+\[ 
+\psi \mathrm{\ where\ } r_j ( x_j) := 
+\varphi_j (x_j) : j \in \{ 1 , \ldots , n \}
+\]
 \begin{center}
 $\varphi ::= \true  \; | \;
     p ( a ) \; | \;
@@ -1072,11 +1095,18 @@ $\varphi ::= \true  \; | \;
     ( \varphi  \; \since  \; \varphi ) \; | \;
     \exists x \; \varphi$
 \end{center}
+
+\klaus{Note that $\psi$ above is not defined as a syntactic category. It should really be $\varphi$. Likewise in other parts of the paper. Perhaps too big a change now? Also, there should be
+a greek letter for a specification. E.g.:
+
 \[ 
-\psi \mathrm{\ where\ } r_j ( x_j) := 
+\pi ::= \varphi \mathrm{\ where\ } r_j ( x_j) := 
 \varphi_j (x_j) : j \in \{ 1 , \ldots , n \}
 \]
-
+\[
+\varphi ::= ...
+\]
+}
 
 \iffalse
 \noindent {\bf Set Semantics.}
@@ -1132,6 +1162,11 @@ over the set of variables $W \cup W'$.
 %union. Accordingly, $\mathbf{T}$ is idempotent to intersection.
 \fi
 
+\klaus{One may of course ask whether the following section on the 
+set semantics is needed. Maybe it is needed, since we probably need a semantics. Something to consider.}
+
+\subsubsection{Semantics}
+
 We denote by $A_{\vars ( \varphi )}$ the set of all possible assignments
 of values to the variables that appear free
 in $\varphi$. Thus,
@@ -1142,6 +1177,10 @@ where every formula is interpreted as an empty set.
 Observe that the value $\emptyset$ and $\{ \epsilon \}$, behave
 as the Boolean constants $0$ and $1$, respectively.
 The set semantics is defined as follows, where $i \ge 1$.
+
+\klaus{Above: assignments are introduced without any gentle introduction. Remember: you are not communicating with Moshe Vardi. You are communicating with John Fingelstein who had three glasses of wine at dinner.}
+
+\klaus{Above: $I [ \varphi, {\cal R} , i]$ is introduced out of the blue without any explanation.}
 
 \begin{itemize}
 \item $I [ \varphi , {\cal R} , 0 ] = \emptyset$.
@@ -1170,14 +1209,25 @@ I [ (\varphi \since \psi ) , {\cal R} , i - 1 ] )$.
 \{ r_j | r_j [ i ] =  I [ 
 \varphi_j , {\cal Q} , i ] \}$
 \end{itemize}
+
+\klaus{Above: as the semantics is presented, it looks as if 
+the `$\psi\ where ...$' is just another subformula.}
+
+\klaus{Above: hide is not defined.}
+
+\klaus{Above: the semantics of $p(a)$ and $p(x)$ do not refer to 
+${\cal R} $.}
+
 In the last item, the extended model ${\cal Q}$ appears both on the left and the right of the equality sign. It is well defined because of Lemma~\ref{samesame}.
 
-We describe an algorithm for monitoring 
-FLTL properties, first presented in~\cite{HPU} and implemented
+\subsubsection{Runtime Verification Algorithm for PFLTL}
+
+We start by describing an algorithm for monitoring 
+PFLTL properties, first presented in~\cite{HPU} and implemented
 in the tool~\dejavu. 
 Instead of storing the data values occurring in events, 
 we enumerate these data values as soon as we see them and use Boolean
-encodings of this enumeration.
+encodings of this enumeration, represented as BDDs.
 For example, if the runtime verifier sees the input 
 events 
 $\mathit{open}(\text{``a''})$, 
@@ -1186,6 +1236,10 @@ $\mathit{open}(\text{``c''})$,
 it will encode them as
 $000$, $001$ and $010$ (say, we use 3 bits $b_0$, $b_1$ and $b_2$
 to represent each enumeration, with $b_2$ being the most significant bit).
+%
+A Boolean representation of the {\em set} of values 
+$\{\text{``a''},\text{``b''}\} $ would be equivalent to a Boolean function $(\neg b_1 \wedge \neg b_2)$ that returns 1 for $000$ and $001$ (the value
+of $b_0$ can be arbitrary).
 
 %
 
@@ -1194,23 +1248,19 @@ Since we want to be able to deal with infinite domains
 complementation, unused enumerations represent the
 values that have not been seen and their relations
 to all other values. The algorithm maintains that these unseen values are correctly represented, as shown in~\cite{HPU}. In fact, it is sufficient to have just one enumeration representing these values per each variable of the LTL formula. However, it is important to guarantee that at least one such enumeration
-exists. We guarantee that by preserving the enumeration $11\ldots11$, i.e., the highest Boolean representation.
+exists. We guarantee that by preserving the enumeration $11\ldots11$, i.e., the highest Boolean representation,
+to represent values not yet seen.
 We present here only the basic algorithm. For versions that
 allow extending the number of bits used for enumerations and garbage collection of enumerations, consult~\cite{HP}.
 
-A Boolean representation of the {\em set} of values 
-$\{\text{``a''},\text{``c''}\} $ would be equivalent to a Boolean function $(\neg b_0 \wedge \neg b_2)$ that returns 1 for $000$ and $010$ (the value
-of $b_1$ can be arbitrary).
-
-
-    Our preferred c of sets of values and
-assignments is as an Ordered Binary Decision
+Our preferred representation of a set of values 
+(assignments) is as an Ordered Binary Decision
 Diagram (OBDD, although we write simply BDD)~\cite{Bryant}.
 A BDD is essentially a compact representation 
 of a Boolean tree, where compaction glues together isomorphic subtrees. Each non-leaf node is labeled with one of the
-Boolean variables $b_0,\ldots,b_{k-1}$. A non-leaf node $b_i$ 
+Boolean variables $b_0,\ldots,b_{k-1}$ (where $k$ is the number of bits used to represent the values of a variable). A non-leaf node $b_i$ 
 is the source of two 
-arrows leading to other nodes. 
+arrows leading to other nodes, representing respectively that the node has the value 0 (false) or 1 (true).
 %A dotted-line arrow represents that $b_i$ has the Boolean value $0$, while a thick-line 
 %arrow represents that it has the value $1$. 
 The nodes in the DAG have the
@@ -1380,6 +1430,8 @@ $\current ( \varphi ) := \bfalse$.
 \end{itemize}
 \item Goto step~2.
 \end{enumerate}
+
+\subsubsection{Runtime Verification Algorithm for EPFLTL}
 
 We extend now the algorithm to capture EPFLTL.
 The auxiliary relations $r_j$ extend the model, and we need to keep 
