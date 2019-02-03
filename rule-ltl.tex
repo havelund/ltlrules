@@ -14,37 +14,44 @@ in various ways.
 We are mainly motivated by runtime verification of executions with data, for which a first-order temporal logic is
 appropriate. There, too, we show that expressiveness can be extended.
 
-We present first an extension to the propositional case that is based on using additional (auxiliary) propositions, not appearing in the execution, which summarize the past 
+We present first an extension of the propositional LTL that is based on using additional (auxiliary) propositions, not appearing in the execution, which summarize the past 
 of the current execution. These propositions obtain their value in a state as a function of the prefix of the execution up and including that state through a past temporal formula. This can be seen as adding
-summary states to the temporal specification, resulting in a specification that is between logic and finite automata representation. This extension, which we believe is conceptually simpler
+summary states to the temporal specification, resulting in a specification that is in between logic and finite automata representation. This extension, which we believe is conceptually simpler
 and more intuitive than other suggested extensions, is shown to be
 equivalent to the other common specification formalism:
 B\"{u}chi automata, regular expressions and quantified LTL.
 
 We then proceed to first-order LTL. We relativise Wolper's example to the first
 order case to motivate the need for
-extending first-order LTL.
-We present such an extension where additional (auxiliary) relations are
-added. We show that this extension is more expressive than
-first-order LTL, e.g., by repeating Wolper's classical algorithm
-with data. On the other hand, we show that for the first-order version, this has less 
-expressive power than adding quantification over relations, in distinction from the propositional case.
+extending first-order LTL. Another example is based on the inexpressiveness of transitive closure of a relation in first order logic.
+We present an extension where auxiliary relations, not appearing in the model, are
+added. While this extension
+is capable of expressing the above
+properties, we show that for the first-order version, this has less 
+expressive power than adding quantification over relations, in distinction from the corresponding propositional case.
 
 These extensions to the logics are in particular natural for
 runtime verification of past (safety) temporal properties, since
 the values of propositional and first-order LTL are based
-on calculating and updating a summary of the prefix of the execution.
-We provide runtime verification algorithms for the extended
-logics and present an extension of the 
+on calculating and updating a summary of the prefix of the execution. Runtime verification often concentrates on a past  version of temporal logic~\cite{HR} mainly because for these properties we can decide when the monitored property is violated immediately when this happen, while for future properties we may never know for sure. Consistent with that, 
+we provide runtime verification algorithms for the past-time versions of the extended propositional and first-order
+logics. We further present an extension of the 
 \dejavu{} tool (https://github.com/havelund/dejavu) that
-realizes the extended first-order past temporal logic verification.
+realizes the extended first-order past temporal logic verification. The \dejavu{} tool~\cite{HPU,HP} allows runtime verification on past time first order temporal logic over infinite domains (e.g., the integers, strings). It achieves efficiency by BDD representation of enumerations of data (rather than over the data values themselves) and using
+a garbage collection algorithm. 
 Finally, we provide some experimental results.
 
-\klaus{I think that the structure of the paper should be
-crystal clear so that the reader does not get lost. A lost reader leads to rejection. If a reader understand the structure, but perhaps not the details, the reader may still be happy.}
+The contributions of this paper are both theoretical and practical. On the theory side, we present and study extensions for propositional and first order linear-temporal logics and show the relations between them and existing versions. 
+On the practical side, we present algorithms for the extended logic, and 
+show how to cast them specifically in an efficient BDD-based implementation. We present some experiments performed with our implementation and report on the results. 
 
-\subsubsection{Related Work}
+The structure of this paper is as follows. In Section~2 we first define the syntax and semantics of propositional temporal logic. We then review some of its classical extensions and present our own extension. In Section~3 we present a runtime verification algorithm for the extended past LTL. In Section~4 we review first order linear temporal logic, present our extension and study the relationships between the presented versions of first-order LTL. IIn Section~5 we present a runtime verification algorithm for the past version of the extended first-order LTL. Section~6 describes the implementation and provides experimental results. Finally, Section~7 concludes the paper.
 
+%\klaus{I think that the structure of the paper should be
+%crystal clear so that the reader does not get lost. A lost reader leads to rejection. If a reader understand the structure, but perhaps not the details, the reader may still be happy.}
+
+\vspace{1ex}
+\noindent {\bf Related Work}
 For propositional LTL, the logic ETL~\cite{WVS,Wolper} extends
 the set of temporal operators 
 by using automata (or, equivalently a right linear grammar). Each automaton defines a temporal operator,
@@ -75,11 +82,10 @@ less expressive power than adding quantification in the style of propositional t
 
 The extensions we suggest are in particular easy to implement, as an extension to existing propositional/first-order runtime verification. We extend our tool \dejavu, experiment with new examples that take advantage of the extension.
 \fi
-
-\section{Preliminaries}
+\vspace{1ex}
+\noindent {\bf conventions}
 \label{sec:prelim}
-
-In this paper, we treat several versions of the logic LTL. To simplify
+In this paper, we treat and present several versions of the logic LTL. To simplify
 the presentation, we prefix LTL with letters as follows:
 
 \begin{itemize}
@@ -176,7 +182,7 @@ When PLTL is interpreted over finite sequences, its
 expressive power is the same as star-free regular expressions, first-order monadic logic over finite sequences and counting-free automata.
 
 
-\section{Extending Propositional LTL}
+\section*{Extending Propositional LTL}
 \label{sec:extending-prop-ltl}
 
 \subsubsection{Extending with Dynamic Quantification}
@@ -881,7 +887,7 @@ We will henceforth sometimes abuse notation, as is very often done in logic, and
 symbols both for the relations (semantics) and their representation in
 the logic (syntax).
 
-\section{Extending First-Order LTL}
+\section*{Extending First-Order LTL}
 
 %%this is specification formalism that is very expressive and yet monitorable under run time verification~\cite{HPU}.
 
@@ -938,7 +944,7 @@ We now extend FLTL into EFLTL in a way that is motivated by the  propositional e
 \begin{equation}
 \label{EFLTL}
 \psi \mathit{\ where\ } r_j  ( x_j ) := 
-\varphi_j (x_j) : j \in \{ 1 , \ldots , n 
+\varphi_j (x_j) : j \in \{ 1 , \ldots , n \} 
 \end{equation}
 
 \begin{enumerate}
