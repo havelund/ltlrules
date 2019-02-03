@@ -12,7 +12,15 @@ The tool uses the JavaBDD library for BDD manipulations \cite{javabdd}.
 \subsubsection{Example Properties}
 
 Figure \ref{fig:properties} shows three properties in the 
-input format of the tool, which are not expressible in the original first-order logic of \dejavu{} presented in \cite{HPU}. The first property \idsl{telemetry1} is a variant of
+input format of the tool, which are not expressible in the original first-order logic of \dejavu{} presented in \cite{HPU}. 
+%
+The ASCII version of the logic here uses 
+\idsl{@} for $\ominus$,
+\idsl{|} for $\vee$,
+\idsl{&} for $\wedge$, and
+\idsl{!} for $\neg$.
+%
+The first property \idsl{telemetry1} is a variant of
 formula \ref{eq:wolper-first-order}, illustrating the use of a 
 rule to express a first-order version of Wolper's example \cite{Wolper}, that all the states with even indexes of a sequence satisfy a property.
 In this case we consider a radio on board a spacecraft, which communicates over different channels (quantified over in the formula), which can be turned on and off with a \idsl{toggle(x)} - they are initially off.
@@ -22,29 +30,19 @@ Telemetry can only be sent to ground over a channel \idsl{x} with the \idsl{tele
 \begin{figure}
 \begin{lstlisting}[language=dsl,frame=single,linewidth=0.95\textwidth,backgroundcolor=\color{white},linewidth=\columnwidth,breaklines=true,basicstyle=\small]
 prop telemetry1: 
-  Forall x . closed(x) -> !telem(x)
-  where closed(x) := toggle(x) <-> @!closed(x)
+  Forall x . closed(x) -> !telem(x) where closed(x) := toggle(x) <-> @!closed(x)
 
 prop telemetry2: 
-  Forall x . closed(x) -> !telem(x)
-  where
-    closed(x) :=
-        (!@true & !toggle(x))
-      | (@closed(x) & !toggle(x))
-      | (@open(x) & toggle(x)),
-    open(x) :=
-        (@open(x) & !toggle(x))
-      | (@closed(x) & toggle(x))
+  Forall x . closed(x) -> !telem(x) where
+    closed(x) := (!@true & !toggle(x)) | (@closed(x) & !toggle(x)) | 
+                 (@open(x) & toggle(x)),
+    open(x) := (@open(x) & !toggle(x)) | (@closed(x) & toggle(x))
 
 prop spawning : 
-  Forall x . Forall y .
-  spawn(x,y) -> 
-    (P main(x) | Exists z . (P main(z) & leadsto(z,y)))
-  where
-    leadsto(z,y) := 
-        spawn(z,y) 
-      | @ leadsto(z,y) 
-      | Exists x . (@leadsto(z,x) & spawn(x,y))
+  Forall x . Forall y . 
+    spawn(x,y) ->  (P main(x) | Exists z . (P main(z) & leadsto(z,y))) 
+    where leadsto(z,y) := 
+      spawn(z,y) | @ leadsto(z,y) | Exists x . (@leadsto(z,x) & spawn(x,y))
 \end{lstlisting}
 \caption{Three properties stated in \dejavu's logic}
 \label{fig:properties}
