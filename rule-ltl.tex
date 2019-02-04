@@ -51,7 +51,7 @@ The structure of this paper is as follows. In Section~2 we first define the synt
 %crystal clear so that the reader does not get lost. A lost reader leads to rejection. If a reader understand the structure, but perhaps not the details, the reader may still be happy.}
 
 \vspace{1ex}
-\noindent {\bf Related Work}
+\noindent {\bf Related Work.}
 For propositional LTL, the logic ETL~\cite{WVS,Wolper} extends
 the set of temporal operators 
 by using automata (or, equivalently a right linear grammar). Each automaton defines a temporal operator,
@@ -83,31 +83,33 @@ less expressive power than adding quantification in the style of propositional t
 The extensions we suggest are in particular easy to implement, as an extension to existing propositional/first-order runtime verification. We extend our tool \dejavu, experiment with new examples that take advantage of the extension.
 \fi
 \vspace{1ex}
-\noindent {\bf conventions}
+\noindent {\bf Conventions.}
 \label{sec:prelim}
 In this paper, we treat and present several versions of the logic LTL. To simplify
 the presentation, we prefix LTL with letters as follows:
 
 \begin{itemize}
-\item{P} restricts to {\em past} temporal operators.
-\item{F} allows first-order quantification over
-variables and relations over variables and constants. This is referred to as {\em static} quantification.
-\item{Q} adds quantification over predicates (for the propositional versions)
-or over relations (for the first-order version). These objects can have different values at different states. This is referred to as {\em dynamic} quantification.
-\item{E} allows extending the objects that occur in the input with
-new auxiliary predicates (for the propositional versions) or relations (for the first-order cases).
+\item{P} restricts to P{\em ast} temporal operators.
+\item{F} allows F{\em irst-order} quantification over
+data assigned to variables that is uniform for all states. This quantification is referred to as {\em static} quantification.
+\item{Q} adds (second order) Q{\em uantification} that is state-dependent. This is referred to as {\em dynamic} quantification.
+\item{E} allows E{\em xtending} the objects that occur in the input with
+new auxiliary predicates (for the propositional versions) or relations (for the first-order cases) and past temporal logic rules that define them.
 \end{itemize}
 
-\klaus{You above introduce some concepts before they really are explained. Q and E. I understand why you do this (to have it in one place), but it may be too difficult for the reader to grasp if not "initiated".
-Especially the E.}
+%\klaus{You above introduce some concepts before they really are explained. Q and E. I understand why you do this (to have it in one place), but it may be too difficult for the reader to grasp if not "initiated".
+%Especially the E.}
 
-\klaus{We use ELTL (etc) to denote Extended LTL. 
-But QLTL is also an extension of LTL. These logics 
-are all extensions of LTL. Perhaps RLTL (for Rule-based 
-LTL) would have been better ... or something. Not urgent, 
-we can always change that if we want to.}
+%\klaus{We use ELTL (etc) to denote Extended LTL. 
+%But QLTL is also an extension of LTL. These logics 
+%are all extensions of LTL. Perhaps RLTL (for Rule-based 
+%LTL) would have been better ... or something. Not urgent, 
+%we can always change that if we want to.}
 
 %\klaus{The explanation of Q and E could be improved.}
+
+
+\doron{Did my best to make the letters more self explained. I think R is usually reserved in temporal logic for realtime. But if you insist, one thing that I cannot perform from here is changing the two figures where these letters occur.}
 
 
 \newcommand\eventty{\mathbb{E}}
@@ -125,7 +127,7 @@ where $p$ is a proposition from a finite set of propositions $P$, and with $\big
 
 
 The models for LTL formulas 
-are infinite sequence of states.
+are infinite sequence of states, of the form
 $\sigma =  s_{1}\, s_{2}\, s_3 \ldots$,
 where $s_i \subseteq P$ for each $i\geq 0$. These are the propositions that {\em hold} in that state.
 We denote by $\xi_{i}$ the suffix $s_{i} s_{i+1} s_{i+2}\ldots$ of $\sigma$. 
@@ -136,14 +138,13 @@ LTL's semantics is defined as follows:
 \item $(\sigma, {i}) \models \neg\varphi$ iff  $(\sigma, {i}) \not\models \varphi$.
 \item $(\sigma, {i}) \models ( \varphi \land \psi)$ iff $(\sigma, {i}) \models \varphi$ and $(\sigma, {i} ) \models \psi$.
 \item $(\sigma, {i}) \models \bigcirc \varphi$ iff $(\sigma, {i+1}) \models \varphi$.
-\item $(\sigma, {i}) \models ( \varphi\ \cal{U}\ \psi )$ iff for some 
+\item $(\sigma, {i}) \models ( \varphi \cal{U} \psi )$ iff for some $j$,
 $j\geq i$, $(\sigma, {j}) \models \psi$,
-and for all $i \leq k < j$, $(\sigma, {k}) \models \varphi$.
+and for each $k$, $i \leq k < j$, $(\sigma, {k}) \models \varphi$.
 \item $(\sigma , i) \models \ominus \varphi$ iff $| \sigma | > 1$ and $(\sigma, i-1) \models \varphi$.
-\item $(\sigma , i) \models (\varphi \since \psi)$ iff there exists $1 \leq k \leq i$ such that
-$(\sigma , i) \models \psi$  and for each
-$j < k \leq i$, 
-$(\sigma , k)  \models \psi$.
+\item $(\sigma , i) \models (\varphi \since \psi)$ iff there exists $j$, $1 \leq j \leq i$, such that
+$(\sigma , j)  \models \psi$ and for each
+$k$, $j < k \leq i$, $(\sigma , k ) \models \varphi$.
 \end{itemize}
 Then $\sigma \models \varphi$ when $( \sigma ,0 ) \models \varphi$.
 We can use the following abbreviations:
@@ -152,16 +153,16 @@ $(\varphi \vee \psi) = \neg ( \neg \varphi \wedge \neg \psi )$,
 $(\varphi \rightarrow \psi) = ( \neg \varphi \vee \psi)$,
 $(\varphi \leftrightarrow \psi) = ((\neg \varphi \wedge \neg \psi) \vee (\varphi \wedge \psi ))$,
 $\Diamond \varphi = (\true \until \varphi)$ and $\Box \varphi = \neg \Diamond \neg \varphi$,
-${\bf P}\  \varphi = (\true \; \since \; \varphi)$, and 
-${\bf H}\ \varphi = \neg {\bf P}\ \neg \varphi$.
+${\bf P}\  \varphi = (\true \; \since \; \varphi)$ ({\bf P} stands for P{\em reviously}), and 
+${\bf H}\  \varphi = \neg {\bf P}\ \neg \varphi$.
 
 
 
 %%infinite sequences (finite executions can be extended by repeating the last event indefinitely to form an infinite paths).
 The expressive power of propositional LTL is often compared to regular expressions
-over the alphabet $\Sigma = 2^P$ and to  {\em monadic} logics where the temporal propositions
-correspond to unary predicates (over time). A full overview appears in~\cite{Thomas}. Accordingly, we have the following characterizations:
-LTL is equivalent to monadic first-order logic\footnote{First-order logic with unary predicates over the naturals, and the relation $<$.},  star-free regular expressions\footnote{Regular expressions with the following operators: constant letters, concatenation and complementation, but no star (or $\omega$-star for infinite words).} and counter-free B\"{u}chi automata\footnote{A counter-free language is a regular language for which there is an integer n such that for all words x, y, z and integers $m \geq n$ we have that $xy^m z \in L$ if and only if $xy^n z \in L$.}. In fact, restricting the temporal operators to the {\em future}  operators $\until$ and $\bigcirc$
+over the alphabet $\Sigma = 2^P$ and to  {\em monadic} first and second order logics where the temporal propositions
+correspond to unary predicates (over time). An overview appears in~\cite{Thomas}. Accordingly, we have the following characterizations:
+LTL is equivalent to monadic first-order logic\footnote{First-order logic with unary predicates over the naturals, and the relation $<$.},  star-free regular expressions\footnote{Regular expressions but without star (or $\omega$-star for infinite words).} and counter-free B\"{u}chi automata\footnote{A counter-free language is a regular language for which there is an integer $n$ such that for all words x, y, z and integers $m \geq n$ we have that $xy^m z \in L$ if and only if $xy^n z \in L$.}. In fact, restricting the temporal operators to the {\em future}  operators $\until$ and $\bigcirc$
 (and the ones derived from them $\Box$ and $\Diamond$)
 leaves the same expressive power and is commonly used. 
 
@@ -169,12 +170,12 @@ leaves the same expressive power and is commonly used.
 
 An important subset of LTL, called here PLTL, allows only past temporal
 operators: $\since$, $\ominus$ and the ones derived
-from them $\mathbf{H}$ and $\mathbf{P}$. The logic is often
+from them, $\mathbf{H}$ and $\mathbf{P}$. The past time logic is often
 (and also here) interpreted over finite sequences, 
 where $\sigma \models \varphi$ when $( \sigma , | \sigma | ) \models \varphi$.
 Alternatively,
-it is also a common practice to prefix the property with a single $\Box$ (always) operator, where each of the prefixes has to satisfy $\varphi$. This later
-form expresses {\em safety} properties~\cite{AS} over infinite sequences. 
+it is also a common practice to use the past time restricted version, prefixed with  a single $\Box$ (always) operator; there, each of the prefixes has to satisfy $\varphi$. This later
+form expresses {\em safety} LTL properties~\cite{AS} over infinite sequences. 
 
 
 
@@ -182,31 +183,34 @@ When PLTL is interpreted over finite sequences, its
 expressive power is the same as star-free regular expressions, first-order monadic logic over finite sequences and counting-free automata.
 
 
-\section*{Extending Propositional LTL}
+%\section*{Extending Propositional LTL}
 \label{sec:extending-prop-ltl}
 
-\subsubsection{Extending with Dynamic Quantification}
+
 
 Wolper~\cite{Wolper} showed that the expressive power of LTL is lacking with respect
 to some important properties. As a canonical example, he demonstrated that it is impossible to
-express that all the states with even indexes of a sequence
+express that all the states with even indexes in a sequence
 satisfy $p$ (this is
-different than saying that $p$ alternates between $\true$ and $\false$ on consecutive states). In order to extend the expressiveness of LTL, Wolper suggested to use linear grammars, or, alternatively, the ability to quantify over
-propositions. 
+different than saying that $p$ alternates between $\true$ and $\false$ on consecutive states).
+Wolper's example property cannot be expressed in PLTL either.
+In order to extend the expressiveness of LTL, Wolper suggested to use linear grammars, or, alternatively, the ability to quantify over
+propositions, as shown below.
 
-
+\subsubsection{Extending LTL with Dynamic Quantification.}
 Adding quantification over propositions allows writing a formula of the form
-$\Exists q \, \varphi$, where $q$ is a proposition that can appear in $\varphi$.
+$\Exists q \, \varphi$, where
+$\Exists q$ repesents {\em existential} quantification over a propositiona $q$ that can appear in $\varphi$.
 Let the propositions $P$ be partitioned into two disjoint sets: 
 {\em auxiliary propositions} $A = \{ a_1 , \; \ldots\; , a_n \}$
 and {\em basic propositions} $B$. 
 %A model for such a formula 
 %has truth assignments only over the propositions in $B$, but the propositions $A$ can appear (only) within the scope of a quantifier.
-We also allow $\Forall q\, \varphi =
-\neg \Exists q\, \neg \varphi$.
-To define the semantics, let $X$ be a subset of 
-the propositional variables appearing in the states of the sequence $\sigma = s_1 s_2 \ldots$ and 
-denote $\sigma |_X = s_1 \setminus X \, s_2 \setminus X \ldots$. (Note that $\sigma |_X$ denotes projecting {\em out} the variables in $X$.)
+
+To define the semantics, let $X \subseteq P$ 
+%be a subset of 
+%the propositional variables appearing in the %states of the sequence $\sigma = s_1 s_2 %\ldots$ 
+and denote $\sigma |_X = s_1 \setminus X \, s_2 \setminus X \ldots$. (Note that $\sigma |_X$ denotes projecting {\em out} the variables in $X$.)
 
 
 
@@ -215,16 +219,18 @@ denote $\sigma |_X = s_1 \setminus X \, s_2 \setminus X \ldots$. (Note that $\si
 $\sigma'$ such that $\sigma' |_{\{ q \} } = \sigma$ and 
 $( \sigma', i) \models \varphi$.
 \end{itemize}
-Since all the auxiliary variables appear in the scope of
-quantifiers, it holds that $\sigma \models \varphi$
-(in $\varphi$, auxiliary variables appear only within
-the scope of quantifiers)
-iff $\sigma |_A \models \varphi$.
-
-\klaus{Are the last two lines above needed?}
-
-This kind of quantification is considered to be ``dynamic'', since the quantified variables can have different truth values depending on the states, or, "second order", the quantification establishes the {\em set} of states in which a propositional variable has the value $\true$.
-Extending LTL with such quantification, the logic QLTL has the same expressive power as regular expressions, full B\"{u}chi
+%Since all the auxiliary variables appear in the scope of
+%quantifiers, it holds that $\sigma \models \varphi$
+%(in $\varphi$, auxiliary variables appear only within
+%the scope of quantifiers)
+%iff $\sigma |_A \models \varphi$.
+%
+%\klaus{Are the last two lines above needed?}
+%
+Universal quantification is also allowed, where $\Forall q\, \varphi =
+\neg \Exists q\, \neg \varphi$.
+This kind of quantification is considered to be ``dynamic'', since the quantified variables can have different truth values depending on the states It is also callsed  "second order" quantification, since the quantification establishes the {\em set} of states in which a propositional variable has the value $\true$.
+Extending LTL with such quantification, the logic QLTL has the same expressive power as regular expressions (over infinite words), full B\"{u}chi
 automata, or monadic second order logic with unary predicates over the naturals, see again~\cite{Thomas}.
 In fact, it is sufficient to restrict the quantification to existential quantifiers that prefix the formula to obtain the full expressiveness of QLTL~\cite{Thomas}. 
 
@@ -232,7 +238,7 @@ In fact, it is sufficient to restrict the quantification to existential quantifi
 Wolper's property can be expressed in QLTL as follows:
 \begin{equation} \label{form0} \Exists q \,
 ( (  \neg q \wedge \Box (q \leftrightarrow \bigcirc \neg q )  )  \wedge \Box (q \rightarrow p ) )\end{equation}
-Wolper's example property cannot be expressed in PLTL either.
+
 
 If we allow
 quantification over propositions, we obtain the logic PQLTL
@@ -247,7 +253,7 @@ PQLTL property into a deterministic
 automaton.
 
 
-\subsubsection{Extending with Rules}
+\subsubsection{Extending LTL with Rules.}
 
 We present now an extension of LTL, which we call ELTL. It has the same
 expressive power as  QLTL.
@@ -774,8 +780,8 @@ $(\gamma , {\cal R} , i + 1) \models
 \varphi$.
 
 \item $( \gamma , {\cal R} , i ) \models ( \varphi \; \until \; \psi )$ if
-for some $j > i$, $( \gamma |_{\vars ( \psi )} , {\cal R} , j) 
-\models \psi $ and for all $i \leq k < j $,
+for some $j$, $j > i$, $( \gamma |_{\vars ( \psi )} , {\cal R} , j) 
+\models \psi $ and for each $k$,  $i \leq k < j $,
 $( \gamma |_{\vars ( \varphi )} , {\cal R} , k) \models \varphi$.
 
 
@@ -784,8 +790,8 @@ $(\gamma , {\cal R} , i-1) \models
 \varphi$.
 
 \item $( \gamma , {\cal R} , i ) \models ( \varphi \; \since \; \psi )$ if
-for some $1 \le j \leq i$, $( \gamma |_{\vars ( \psi )} , {\cal R} , j) 
-\models \psi $ and for all $j < k \leq i$,
+for some $j$, $1 \le j \leq i$, $( \gamma |_{\vars ( \psi )} , {\cal R} , j) 
+\models \psi $ and for each $k$, $j < k \leq i$,
 $( \gamma |_{\vars ( \varphi )} , {\cal R} , k) \models \varphi$.
 
 
@@ -887,7 +893,7 @@ We will henceforth sometimes abuse notation, as is very often done in logic, and
 symbols both for the relations (semantics) and their representation in
 the logic (syntax).
 
-\section*{Extending First-Order LTL}
+%\section*{Extending First-Order LTL}
 
 %%this is specification formalism that is very expressive and yet monitorable under run time verification~\cite{HPU}.
 
@@ -913,7 +919,25 @@ such a formula cannot express the said property.
 This example demonstrates that the so called ``non-counting''~\cite{Thomas} property of LTL carries over
 to FLTL. 
 
-\subsubsection{Extending with Quantification}
+\vspace{1ex}
+\noindent {\bf Example 2.}
+Consider the property that asserts that
+a main process $y$ (where
+$mathit{main} (x)$ appears
+in the sequence), is a descendant of a process $x$ if $x$ spawns a chain of processes spawning (of
+the form $\mathit{spawn} (z, w$ that leadsfrom $x$ to $y$. This property cannot be expressed in FLTL. The reason
+is that the required property needs to
+assert about the transitive closure
+of the relation $\mathit{spawn}$. 
+FLTL can be translated in a way similar to a standard translation of $LTL$ to monadic first order logic~\cite{Thomas}. Here, the relations will be written with their explicit last ``time'' parameter, and the temporal operators are replaced with first order quantification.
+E.g., $\Box \forall x \, p(x) \rightarrow q(y)$ will be translated into $\forall t \, \forall x \, (p(x, i) \rightarrow \exists t' p(x, j) )$
+\footnote{The obtain model will have, in addition
+to the aforementioned relations, also
+the linear order $<$ over the naturals.}
+It is possible to show that the transitive closure of $\mathit{spawn}$ cannot be expressed in this first order setting. The proof is based on the
+compactness theory of first order logic~\cite{Flum}.
+
+\subsubsection{Extending FLTL with Quantification.}
 
 This lack of expressiveness can be resolved by
 adding propositional variables (i.e., predicates that are
@@ -937,7 +961,7 @@ $( \gamma, {\cal R}' , i) \models \varphi$.
 \end{itemize}
 Consequently, quantification over relations effectively extends the model ${\cal R}$ into a model ${\cal R}'$ within the scope of the quantifier. Note that quantification here is dynmaic (as in QLTL and QPLTL).
 
-\subsubsection{Extending with Rules}
+\subsubsection{ExtendingFLTL  with Rules.}
 
 We now extend FLTL into EFLTL in a way that is motivated by the  propositional extension from LTL (PLTL) to ELTL (EPLTL). We thus allow the following formula:
 
