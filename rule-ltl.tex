@@ -433,7 +433,7 @@ auxiliary variables definitions.
 
 \begin{figure}
 \begin{center}
-%\includegraphics[height=1.1in,width=2.7in]{PROP.jpg}
+%\includegraphics[height=0.6in,width=2in]{PROP.jpg}
 \includegraphics[width=3.5in]{PROP.jpg}
 \caption{\label{prop} An arrow from A to B means that logic  B is more expressive than A. A double headed arrow shows same expressiveness}
 \end{center}
@@ -594,8 +594,8 @@ $R [ i ]$ is a Boolean value. Our implementation of runtime verification describ
 
 The formulas of the core FLTL logic are 
 defined by the following grammar,
-where $p$ denotes a relation $R$,
-$a$ is a constant representing a value in $d ( R )$ and $x$ is a variable with $\domain ( x ) = d ( p )$.
+where $p$ is a relation,
+$a$ is a constant and $x$ is a variable. 
 \begin{center}
 $\varphi ::= \true  \; | \;
     p ( a ) \; | \;
@@ -624,20 +624,20 @@ $\forall x \; \varphi = \neg \exists x \neg \varphi$.
 Restricting the modal operators to the past operators
 ($\since$, $\ominus$ and the ones obtained from them) 
 forms the logic PFLTL.
-The quantification over values of variables here is `static' in the sense that they are independent of the state in the execution. We
-denote static quantification with $\exists$ and
-$\forall$.
-Dynamic quantification, as defined for LTL in Section~\ref{sec:extending-prop-ltl},
-and will extend FLTL below, is expressed with $\Exists$ and $\Forall$.
 
-\subsubsection{Semantics} 
-
+\subsubsection*{Semantics.}
 A model is a set of temporal
  relations ${\cal R} = \{ R_1 \, \ldots , R_m \}$.
  Since the standard definition of temporal logic is
- over a sequence (``the execution''). let
- ${\cal R} [ i ] = \{ R_1 [ i ] \, \ldots , R_m [ i ] \}$. A model ${\cal R}$ can thus be
-seen as the sequence ${\cal R} [ 1 ]\, {\cal R} [ 2 ] \ldots$.
+ over a sequence (``the execution''), let
+ ${\cal R} [ i ] = \{ R_1 [ i ] \, \ldots , R_m [ i ] \}$. ${\cal R} [i]$ represents a {\em state}.
+ A model ${\cal R}$ can thus be seen as a sequence
+ of states ${\cal R}[1] {\cal R}[2] \ldots$. Let 
+ $m$ be a bijection
+from relation names (syntax)
+onto the relations ${\cal R}$ (semantics).
+%After the formal semantical definition, we will abuse notation
+%and use the same symbol for the representation of the relation in the logic and for the relation as mathematical object.
 
 %\klaus{Above, did you not already say the following before:
 %``we denote by $R_k [ i ]$ the restriction of
@@ -747,7 +747,7 @@ an assignment $\gamma$ to the free variables appearing in $\varphi$.
 %This is done using the projection and extension functions over
 %assignments defined above.
 %
-Let $\epsilon$ be the empty assignment. 
+Let $\epsilon$ be the empty assignment (with no variables). 
 %
 In any of the following cases, $( \gamma,  {\cal R} , i ) \models \varphi$
 is defined when $\gamma$ is an
@@ -758,9 +758,9 @@ assignment over $\vars ( \varphi )$, and $i\ge 1$.
 \item $( \epsilon , {\cal R} , i ) \models \true$.
 
 \item $( \epsilon ,  {\cal R} , i )
- \models p_k ( a ) $ if $R_k ( a, i )$, where $a$ denotes a constant from  $d(p)$.
+ \models p ( a ) $ if $m(p) ( a, i )$, where $a$ denotes a constant from  $d(m(p))$.
 
-\item $( [ x \mapsto a ] , {\cal R} , i ) \models p_k ( x )$ if $R_k ( a , i )$.
+\item $( [ x \mapsto a ] , {\cal R} , i ) \models p ( x )$ if $m(p)  ( a , i )$, where $\domain (x) = d ( m ( p ))$.
 
 \item $( \gamma,  {\cal R} , i ) \models ( \varphi \wedge \psi ) $~if~$(
 \gamma |_{\vars  ( \varphi )} , {\cal R} , i ) \models \varphi$~and  \\
@@ -774,7 +774,7 @@ $(\gamma , {\cal R} , i + 1) \models
 \varphi$.
 
 \item $( \gamma , {\cal R} , i ) \models ( \varphi \; \until \; \psi )$ if
-for some $j$, $j > i$, $( \gamma |_{\vars ( \psi )} , {\cal R} , j) 
+for some $j$, $j \geq i$, $( \gamma |_{\vars ( \psi )} , {\cal R} , j) 
 \models \psi $ and for each $k$,  $i \leq k < j $,
 $( \gamma |_{\vars ( \varphi )} , {\cal R} , k) \models \varphi$.
 
@@ -882,25 +882,33 @@ can be proved by a simple structural induction on
 the size of the formulas.
  \fi
 
-Then for an FLTL (PFLTL) formula with no free variables, ${\cal R} \models \varphi$ iff $( \epsilon , {\cal R} , 1 ) \models \varphi$.
+For an FLTL (PFLTL) formula with no free variables, denote ${\cal R} \models \varphi$ when $( \epsilon , {\cal R} , 1 ) \models \varphi$.
 We will henceforth sometimes abuse notation, as is very often done in logic, and use the same
 symbols both for the relations (semantics) and their representation in
 the logic (syntax).
+The quantification over values of variables here is `static' in the sense that they are independent of the state in the execution. We
+denote static quantification with $\exists$ and
+$\forall$.
+Dynamic quantification, as defined for LTL in Section~\ref{sec:extending-prop-ltl},
+and will extend FLTL below, is expressed with $\Exists$ and $\Forall$.
+
 
 %\section*{Extending First-Order LTL}
 
 %%this is specification formalism that is very expressive and yet monitorable under run time verification~\cite{HPU}.
 
-We first demonstrate that the lack of expressiveness
+We demonstrate that the lack of expressiveness
 carries over from LTL (PLTL) to FLTL (PFLTL).
 
-\noindent {\bf Example.}
+\vspace{1ex}
+\noindent {\bf Example 1.}
 Let $p$ and $q$ be temporal relations, where their
-restrictions to the state $s_i$, $p[i]$ and $q[i]$, respectively, are unary relations $p(x)$ and $q(x)$. The
+restrictions to the state $s_i$, $p[i]$ and $q[i]$, respectively, are unary relations $p$ and $q$. The
 specification that we want to monitor is that for each value
 $a$, $p(a)$ appears in all the states where $q(a)$ has appeared an even number of times so far (for the odd occurrences, $p(a)$ can also appear, but does not have to). This is an extension of
 Wolper's example over LTL, carried over to the first-order case. To show that this is not expressible in FLTL (and PFLTL),
-consider models (executions) where only one data element $a$ appears. We can prove that in this case, by a simple structural induction on (sub)formulas, that for each property $\varphi$
+consider models (executions) where only one data element $a$ appears. We can prove by a structural induction on subformulas
+that in this case, for each property $\varphi$
 we can replace occurrences of variables within
 predicates by $a$, i.e., $p(x)$ and $q(x)$ become $p(a)$
 and $q  (a )$, respectively, and that we can throw away
@@ -908,27 +916,26 @@ the quantification ($\forall x$, $\exists x$), obtaining
 an equivalent formula. This is then equivalent to
 an LTL formula that is obtained by replacing
 the occurrences of $p(a)$ and $q(a)$ by propositions
-$p_a$ and $p_b$, respectively. However, by~\cite{Wolper},
-such a formula cannot express the said property.
-This example demonstrates that the so called ``non-counting''~\cite{Thomas} property of LTL carries over
-to FLTL. 
+$p_a$ and $p_b$, which reduces to Wolper's example~\cite{Wolper}.
 
 \vspace{1ex}
 \noindent {\bf Example 2.}
-Consider the property that asserts that
-a main process $y$ (where
-$mathit{main} (x)$ appears
-in the sequence), is a descendant of a process $x$ if $x$ spawns a chain of processes spawning (of
-the form $\mathit{spawn} (z, w$ that leadsfrom $x$ to $y$. This property cannot be expressed in FLTL. The reason
+Consider the property that asserts that when
+$\mathit{inherent}(x , y)$ appears
+in a state, denoting that a process 
+$y$ wants to inherent variables from a process $x$,
+there were a chain of states with process spawning
+$\mathit{spawn}(x, x_1)$, $\mathit{spawn} (x_1, x_2)$ $\ldots$
+$\mathit{spawn}(x_l , y)$. The reason
 is that the required property needs to
 assert about the transitive closure
 of the relation $\mathit{spawn}$. 
 FLTL can be translated in a way similar to a standard translation of $LTL$ to monadic first order logic~\cite{Thomas}. Here, the relations will be written with their explicit last ``time'' parameter, and the temporal operators are replaced with first order quantification.
-E.g., $\Box \forall x \, p(x) \rightarrow q(y)$ will be translated into $\forall t \, \forall x \, (p(x, i) \rightarrow \exists t' p(x, j) )$
-\footnote{The obtain model will have, in addition
+E.g., $\Box \forall x \, p(x) \rightarrow q(y)$ will be translated into $\forall t \, \forall x \, ((p(x, i) \rightarrow \exists t' p(x, j) )$
+\footnote{The obtained model will have, in addition
 to the aforementioned relations, also
 the linear order $<$ over the naturals.}
-It is possible to show that the transitive closure of $\mathit{spawn}$ cannot be expressed in this first order setting. The proof is based on the
+It is possible to show that the transitive closure of $\mathit{spawn}$ cannot be expressed in first order setting. The proof is based on the
 compactness theory of first order logic~\cite{Flum}.
 
 \subsubsection{Extending FLTL with Quantification.}
@@ -938,43 +945,41 @@ adding propositional variables (i.e., predicates that are
 only state dependent) with dynamic quantification over them.
 Using parametric automata as a specification formalism, as in~\cite{Grum,havelund-rv-data-2018,Meredith2011,Reger2015} can also express this property.
 
-Extending FLTL (PFLTL) with quantifiers over relations, we obtain QFLTL
+Extending FLTL (PFLTL) with quantifiers over temporal relations, we obtain QFLTL
 (and the past-restricted version QPFLTL, respectively). 
 The syntax includes $\Exists p \, \varphi$, 
 where $p$ denotes an auxiliary relation.
-We also allow $\Forall p\ \varphi = \neg \Exists \neg \varphi$. The semantics is as follows.
+We also allow $\Forall p\ \varphi = \neg \Exists \neg \varphi$. The semantics is as follows. %We denote by ${\cal R} |_Q$ the set of temporal relations obtained from ${\cal R}$ by removing the set of relations $Q$.
 
 
 
-\klaus{Below, has the notation ${\cal R}' |_{\{ q \} }$ been defined?}
+%\klaus{Below, has the notation ${\cal R}' |_{\{ q \} }$ been defined?}
 
 \begin{itemize}
 \item $(\gamma ,  {\cal R}, i) \models \Exists q \, \varphi$ iff there exists
 ${\cal R}'$ such that ${\cal R}' |_{\{ q \} } = {\cal R}$ and 
 $( \gamma, {\cal R}' , i) \models \varphi$.
 \end{itemize}
-Consequently, quantification over relations effectively extends the model ${\cal R}$ into a model ${\cal R}'$ within the scope of the quantifier. Note that quantification here is dynmaic (as in QLTL and QPLTL).
+Consequently, quantification over relations effectively extends the model ${\cal R}$ into a model ${\cal R}'$ within the scope of the quantifier. Note that quantification here is dynmaic (as in QLTL and QPLTL), since the relations are temporal and can have different sets of tuples in different states.
 
-\subsubsection{ExtendingFLTL  with Rules.}
+\subsubsection{Extending FLTL  with Rules.}
 
-We now extend FLTL into EFLTL in a way that is motivated by the  propositional extension from LTL (PLTL) to ELTL (EPLTL). We thus allow the following formula:
+We now extend FLTL into EFLTL in a way that is motivated by the  propositional extension from LTL (PLTL) to ELTL (EPLTL). We allow the following formula:
 \begin{equation}
 \label{EFLTL}
-\psi \mathit{\ where\ } r_j  ( x_j ) := 
-\varphi_j (x_j) : j \in \{ 1 , \ldots , n \} 
+\ \ \ \ \ \psi \mathit{\ where\ } r_j  ( x_j ) := 
+\varphi_j (x_j) : j \in \{ 1 , \ldots , n \} \mathrm{\ \ \ \     such\ that,}
 \end{equation}
 \begin{enumerate}
-\item $\psi$, the {\em statement}, is a FLTL formula with
+\item $\psi$, the {\em statement}, is an FLTL formula with
 no free variables, 
 \item $\varphi_j$ are PFLTL formulas with a single
 free variable $x_j$,
 \item $r_j$ is an auxiliary temporal relation with $2$ parameters; the first parameter is of the same 
 type as $x_j$ and the second one is, as usual,
 a natural number that is omitted in the temporal formulas. 
-An auxiliary relation $r_j$ can appear within $\psi$. It can also appear in $\varphi_k$ of a {\em rule} $r_k := \varphi_k$, but only within the
-scope\footnote{This restriction has the same motivation as in
-the propositional version ELTL (and EPLTL): to avoid making the
-formula $\false$ just by means of the definition of the auxiliary relations.}
+An auxiliary relations $r_j$ can appear within $\psi$. They can also appear in $\varphi_k$ of a {\em rule} $r_k := \varphi_k$, but only within the
+scope
 of a previous-time operator $\ominus$. 
 \end{enumerate}
 
@@ -982,9 +987,7 @@ of a previous-time operator $\ominus$.
 Again, it
 is simple to extend the syntax and semantics to include
 relations $r_j$ with different number of arguments, and, correspondingly, formulas $\varphi_j$ with corresponding number of free
-variables\footnote{We chose not to do that here (and in the definition of the semantics of FLTL above), because it
-requires multi-indexing notation that is trivial and adds no further insight. Our implementation indeed uses
-this more general capability.}.
+variables.
 The logic EPFLTL is obtained by restricting the temporal modalities of EFLTL to the past ones:
 $\since$ and $\ominus$, and those obtained from them.
 
@@ -992,8 +995,8 @@ $\since$ and $\ominus$, and those obtained from them.
 The auxiliary temporal relations $r_1, \ldots r_n$ are
 uniquely defined from ${\cal R}$.
 \end{lemma}
-\noindent {\bf Proof.} by a simple induction, as in Lemma~\ref{fourone}. \qed
-
+\noindent {\bf Proof.} By a simple induction, similar to Lemma~\ref{fourone}. \qed
+\vspace{1ex}
 The following formula expresses the property that was shown to be 
 not expressible using FLTL, at the beginning of this section.
 \begin{equation}
@@ -1006,7 +1009,7 @@ r(x) = ( q(x) \leftrightarrow \ominus \neg  r(x))
 We define\footnote{This is done for lack of space. Formal semantics 
 can be given by constructing a set of temporal relations extended
 with the auxiliary ones
-inductively, as would be done in a detailed proof of Lemma~\ref{samesame}.} the semantics for the EFLTL 
+inductively over growing prefixes, as would be done in a detailed proof of Lemma~\ref{samesame}.} the semantics for the EFLTL 
 specification (\ref{EFLTL}) 
 by using the following equivalent
 QFLTL formula:
@@ -1017,20 +1020,11 @@ QFLTL formula:
 \end{equation}
 
 \noindent 
-The analogous of Lemma~\ref{simplecase} shows that EPFLTL does not
+Analogously to the propositional case, it is easy to show that EPFLTL does not
 need the past temporal operators besides $\ominus$.
 
-\begin{lemma}
-The full expressive power of EPFLTL can be obtained by allowing only 
-specifications of the form
-\[ \Box \psi \mathrm{\ where\ } r_j  ( x_j ) := 
-\varphi_j (x_j) : j \in \{ 1 , \ldots , n \} \]
-where $\psi$ consists of a fully quantified single occurrence of some
-auxiliary relation $r_j$.
-\end{lemma}
-
-\klaus{Something seems wrong in the above formulation.
-E.g.: Is the $\Box$ a restriction?, what is ``fully quantified single occurrence of some auxiliary relation $r_j$''?}
+%\klaus{Something seems wrong in the above formulation.
+%E.g.: Is the $\Box$ a restriction?, what is ``fully quantified single occurrence of some auxiliary relation $r_j$''?}
 
 \noindent {\bf Proof.} Basically, the proof is the same as Lemma~\ref{simplecase}, based on the axiomatization of the
 past temporal operators. \qed
@@ -1046,9 +1040,8 @@ EFLTL and QFLTL.
 \label{theo2}
 The expressive power of EFLTL is stricktly weaker than that of QFLTL.
 \end{theorem}
-The proof of this theorem, which includes the encoding of a nontrivial property, and a combinatorial argument about the amount of information
-needed after a given prefix, appears in an appendix.
-The relative expressive power between the first-order temporal logics discussed here
+The proof of this theorem, which includes the encoding of a nontrivial property, and a combinatorial argument, appears in an appendix.
+The relative expressive power between the first-order temporal logics presented in this Section
 appear in Figure~\ref{fsfr}.
 
 It follows from~(\ref{equiv}) that EFLTL (EPFLTL, respectively) has the same
@@ -1066,8 +1059,8 @@ formula strictly weakens its expressive power.
 
 \begin{figure}
 \begin{center}
-%\includegraphics[height=1.1in,width=2.7in]{FIRST.jpg}
-\includegraphics[width=3.5in]{FIRST.jpg}
+%\includegraphics[height=1.5in,width=3in]{FIRST.jpg}
+\includegraphics[width=3in]{FIRST.jpg}
 \caption{\label{fsfr} An arrow from A to B means that logic  B is more expressive than A}
 \end{center}
 \end{figure}
@@ -1078,29 +1071,39 @@ formula strictly weakens its expressive power.
 
 Runtime verification of FLTL is performed on an
 input that consists of {\em events} in the form of
-tuples of relations. In our notation, the input
+tuples. In our notation, the input
 consists of a sequence ${\cal R}[1] \, {\cal R}[2]  \ldots$,
 which we earlier identified with states, where each
-${\cal R}[i]$ consists of some relations. A typical use
-of runtime verification restricts these relations to have,
-per each state just some finite tuples, and, quite commonly, have a single tuple from a single relation per each state.
-A set of assignments over the same variables, which has some fixed order
-(say alphabetical) also forms a relation.
+${\cal R}[i]$ consists of the relations in
+${\cal R}$,
+where the last parameter is restricted to  $i$. A typical use
+of runtime verification restricts the
+events (tuples) for
+each state to a finite number, and often even to a single event.
+The RV algorithm will also make
+use of sets of assignments over a set of variables for satisfying a subformula at
+some state (corresponding to $\old$ and $\current$, which were used with propositional values in Section~\ref{LTLruntime});  these also form a relation over the domains of these variables (having some fixed order).
 
+\ignore{
 \klaus{In the text above there are some imprecisions, such as
 (1) ``tuples of relations'' - relations are sets of tuples, we don't have tuples of relations. 
 (2) ``${\cal R}[i]$ consists of some relations'': it is a set of
 relations (I think).
 (3) ``to have, per each state just some finite tuples'': tuples are finite. You mean: to contain a finite set of tuples?
 (4) what is the story about a set of assignments also being a relation? Needed?
-}
+}}
 
-\subsubsection{Syntax}
+%\subsubsection{Syntax}
 
-\klaus{Below: (\ref{EFLTL}) was not a EPFLTL form of specification.}
+\ignore{
+\klaus{Below: (\ref{EFLTL}) was not a EPFLTL form of specification.}}
+
 
 Consider again the EPFLTL form
-of specification, described in~(\ref{EFLTL}), restricted to the past operators. We now present the definition of EPFLTL, the final main logic proposed in this paper. 
+of specification, described in~(\ref{EFLTL}).
+
+\iffalse
+, restricted to the past operators. We now present the definition of EPFLTL, the final main logic proposed in this paper. 
 The syntax is as follows:
 
 
@@ -1128,8 +1131,8 @@ a greek letter for a specification. E.g.:
 \]
 \[
 \varphi ::= ...
-\]
-}
+\]}
+\fi
 
 \iffalse
 \noindent {\bf Set Semantics.}
@@ -1183,10 +1186,11 @@ over the set of variables $W \cup W'$.
 %When combined with set operators (complementation, union, intersection),
 %$\mathbf{F}$ behaves as the empty set, hence is idempotent to
 %union. Accordingly, $\mathbf{T}$ is idempotent to intersection.
-\fi
+
 
 \klaus{One may of course ask whether the following section on the 
 set semantics is needed. Maybe it is needed, since we probably need a semantics. Something to consider.}
+\fi
 
 \subsubsection{Semantics}
 
