@@ -38,11 +38,10 @@ prop telemetry2:
                  (@open(x) & toggle(x)),
     open(x) := (@open(x) & !toggle(x)) | (@closed(x) & toggle(x))
 
-prop spawning : 
-  Forall x . Forall y . 
-    inherent(x,y) ->  leadsto(z,y) 
-    where leadsto(z,y) := 
-      spawn(z,y) | @ leadsto(z,y) | Exists x . (@leadsto(z,x) & spawn(x,y))
+prop spawning :
+  Forall x . Forall y . Forall d . report(y,x,d) -> spawned(x,y) where
+    spawned(x,y) := @ spawned(x,y) | spawn(x,y) | 
+                    Exists z . (@spawned(x,z) & spawn(z,y))
 \end{lstlisting}
 \caption{Three properties stated in \dejavu's logic}
 \label{fig:properties}
@@ -62,10 +61,13 @@ event. Similarly for the \idsl{open(x)} rule.
 
 The third property, \idsl{spawning}, expresses a property
 about threads being spawned in an operating system. We want to 
-ensure that all threads are spawned by the main program or are spawned by a thread that transitively can be traced back to a thread being spawned by the main program. The events are
-\idsl{main(x)} (the main program spawns thread \idsl{x}) and
-\idsl{spawn(x,y)} (thread \idsl{x} spawns thread \idsl{y}).
-For this we need to compute a transitive closure of spawning relationships, here expressed with the rule \idsl{leadsto(z,y)}.
+ensure that when a thread \idsl{y} reports some data \idsl{d} 
+back to another thread \idsl{x}, then thread \idsl{y} has been spawned by thread \idsl{x} either directly, or transitively 
+via a sequence of spawn events. The events are
+\idsl{spawn(x,y)} (thread \idsl{x} spawns thread \idsl{y})
+and \idsl{report(y,x,d)} (thread \idsl{y} reports data \idsl{d}
+back to thread \idsl{x}).
+For this we need to compute a transitive closure of spawning relationships, here expressed with the rule \idsl{spawning(x,y)}.
 
 \subsubsection{Monitor Synthesis}
 
@@ -151,7 +153,9 @@ as a BDD in Figure \ref{fig:bdd1}. A dashed line leaving a node means the node h
 We evaluated the three properties in Figure 
 \ref{fig:properties} on a collection of traces. Table \ref{tab:evaluation} shows the  
 analysis time (excluding time to compile the generated 
-monitor) for different traces (format is `trace length : seconds'). The telemetry traces will repeatedly open hundreds of channels and send telemetry over them, and the spawning traces will spawn a new thread for each event in the trace. The transitive closure of the spawning property needs to process these, therefore the more extensive processing time.
+monitor) for different traces (format is `trace length : seconds'). The telemetry traces will repeatedly open hundreds of channels and send telemetry over them. 
+%
+The spawning traces consist of 50\% spawning events and 50\% reporting events. The spawning property  requires larger processing time compared to the telemetry properties since more data (the transitive closure) has to be computed and stored.
 
 \ignore{
   // repeat: repeat the following
@@ -175,7 +179,7 @@ telemetry1 & 1,200,001\,:\,3.3s & 5,200,001\,:\,7.1s & 10,200,001\,:\,12.8s \\
 \hline
 telemetry2 & 1,200,001\,:\,4.4s & 5,200,001\,:\,9.9s & 10,200,001\,:\,17.9s \\
 \hline
-spawning   & 4,950\,:\,9.4s & 10,000\,:\,88.4s & 19,900\,:\,488.8s \\
+spawning   & 9,899\,:\,42.7s & 19,999\,:\,127.6s & 39,799\,:\,572.4s \\
 \hline
 \end{tabular}
 \caption{Evaluation - trace lengths and analysis time in seconds}
