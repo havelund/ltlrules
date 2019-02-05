@@ -114,11 +114,14 @@ experiments.
 
 \input{prop.bib}
 
+\newpage
 \appendix
+
+\section{Appendix}
 
 \klaus{In the text below mention what $i$ is (time point, position, ...}
 
-\noindent {\bf Sketch of proof of Theorem~\ref{theo2}.}
+\noisubsubsection{Sketch of proof of Theorem~\ref{theo2}.}
 As we defined the semantics of
 EFLTL by translating into QFLTL, QFLTL is at least as
 expressive as EFLTL. We show here that 
@@ -199,6 +202,41 @@ one can use a variable that represents an updatable
 counter (or a generator of distinct values), one can express the property used in~\ref{theo2}, by
 keeping a relation where values between different occurrences of the event $r$ are paired with distinct values, hence, representing an unbounded set of sets.
 \fi
+
+%%%M
+\subsection*{Details of left to right direction of Theorem~\ref{theo1}.}
+One can translate any QLTL property into a second order monadic logic in a standard
+way~\cite{Thomas}, and then from
+second order monadic logic to a deterministic Muller automaton $M = (S, \iota , \Sigma, \Delta, {\cal F})$ (a B\"{u}chi automaton may not always be deterministic), where $S$ is the set of states, $\iota \in S$ is the initial state, $\Sigma$ is the set of inputs, each $\alpha \in \Sigma$ is a minterm (i.e., conjunction of
+each variable in the set negated or non-negated) of the variables in $B$, $\Delta : S \times \Sigma \mapsto S$ is the transition function, and ${\cal F} = \{ F_1 , \ldots , F_k \}$ is the accepting set. A muller automaton 
+accepts a run if it 
+passes infinitely often in exactly
+one of the specified accepting sets. To formulate an equivalent ELTL formula,
+the auxiliary variables represent the states $S$ of $M$, i.e., $a_s$ represents the state $s \in S$.
+
+%\klaus{The following formulation above is not not clear: ``where an accepted input needs to pass infinitely often in exactly
+%one of the specified sets''.}
+
+\noindent
+Then we translate $M$ into an ELTL formula
+of the form: 
+
+\begin{tabbing}
+\ \ \ \ \ $\bigvee_{F \in {\cal F}} \bigwedge_{s \in F} ( \Box\Diamond a_s \wedge \bigwedge_{s \not\in F} \Diamond \Box \neg a_s)$
+where \\
+\ \ \ \ \ \ \ \ \ \ $a_s :=   ( \alpha_{\iota} \wedge \ominus \false ) \vee \bigvee_{\Delta ( s'
+, \alpha ) = s } 
+(\alpha \wedge \ominus a_{s'}) 
+\, :\,  s \in S$
+\end{tabbing}
+
+%\klaus{Above: should $s=i \rightarrow \neg \ominus \true$ instead be (note: two changes):
+%$\neg \ominus \true \rightarrow a_s=i$
+%}
+%\klaus{Above: can't judge whether the $\bigwedge_{s \not\in F} \Diamond \Box %\neg a_s)$ is correct.}
+\noindent
+Basically, the assignments to the auxiliary variables are used to simulate the change of states\footnote{It is possible to use only $\lceil \log ( | S | ) \rceil$
+variables, at the expense of longer and more complicated formulas.}, and the main formula expresses the Muller acceptance condition. \qed
 
 \end{document}
 
