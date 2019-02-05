@@ -40,7 +40,7 @@ prop telemetry2:
 
 prop spawning : 
   Forall x . Forall y . 
-    spawn(x,y) ->  (P main(x) | Exists z . (P main(z) & leadsto(z,y))) 
+    inherent(x,y) ->  leadsto(z,y) 
     where leadsto(z,y) := 
       spawn(z,y) | @ leadsto(z,y) | Exists x . (@leadsto(z,x) & spawn(x,y))
 \end{lstlisting}
