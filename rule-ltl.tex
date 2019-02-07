@@ -499,8 +499,7 @@ $\current ( \varphi ) := \false$.
   \item $\current ( \ominus \; \varphi ) := \old ( \varphi )$.
 \end{itemize}
 \item If $\current (\eta) = \false$ then
-report a violation and terminate.
-\item Goto step~2.
+report a violation, otherwise goto step~2.
 \end{enumerate}
 
 \subsubsection*{Runtime verification for QPLTL.}  This can be performed by translating a
@@ -1023,10 +1022,10 @@ r(x) = ( q(x) \leftrightarrow \ominus \neg  r(x))
 We define\footnote{ Formal semantics 
 can also be given by constructing a set of temporal relations extended
 with the auxiliary ones
-inductively over growing prefixes, as would be done in a detailed proof of Lemma~\ref{samesame}.} the semantics for the EFLTL 
+inductively over growing prefixes, as would be done in a detailed proof of Lemma~\ref{samesame}.} the semantics for the EFLTL (EPFLTL)
 specification (\ref{EFLTL}) 
 by using the following equivalent
-QFLTL formula:
+QFLTL (QPFLTL, respectively) formula:
 
 \begin{equation} \label{equiv}
 \Exists r_1  \, \ldots \, \Exists r_n \,  ( \psi \wedge \Box \bigwedge_{j \in \{ 1, \ldots , n\}} (r_j ( x_j )  \leftrightarrow 
@@ -1057,26 +1056,28 @@ The expressive power of EPFLTL is strictly weaker than that of QFLTL.
 \end{theorem}
 
 \noindent {\bf Sketch of Proof.}
-The proof of this theorem, which includes encoding of a nontrivial property, where the property
-observes the data elements (appearing as $v (a)$)
-in between states where $r$ appears (a relation with
-one parameter, the time or index parameter $i$).
-The property asserts that there are no two sets of events that are equivalent.
-This property can be expressed in QPFLTL, and hence
-also in QFLTL. The details appear in the appendix.
+The proof of this theorem includes encoding of a  property that
+observes sets of data elements $a$, appearing separately, one per state as $v (a)$,
+in between states where $r$ appears. The domain of data elements is unbounded.
+%(i.e., $r$ is a relation with
+%one parameter: the time/state-index parameter $i$).
+The set of $a$-values observed in between two consecutive $r$'s is called a {\em data set}.
+The property asserts that there are no two consecutive data sets that are equivalent.
+This property can be expressed in QPFLTL. The details appear in the appendix.
 
 We use a combinatorial argument to show by contradiction that one cannot express this property
-using EFLTL, and also using EPFLTL. The reason is that every prefix of an EFLTL model, extended uniquely with the
-auxiliary relations, according to Lemma~\ref{samesame}, can be summarized with a finite number of relations, the ones in
+in EPFLTL. The reason is that every prefix of an a model for an EPFLTL property is extended uniquely with
+auxiliary relations, according to Lemma~\ref{samesame}. Each prefix can be summarized by a finite number of relations: the ones in
 the model, the auxiliary relations and the
 assignments satisfying the subformulas. The size of
-each such relation is bounde by ${\cal O} (  m ^ N )$
+each such relation is bounded by ${\cal O} (  m ^ N )$
 where $m$ is the number of values appearing in the
-prefix, and $N$ is the sum of the number of parameters on all the above mentioned relations.
-However, the number of different subsets over $m$ values is
-$2^m$. This means that with large enough number of different values, EPFLTL can have two prefixes with the same summary. It would then not be able to distinguish between two executions that extend
-this prefix, where one of them is extended with a set of values that appeared before and the other with 
-a set that already appeared. \qed
+prefix, and $N$ is the number of parameters of the relations.
+However, the number of different data sets over $m$ values is
+$2^m$. This means that with large enough number of different values, each EPFLTL formula over the models of this property can have two prefixes with the same summary where at least one of them has a data set that the other one does not. The semantics of EPFLTL implies that extending
+two models with the same summary in the same way would have the same truth value. So, we can extend
+the two models with a data set that appears in one of the
+prefixes but not  in the other, and the EPFLTL property will not be able to distinguish between them. \qed
 
 %The relative expressive power between the first-order %temporal logics presented in this Section
 %appear in Figure~\ref{fsfr}.
@@ -1086,11 +1087,10 @@ a set that already appeared. \qed
 %dynamic 
 %quantification to being existential, and prefixing %the
 %rest of the formula.
-The following follows immediately from Theorem~\ref{theo2} the following:
 
+\vspace{0.7ex} From Theorem~\ref{theo2} and Equation~(\ref{equiv}) we immediately obtain:
 \begin{corollary}
-Constraining the dynamic quantification of QFLTL (QPFLTL) to existential quantification prefixing the
-formula strictly weakens its expressive power.
+Restricting the quantification of QPFLTL to existential quantification, strictly weakens its expressive power.
 \end{corollary}
 
 \ignore{
@@ -1452,7 +1452,7 @@ The algorithm follows.
 \fi
 
 \begin{enumerate}
-\item Initially, for each subformula $\varphi$,
+\item Initially, for each subformula $\varphi$ of $\eta$,
 %$B ( \varphi , \current ) = \bfalse$.
 $\current ( \varphi ) := \bfalse$.
 \item Observe a new state (as a set of ground predicates) $s_i$ as input. 
@@ -1477,7 +1477,8 @@ $\current ( \varphi ) := \bfalse$.
   \item $\current ( \exists x \; \varphi ) := 
   \bddexists (\langle x_0,\ldots,x_{k-1} \rangle, \current ( \varphi ))$.
 \end{itemize}
-\item Goto step~2.
+\item If $\current (\eta) = \false$ then
+report a violation, otherwise goto step~2.
 \end{enumerate}
 
 \subsubsection{Runtime verification algorithm for EPFLTL}

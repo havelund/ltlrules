@@ -12,13 +12,15 @@ the same expressive power as automata models, and is in particular
 appealing for runtime verification of past (i.e., safety) temporal properties,
 which already are based on summarizing the value of subformulas over
 observed prefixes.
-
+%
 We demonstrated that first-order linear temporal logic (FLTL), which
 can be used to assert properties about systems with data, also has expressiveness deficiencies, and extended it with relations that summarize prefixes.
 We showed that for the first-order case, unlike the propositional case,
 this extension is not identical to the addition of dynamic (i.e., state dependent) quantification.
-
+%
 We presented a monitoring
 algorithm for propositional past time temporal logic, extending a classical algorithm, and similarly presented an algorithm for 
 first-order past temporal logic.
 Finally we described the implementation of this extension in the \dejavu{} tool and provided experimental results.
+%
+Future work includes performing additional experiments, and making further comparisons to other formalisms. Finally we would like to study further extensions, exploring the space between logic and programming.
