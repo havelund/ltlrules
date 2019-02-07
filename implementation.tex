@@ -9,10 +9,10 @@ This program takes as input the
 trace file and analyzes it.
 The tool uses the JavaBDD library for BDD manipulations \cite{javabdd}.
 
-\subsubsection{Example Properties}
-
+\vspace{1ex}\noindent {\bf Example Properties.}
 Figure \ref{fig:properties} shows three properties in the 
-input format of the tool, which are not expressible in the original first-order logic of \dejavu{} presented in \cite{HPU}. 
+input format of the tool, which are not expressible in the original first-order logic of \dejavu{} presented in \cite{HPU}. The properties are related to the examples in Section~\ref{sec:syntax-semantics}, which
+are not expressible in (P)FLTL.
 %
 The ASCII version of the logic here uses 
 \idsl{@} for $\ominus$,
@@ -26,27 +26,7 @@ rule to express a first-order version of Wolper's example \cite{Wolper}, that al
 In this case we consider a radio on board a spacecraft, which communicates over different channels (quantified over in the formula), which can be turned on and off with a \idsl{toggle(x)} - they are initially off.
 Telemetry can only be sent to ground over a channel \idsl{x} with the \idsl{telem(x)} event when radio channel \idsl{x} is toggled on.
 
-\begin{center}
-\begin{figure}
-\begin{lstlisting}[language=dsl,frame=single,linewidth=0.95\textwidth,backgroundcolor=\color{white},linewidth=\columnwidth,breaklines=true,basicstyle=\small]
-prop telemetry1: 
-  Forall x . closed(x) -> !telem(x) where closed(x) := toggle(x) <-> @!closed(x)
-
-prop telemetry2: 
-  Forall x . closed(x) -> !telem(x) where
-    closed(x) := (!@true & !toggle(x)) | (@closed(x) & !toggle(x)) | 
-                 (@open(x) & toggle(x)),
-    open(x) := (@open(x) & !toggle(x)) | (@closed(x) & toggle(x))
-
-prop spawning :
-  Forall x . Forall y . Forall d . report(y,x,d) -> spawned(x,y) where
-    spawned(x,y) := @ spawned(x,y) | spawn(x,y) | 
-                    Exists z . (@spawned(x,z) & spawn(z,y))
-\end{lstlisting}
-\caption{Three properties stated in \dejavu's logic}
-\label{fig:properties}
-\end{figure}
-\end{center}
+%%%%
 
 The second property, \idsl{telemetry2}, expresses the same 
 property as \idsl{telemetry1}, but in this case using two 
@@ -69,6 +49,30 @@ and \idsl{report(y,x,d)} (thread \idsl{y} reports data \idsl{d}
 back to thread \idsl{x}).
 For this we need to compute a transitive closure of spawning relationships, here expressed with the rule \idsl{spawning(x,y)}.
 
+\begin{figure}
+\begin{center}
+\begin{lstlisting}[language=dsl,frame=single,linewidth=0.95\textwidth,backgroundcolor=\color{white},linewidth=\columnwidth,breaklines=true,basicstyle=\small]
+prop telemetry1: 
+  Forall x . closed(x) -> !telem(x) where closed(x) := toggle(x) <-> @!closed(x) 
+
+prop telemetry2: 
+  Forall x . closed(x) -> !telem(x) where
+    closed(x) := (!@true & !toggle(x)) | (@closed(x) & !toggle(x)) | 
+                 (@open(x) & toggle(x)),
+    open(x) := (@open(x) & !toggle(x)) | (@closed(x) & toggle(x))
+
+prop spawning :
+  Forall x . Forall y . Forall d . report(y,x,d) -> spawned(x,y) where
+    spawned(x,y) := @ spawned(x,y) | spawn(x,y) | 
+                    Exists z . (@spawned(x,z) & spawn(z,y))
+\end{lstlisting}
+\caption{Three properties stated in \dejavu's logic}
+\label{fig:properties}
+\end{center}
+\end{figure}
+
+
+\iffalse
 \subsubsection{Monitor Synthesis}
 
 Consider the first \idsl{telemetry1} property. The property-specific 
@@ -148,8 +152,9 @@ as a BDD in Figure \ref{fig:bdd1}. A dashed line leaving a node means the node h
     \label{fig:bdds}
 \end{figure}
 
-\subsubsection{Evaluation}
+\fi
 
+\vspace{1ex}\noindent {\bf Evaluation.}
 We evaluated the three properties in Figure 
 \ref{fig:properties} on a collection of traces. Table \ref{tab:evaluation} shows the  
 analysis time (excluding time to compile the generated 
