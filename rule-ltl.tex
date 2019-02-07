@@ -1499,11 +1499,12 @@ $\rename ( r_j (x_j ) , y)$.
 
 
 We then have to add
-following updates between steps 3 and 4 of the above algorithm, when performing runtime verification of
+following updates to step~4 of the above algorithm, when performing runtime verification of
 $\psi$. 
 
 \noindent \begin{description}
-\item For each $r_j ( x_j ) = \varphi_j ( x_j )$:
+\item For each rule 
+$r_j ( x_j ) := \varphi_j ( x_j )$:
 \item{\ \ }  calculate $\current ( \varphi_j )$;
 \item{\ \ }  $\current ( r_j )  := \current (\varphi_j)$;
 \item{\ \ } $\current ( r_j ( y ) )$ := $\rename ( r_j(x_j) ,  y )$;
@@ -1518,7 +1519,7 @@ As in the propositional case, the evaluation order cannot be
 simply top down or bottom up, since relations can appear
 both on the left and the right of a definition
 such as $r ( x ) := p ( x ) \vee \ominus r ( x )$. For that,
-we need to use the mixed evaluation order, described in Section~\ref{LTLruntime}.
+we need to use the {\em mixed} evaluation order, described in Section~\ref{LTLruntime}.
 
 
 
