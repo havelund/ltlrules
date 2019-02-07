@@ -53,7 +53,7 @@ The structure of this paper is as follows. In Section~2 we first define the synt
 %crystal clear so that the reader does not get lost. A lost reader leads to rejection. If a reader understand the structure, but perhaps not the details, the reader may still be happy.}
 
 \vspace{1ex}
-\noindent {\bf Related Work.}
+\noindent {\bf Related work.}
 For propositional LTL, the logic ETL~\cite{WVS,Wolper} extends
 the set of temporal operators 
 by using automata (or, equivalently a right linear grammar). Each automaton defines a temporal operator,
@@ -94,7 +94,7 @@ the presentation, we prefix LTL with letters as follows:
 \item{P} restricts to P{\em ast} temporal operators.
 \item{F} allows F{\em irst-order} quantification over
 data assigned to variables that is uniform for all states. This quantification is referred to as {\em static} quantification.
-\item{Q} adds (second order) Q{\em uantification} that is dynamic (state-dependent). This is referred to as {\em dynamic} quantification.
+\item{Q} adds (second-order) Q{\em uantification} that is dynamic (state-dependent). This is referred to as {\em dynamic} quantification.
 \item{E} allows E{\em xtending} the 
 set of objects that occur in the input with
 new auxiliary predicates (for the propositional versions) or relations (for the first-order cases) using past temporal logic rules that define them.
@@ -124,8 +124,8 @@ new auxiliary predicates (for the propositional versions) or relations (for the 
 
 The classical definition of linear temporal logic~\cite{MP} has the following syntax:
 \[ \varphi ::= \true \, | \,  p \, | \, ( \varphi \wedge \varphi ) \, |  \, \neg  \varphi \, |   \, \bigcirc \varphi \, |  
-\, ( \varphi \until \varphi ) \,|  \, \ominus \varphi |
-   \, ( \varphi \since \psi ) \,  \]
+\, ( \varphi  \until  \varphi ) \,|  \, \ominus \varphi |
+   \, ( \varphi \ \since \ \psi ) \,  \]
 where $p$ is a proposition from a finite set of propositions $P$, and $\bigcirc$, $\until$, $\ominus$, $\since$ stand for {\em next-time}, 
 {\em until}, {\em previous-time} and {\em since}, respectively.
 
@@ -142,7 +142,7 @@ LTL's semantics is defined as follows:
 \item $(\sigma, {i}) \models \neg\varphi$ iff  $(\sigma, {i}) \not\models \varphi$.
 \item $(\sigma, {i}) \models ( \varphi \land \psi)$ iff $(\sigma, {i}) \models \varphi$ and $(\sigma, {i} ) \models \psi$.
 \item $(\sigma, {i}) \models \bigcirc \varphi$ iff $(\sigma, {i+1}) \models \varphi$.
-\item $(\sigma, {i}) \models ( \varphi \cal{U} \psi )$ iff for some $j$,
+\item $(\sigma, {i}) \models ( \varphi  \cal{U}  \psi )$ iff for some $j$,
 $j\geq i$, $(\sigma, {j}) \models \psi$,
 and for each $k$, $i \leq k < j$, $(\sigma, {k}) \models \varphi$.
 \item $(\sigma , i) \models \ominus \varphi$ iff $i > 1$ and $(\sigma, i-1) \models \varphi$.
@@ -165,7 +165,7 @@ H{\em istory}).
 
 %%infinite sequences (finite executions can be extended by repeating the last event indefinitely to form an infinite paths).
 The expressive power of different versions of propositional LTL is often compared to regular expressions
-over the alphabet $\Sigma = 2^P$ and to  {\em monadic} first and second order logics where the temporal propositions
+over the alphabet $\Sigma = 2^P$ and to  {\em monadic} first and second-order logics where the temporal propositions
 correspond to unary predicates (over time). An overview appears in~\cite{Thomas}. Accordingly, we have the following characterizations:
 LTL is equivalent to monadic first-order logic\footnote{First-order logic with unary predicates over the naturals, and the relation $<$.},  star-free regular expressions\footnote{Regular expressions but without star operator (or $\omega$).} and counter-free B\"{u}chi automata\footnote{A counter-free language is a regular language for which there is an integer $n$ such that for all words x, y, z and integers $m \geq n$ we have that $xy^m z \in L$ if and only if $xy^n z \in L$.}. In fact, restricting the temporal operators to the {\em future}  operators $\until$ and $\bigcirc$
 (and the ones derived from them $\Box$ and $\Diamond$)
@@ -198,7 +198,7 @@ Wolper's example property cannot be expressed in PLTL either.
 In order to extend the expressiveness of LTL, Wolper suggested to use linear grammars, or, alternatively, the ability to quantify over
 propositions, as shown below.
 
-\subsubsection{Extending LTL with Dynamic Quantification.}
+\subsubsection{Extending LTL with dynamic quantification.}
 Adding quantification over propositions, as done in~\cite{Wolper}, allows writing a formula of the form
 $\Exists q \, \varphi$, where
 $\Exists q$ represents {\em existential} quantification over a proposition $q$ that can appear in $\varphi$.
@@ -227,9 +227,9 @@ $( \sigma', i) \models \varphi$.
 %
 Universal quantification is also allowed, where $\Forall q\, \varphi =
 \neg \Exists q\, \neg \varphi$.
-This kind of quantification is considered to be {\em dynamic}, since the quantified variables can have different truth values depending on the states. It is also called  {\em second order} quantification, since the quantification establishes the {\em set} of states in which a propositional variable has the value $\true$.
+This kind of quantification is considered to be {\em dynamic}, since the quantified variables can have different truth values depending on the states. It is also called  {\em second-order} quantification, since the quantification establishes the {\em set} of states in which a propositional variable has the value $\true$.
 Extending LTL with such quantification, the logic QLTL has the same expressive power as regular expressions, full B\"{u}chi
-automata, or monadic second order logic with unary predicates over the naturals, see again~\cite{Thomas}.
+automata, or monadic second-order logic with unary predicates over the naturals, see again~\cite{Thomas}.
 In fact, it is sufficient to restrict the quantification to existential quantifiers that prefix the formula to obtain the full expressiveness of QLTL~\cite{Thomas}. 
 
 Wolper's property can be expressed in QLTL as follows:
@@ -252,7 +252,7 @@ $q$ is $\false$ in the initial state. Then $q$ alternates between even and odd s
 %automaton.
 
 
-\subsubsection{Extending LTL with Rules.}
+\subsubsection{Extending LTL with rules.}
 
 We introduce now another extension of LTL, which we call ELTL.
 %It has a form that puts it, conceptually, in between temporal
@@ -346,7 +346,7 @@ is expressible using the following equivalent QLTL formula:
 
 \noindent
 For the other direction, one can translate the QLTL property first into
-a second order monadic logic formula, then to a deterministic Muller automata and then construct an ELTL formula that holds for the accepting executions of this automaton. The rules of this formula encode the automata states, and the statement describes the acceptance condition of the Muller automaton.
+a second-order monadic logic formula, then to a deterministic Muller automata and then construct an ELTL formula that holds for the accepting executions of this automaton. The rules of this formula encode the automata states, and the statement describes the acceptance condition of the Muller automaton.
 The details of the
 constructions are given in the appendix. \qed
 
@@ -611,7 +611,7 @@ $R [ i ]$ is a Boolean value. Our implementation of runtime verification describ
 
 %\klaus{Above: we need to say explicitly what $i$ intuitively is meant to represent: positions, time, ....}
 
-\subsubsection{Syntax} 
+\subsubsection{Syntax.} 
 
 The formulas of the core FLTL logic are 
 defined by the following grammar,where $p$ denotes a relation,
@@ -957,7 +957,7 @@ the linear order $<$ over the naturals.}.
 It is possible to show that the transitive closure of $\mathit{spawn}$ cannot be expressed in first order setting. The proof is based on the
 compactness theory of first order logic~\cite{Flum}.
 
-\subsubsection{Extending FLTL with Dynamic Quantification.}
+\subsubsection{Extending FLTL with dynamic quantification.}
 
 
 
@@ -979,7 +979,7 @@ $( \gamma, {\cal R}' , i) \models \varphi$.
 \end{itemize}
 Consequently, quantification over relations effectively extends the model ${\cal R}$ into a model ${\cal R}'$ within the scope of the quantifier. Note that quantification here is dynamic (as in QLTL and QPLTL), since the relations are temporal and can have different sets of tuples in different states.
 
-\subsubsection{Extending FLTL  with Rules.}
+\subsubsection{Extending FLTL  with rules.}
 
 We now extend FLTL into EFLTL in a way that is motivated by the  propositional extension from LTL (PLTL) to ELTL (EPLTL). We allow the following formula:
 \begin{equation}
@@ -1229,7 +1229,7 @@ over the set of variables $W \cup W'$.
 %set semantics is needed. Maybe it is needed, since we probably need a semantics. Something to consider.}
 \fi
 
-\subsubsection{Set Semantics}
+\subsubsection{Set Semantics.}
 
 The RV algorithm for
 (E)PLTL, presented in~Section \ref{LTLruntime}
@@ -1266,7 +1266,7 @@ I [ (\varphi \since \psi ) , {\cal R} , i - 1 ] )$.
 
 
 
-\subsubsection{Runtime Verification Algorithm for PFLTL.}
+\subsubsection{Runtime verification algorithm for PFLTL.}
 
 We start by describing an algorithm for monitoring 
 PFLTL properties, first presented in~\cite{HPU} and implemented
@@ -1480,16 +1480,21 @@ $\current ( \varphi ) := \bfalse$.
 \item Goto step~2.
 \end{enumerate}
 
-\subsubsection{Runtime Verification Algorithm for EPFLTL}
+\subsubsection{Runtime verification algorithm for EPFLTL}
 
 We extend now the algorithm to capture EPFLTL.
 The auxiliary relations $r_j$ extend the model, and we need to keep 
 BDDs representing $\current ( r_j )$ and
-$\old (r_j)$ for each relation $r_j$. We also need to calculate the subformulas $\varphi_i$ that appear in
+$\old (r_j)$ for each relation $r_j$. We also need to calculate the 
+subformulas $\varphi_i$ that appear in
 a specification, as part of the runtime verification,
-as per the above FPLTL algorithm. One subtle point is that the auxiliary relations $r_j$ may be defined in a rule with respect to
-a variable $x_j$ (as $r_j (x_j ):= \varphi_j (x_j)$ (this can be generalized to any number of variables) נוא $r_j$ can be used
-as a subformula with other parameters in other rules or in the statement e.g., as $r_j ( y )$. This can be resolved by a BDD renaming function $\rename ( r_j (x_j ) , y)$.
+as per the above FPLTL algorithm. One subtle point is that the auxiliary 
+relations $r_j$ may be defined in a rule with respect to
+a variable $x_j$ (as $r_j (x_j ):= \varphi_j (x_j)$ (this can be generalized 
+to any number of variables), but $r_j$ can be used
+as a subformula with other parameters in other rules or in the statement e.g., 
+as $r_j ( y )$. This can be resolved by a BDD renaming function 
+$\rename ( r_j (x_j ) , y)$.
 
 
 We then have to add
