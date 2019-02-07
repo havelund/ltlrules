@@ -11,10 +11,10 @@ is usually performed by first translating the specification into a B\"{u}chi aut
 it is not possible to express in LTL that every even state in
 the sequence satisfies $p$. This has motivated extending LTL
 in various ways.
-We are mainly motivated by runtime verification of executions with data, for which a first-order temporal logic is
+We are mainly motivated by runtime verification of executions {\em with data}, for which a first-order temporal logic is
 appropriate. There, too, we show that expressiveness can be extended.
 
-We present first an extension of the propositional LTL that is based on using additional (auxiliary) propositions, not appearing in the execution, which summarize the past 
+We present first an extension of  propositional LTL that is based on using additional (auxiliary) propositions, not appearing in the execution, which are dependent on the past 
 of the current execution. These propositions obtain their value in a state as a function of the prefix of the execution up and including that state through a past temporal formula. This can be seen as adding
 summary states to the temporal specification, resulting in a specification that is in between logic and finite automata representation. This extension, which we believe is conceptually simpler
 and more intuitive than other suggested extensions, is shown to be
@@ -23,29 +23,31 @@ B\"{u}chi automata, regular expressions and quantified LTL.
 
 We then proceed to first-order LTL. We relativise Wolper's example to the first
 order case to motivate the need for
-extending first-order LTL. Another example is based on the inexpressiveness of transitive closure of a relation in first order logic.
-We present an extension where auxiliary relations, not appearing in the model, are
+extending first-order LTL. Another example is based on the in-expressiveness of transitive closure of a relation in first order logic, where, e.g., using a relation representing neighbors in a graph is not enough for representing that there is a path between nodes.
+We present an extension where auxiliary relations, not appearing in the execution, are
 added. While this extension
 is capable of expressing the above
 properties, we show that for the first-order version, this has less 
-expressive power than adding quantification over relations, in distinction from the corresponding propositional case.
+expressive power than adding alternating quantification over relations. This in distinction from adding quantification to propositional LTL, where prefixing existential quantification
+provides the full expressive power of, say B\"{u}chi automata.
 
-These extensions to the logics are in particular natural for
+The extensions we proposed to the logics are in particular natural for
 runtime verification of past (safety) temporal properties, since
 the values of propositional and first-order LTL are based
-on calculating and updating a summary of the prefix of the execution. Runtime verification often concentrates on a past  version of temporal logic~\cite{HR} mainly because for these properties we can decide when the monitored property is violated immediately when this happen, while for future properties we may never know for sure. Consistent with that, 
+on calculating and updating a summary of the prefix of the execution. Runtime verification is often restricted to a {\em past}  version of temporal logic~\cite{HR}, mainly because for past properties we can decide when the monitored property is violated immediately when this happens, while for future properties we may never know for sure. Consistent with that, 
 we provide runtime verification algorithms for the past-time versions of the extended propositional and first-order
 logics. We further present an extension of the 
-\dejavu{} tool (https://github.com/havelund/dejavu) that
-realizes the extended first-order past temporal logic verification. The \dejavu{} tool~\cite{HPU,HP} allows runtime verification on past time first order temporal logic over infinite domains (e.g., the integers, strings). It achieves efficiency by BDD representation of enumerations of data (rather than over the data values themselves) and using
+\dejavu{} tool (publicly available on {\sf github},
+hidden here because of anonymous reviewing)
+\ignore{(https://github.com/havelund/dejavu)} that
+realizes the extended first-order past temporal logic verification. The \dejavu{} tool~\cite{HPU,HP} allows runtime verification on past time first-order temporal logic over infinite domains (e.g., the integers, strings). It achieves efficiency by BDD representation of enumerations of data (rather than over the data values themselves) and using
 a garbage collection algorithm. 
-Finally, we provide some experimental results.
 
 The contributions of this paper are both theoretical and practical. On the theory side, we present and study extensions for propositional and first order linear-temporal logics and show the relations between them and existing versions. 
-On the practical side, we present algorithms for the extended logic, and 
+On the practical side, we also present RV algorithms for the extended logic, and 
 show how to cast them specifically in an efficient BDD-based implementation. We present some experiments performed with our implementation and report on the results. 
 
-The structure of this paper is as follows. In Section~2 we first define the syntax and semantics of propositional temporal logic. We then review some of its classical extensions and present our own extension. In Section~3 we present a runtime verification algorithm for the extended past LTL. In Section~4 we review first order linear temporal logic, present our extension and study the relationships between the presented versions of first-order LTL. IIn Section~5 we present a runtime verification algorithm for the past version of the extended first-order LTL. Section~6 describes the implementation and provides experimental results. Finally, Section~7 concludes the paper.
+The structure of this paper is as follows. In Section~2 we first define the syntax and semantics of propositional temporal logic. We then review some of its classical extensions and present our own extension. In Section~3 we present a runtime verification algorithm for the extended past LTL. In Section~4 we review first order linear temporal logic, present our extension and study the relationships between the presented versions of first-order LTL. In Section~5 we present a runtime verification algorithm for the past version of the extended first-order LTL. Section~6 describes the implementation and provides experimental results. Finally, Section~7 concludes the paper.
 
 %\klaus{I think that the structure of the paper should be
 %crystal clear so that the reader does not get lost. A lost reader leads to rejection. If a reader understand the structure, but perhaps not the details, the reader may still be happy.}
@@ -57,8 +59,8 @@ the set of temporal operators
 by using automata (or, equivalently a right linear grammar). Each automaton defines a temporal operator,
 where the input letters of the automaton correspond to future temporal subformulas. Each accepted run defines then the places
 where the subformulas (corresponding to the occurrences of the input letters in the run) need to hold. Another expressive-equivalent extension, 
-in~\cite{Wolper}, adds
-state-dependent quantification over propositions to LTL.
+in~\cite{Wolper}, adds dynamic, i.e.,
+state-dependent, quantification over propositions to LTL.
 
 Addition of relations to temporal databases is done
 for aggregation~\cite{Libkin}, where relations are
@@ -92,9 +94,10 @@ the presentation, we prefix LTL with letters as follows:
 \item{P} restricts to P{\em ast} temporal operators.
 \item{F} allows F{\em irst-order} quantification over
 data assigned to variables that is uniform for all states. This quantification is referred to as {\em static} quantification.
-\item{Q} adds (second order) Q{\em uantification} that is state-dependent. This is referred to as {\em dynamic} quantification.
-\item{E} allows E{\em xtending} the objects that occur in the input with
-new auxiliary predicates (for the propositional versions) or relations (for the first-order cases) and past temporal logic rules that define them.
+\item{Q} adds (second order) Q{\em uantification} that is dynamic (state-dependent). This is referred to as {\em dynamic} quantification.
+\item{E} allows E{\em xtending} the 
+set of objects that occur in the input with
+new auxiliary predicates (for the propositional versions) or relations (for the first-order cases) using past temporal logic rules that define them.
 \end{itemize}
 
 %\klaus{You above introduce some concepts before they really are explained. Q and E. I understand why you do this (to have it in one place), but it may be too difficult for the reader to grasp if not "initiated".
@@ -117,20 +120,21 @@ new auxiliary predicates (for the propositional versions) or relations (for the 
 
 
 \section{Propositional LTL}
+\label{propLTL}
 
 The classical definition of linear temporal logic~\cite{MP} has the following syntax:
 \[ \varphi ::= \true \, | \,  p \, | \, ( \varphi \wedge \varphi ) \, |  \, \neg  \varphi \, |   \, \bigcirc \varphi \, |  
 \, ( \varphi \until \varphi ) \,|  \, \ominus \varphi |
    \, ( \varphi \since \psi ) \,  \]
-where $p$ is a proposition from a finite set of propositions $P$, and with $\bigcirc$, $\until$, $\ominus$, $\since$ standing for {\em next-time}, 
+where $p$ is a proposition from a finite set of propositions $P$, and $\bigcirc$, $\until$, $\ominus$, $\since$ stand for {\em next-time}, 
 {\em until}, {\em previous-time} and {\em since}, respectively.
 
 
 The models for LTL formulas 
 are infinite sequence of states, of the form
 $\sigma =  s_{1}\, s_{2}\, s_3 \ldots$,
-where $s_i \subseteq P$ for each $i\geq 0$. These are the propositions that {\em hold} in that state.
-We denote by $\xi_{i}$ the suffix $s_{i} s_{i+1} s_{i+2}\ldots$ of $\sigma$. 
+where $s_i \subseteq P$ for each $i\geq 1$. These are the propositions that {\em hold} in that state.
+%We denote by $\xi_{i}$ the suffix $s_{i} s_{i+1} s_{i+2}\ldots$ of $\sigma$. 
 LTL's semantics is defined as follows:
 \begin{itemize}
 \item $( \sigma, {i}) \models \mathit{true}$.
@@ -141,12 +145,12 @@ LTL's semantics is defined as follows:
 \item $(\sigma, {i}) \models ( \varphi \cal{U} \psi )$ iff for some $j$,
 $j\geq i$, $(\sigma, {j}) \models \psi$,
 and for each $k$, $i \leq k < j$, $(\sigma, {k}) \models \varphi$.
-\item $(\sigma , i) \models \ominus \varphi$ iff $| \sigma | > 1$ and $(\sigma, i-1) \models \varphi$.
+\item $(\sigma , i) \models \ominus \varphi$ iff $i > 1$ and $(\sigma, i-1) \models \varphi$.
 \item $(\sigma , i) \models (\varphi \since \psi)$ iff there exists $j$, $1 \leq j \leq i$, such that
 $(\sigma , j)  \models \psi$ and for each
 $k$, $j < k \leq i$, $(\sigma , k ) \models \varphi$.
 \end{itemize}
-Then $\sigma \models \varphi$ when $( \sigma ,0 ) \models \varphi$.
+Then $\sigma \models \varphi$ when $( \sigma ,1 ) \models \varphi$.
 We can use the following abbreviations:
 $\false = \neg \true$, 
 $(\varphi \vee \psi) = \neg ( \neg \varphi \wedge \neg \psi )$, 
@@ -154,33 +158,30 @@ $(\varphi \rightarrow \psi) = ( \neg \varphi \vee \psi)$,
 $(\varphi \leftrightarrow \psi) = ((\neg \varphi \wedge \neg \psi) \vee (\varphi \wedge \psi ))$,
 $\Diamond \varphi = (\true \until \varphi)$ and $\Box \varphi = \neg \Diamond \neg \varphi$,
 ${\bf P}\  \varphi = (\true \; \since \; \varphi)$ ({\bf P} stands for P{\em reviously}), and 
-${\bf H}\  \varphi = \neg {\bf P}\ \neg \varphi$.
+${\bf H}\  \varphi = \neg {\bf P}\ \neg \varphi$ ({\bf H} stands for 
+H{\em istory}).
 
 
 
 %%infinite sequences (finite executions can be extended by repeating the last event indefinitely to form an infinite paths).
-The expressive power of propositional LTL is often compared to regular expressions
+The expressive power of different versions of propositional LTL is often compared to regular expressions
 over the alphabet $\Sigma = 2^P$ and to  {\em monadic} first and second order logics where the temporal propositions
 correspond to unary predicates (over time). An overview appears in~\cite{Thomas}. Accordingly, we have the following characterizations:
-LTL is equivalent to monadic first-order logic\footnote{First-order logic with unary predicates over the naturals, and the relation $<$.},  star-free regular expressions\footnote{Regular expressions but without star (or $\omega$-star for infinite words).} and counter-free B\"{u}chi automata\footnote{A counter-free language is a regular language for which there is an integer $n$ such that for all words x, y, z and integers $m \geq n$ we have that $xy^m z \in L$ if and only if $xy^n z \in L$.}. In fact, restricting the temporal operators to the {\em future}  operators $\until$ and $\bigcirc$
+LTL is equivalent to monadic first-order logic\footnote{First-order logic with unary predicates over the naturals, and the relation $<$.},  star-free regular expressions\footnote{Regular expressions but without star operator (or $\omega$).} and counter-free B\"{u}chi automata\footnote{A counter-free language is a regular language for which there is an integer $n$ such that for all words x, y, z and integers $m \geq n$ we have that $xy^m z \in L$ if and only if $xy^n z \in L$.}. In fact, restricting the temporal operators to the {\em future}  operators $\until$ and $\bigcirc$
 (and the ones derived from them $\Box$ and $\Diamond$)
 leaves the same expressive power and is commonly used. 
 
 %\klaus{Is that also the true for the first-order case? Doron: I have no idea. But at this point, I would not ask to ask Gabbay.}
 
 An important subset of LTL, called here PLTL, allows only past temporal
-operators: $\since$, $\ominus$ and the ones derived
-from them, $\mathbf{H}$ and $\mathbf{P}$. The past time logic is often
-(and also here) interpreted over finite sequences, 
+operators: $\since$, $\ominus$ and the operators derived
+from them, $\mathbf{H}$ and $\mathbf{P}$. The past time logic is sometimes interpreted over finite sequences, 
 where $\sigma \models \varphi$ when $( \sigma , | \sigma | ) \models \varphi$.
 Alternatively,
-it is also a common practice to use the past time restricted version, prefixed with  a single $\Box$ (always) operator; there, each of the prefixes has to satisfy $\varphi$. This later
+it is also a common practice to use the past time restricted version, prefixed with  a single $\Box$ (always) operator; in this case, each of the prefixes has to satisfy $\varphi$. This later
 form expresses {\em safety} LTL properties~\cite{AS} over infinite sequences. 
-
-
-
-When PLTL is interpreted over finite sequences, its
-expressive power is the same as star-free regular expressions, first-order monadic logic over finite sequences and counting-free automata.
+(When PLTL is interpreted over finite sequences, its
+expressive power is the same as star-free regular expressions, first-order monadic logic over finite sequences and counting-free automata.)
 
 
 %\section*{Extending Propositional LTL}
@@ -198,9 +199,9 @@ In order to extend the expressiveness of LTL, Wolper suggested to use linear gra
 propositions, as shown below.
 
 \subsubsection{Extending LTL with Dynamic Quantification.}
-Adding quantification over propositions allows writing a formula of the form
+Adding quantification over propositions, as done in~\cite{Wolper}, allows writing a formula of the form
 $\Exists q \, \varphi$, where
-$\Exists q$ repesents {\em existential} quantification over a propositiona $q$ that can appear in $\varphi$.
+$\Exists q$ represents {\em existential} quantification over a proposition $q$ that can appear in $\varphi$.
 
 %A model for such a formula 
 %has truth assignments only over the propositions in $B$, but the propositions $A$ can appear (only) within the scope of a quantifier.
@@ -226,56 +227,56 @@ $( \sigma', i) \models \varphi$.
 %
 Universal quantification is also allowed, where $\Forall q\, \varphi =
 \neg \Exists q\, \neg \varphi$.
-This kind of quantification is considered to be ``dynamic'', since the quantified variables can have different truth values depending on the states It is also callsed  "second order" quantification, since the quantification establishes the {\em set} of states in which a propositional variable has the value $\true$.
-Extending LTL with such quantification, the logic QLTL has the same expressive power as regular expressions (over infinite words), full B\"{u}chi
+This kind of quantification is considered to be {\em dynamic}, since the quantified variables can have different truth values depending on the states. It is also called  {\em second order} quantification, since the quantification establishes the {\em set} of states in which a propositional variable has the value $\true$.
+Extending LTL with such quantification, the logic QLTL has the same expressive power as regular expressions, full B\"{u}chi
 automata, or monadic second order logic with unary predicates over the naturals, see again~\cite{Thomas}.
 In fact, it is sufficient to restrict the quantification to existential quantifiers that prefix the formula to obtain the full expressiveness of QLTL~\cite{Thomas}. 
 
-\noindent
 Wolper's property can be expressed in QLTL as follows:
 \begin{equation} \label{form0} \Exists q \,
 ( (  \neg q \wedge \Box (q \leftrightarrow \bigcirc \neg q )  )  \wedge \Box (q \rightarrow p ) )\end{equation}
 
-
-If we allow
-quantification over propositions, we obtain the logic PQLTL
-(QLTL restricted to the past modalities), with the following formula:
+Restricting QPLTL to the past modalities, one obtain the logic PQLTL. PQLTL has the same expressive
+power as regular expressions and finite automata.
+Equation~(\ref{form0}) can
+be rewritten in PQLTL as:
 \begin{equation} \label{form1} \Exists q \,
 {\bf H} (( q \leftrightarrow \ominus \neg q )   \wedge (q \rightarrow p ) )\end{equation}
 %In fact, it can be shown that a single existential quantifier is sufficient. 
-PQLTL has the same expressive
-power as regular expressions and finite automata.
-Note that since finite automata over finite sequences can be determinized, it is always sufficient to translate a
-PQLTL property into a deterministic
-automaton.
+Since $\ominus \varphi $ is interpreted as  $\false$ in the first state of any sequence, regardless of $\varphi$, then
+$q$ is $\false$ in the initial state. Then $q$ alternates between even and odd states.
+
+
+%Note that since finite automata over finite sequences can be determinized, it is always sufficient to translate a
+%PQLTL property into a deterministic
+%automaton.
 
 
 \subsubsection{Extending LTL with Rules.}
 
-We present now an extension of LTL, which we call ELTL. It has the same
-expressive power as  QLTL.
-It has a form that puts it, conceptually, in between temporal
-logic and automata: on the one hand, it is possible to simply write
-a pure LTL formula, and on the other hand, one can write a specification that resembles a finite automaton. As will be showed later, this extension is
+We introduce now another extension of LTL, which we call ELTL.
+%It has a form that puts it, conceptually, in between temporal
+%logic and automata: on the one hand, it is possible to simply write
+%a pure LTL formula, and on the other hand, one can write a specification that resembles a finite automaton. 
+As will be showed later, this extension is
 is very natural for runtime verification.
 
 We partition the propositions $P$ into
 {\em auxiliary propositions} $A = \{ a_1 , \; \ldots\; , a_n \}$
-and {\em basic propositions} $B$. A model for an ELTL formula has truth assignments only over the propositions in $B$.
+and {\em basic propositions} $B$.
+%A model for an ELTL formula has truth assignments only over the propositions in $B$.
 An ELTL property $\eta$ has the following form: 
 \begin{equation} \label{ELTL}
 \psi \mathit{\ where\ } a_j  := \varphi_j \, : \, 
  {j \in \{1, \ldots , n\}} \end{equation}
-where each $a_i$ is a distinct auxiliary proposition from $A$,
+where each $a_j$ is a distinct auxiliary proposition from $A$,
 $\psi$ is an LTL property and each $\varphi_i$ 
 is a PLTL property where propositions from $B$ can
 only occur within the scope of a $\ominus$ operator.
 The semantics can be defined as follows. We refer to $\psi$
 as the {\em statement} of $\eta$ and to 
-$a_j  := \varphi_j \, : \, 
- {j \in \{1, \ldots , n\}}$ as the {\em rules}. In text, rules
- will be separated from each other by a comma (",").
-
+$a_j  := \varphi_j$ as a {\em rule}. In text, rules
+ will be separated from each other by commas. 
 \begin{tabbing}
 \ \ \ $\sigma \models \eta$ \=  if there exists $\sigma'$, where
 $\sigma' |_A = \sigma$ such that \\
@@ -292,23 +293,22 @@ as follows:
 \end{equation}
 where $A = \{ q\}$ and $B = \{ p \}$.
 The auxiliary variable $q$ is used to augment the input sequence such that each {\em odd} state will satisfy $\neg q$
-and each {\em even} state will satisfy $p$.  As $\ominus \varphi \models \false$ in the initial state, regardless of $\varphi$, then
-$q$ is $\false$ in the initial state, and then it subsequently alternates.
+and each {\em even} state will satisfy $p$.  
 
 
-ELTL extends the set of propositional variables with new variables whose values at a state are
-based on the prefix of the model. The added propositions are dependent and effectively summarize the past execution prefix up to and
+ELTL extends the set of propositional variables with new variables, whose values at a state are
+functions of (i.e., uniquely defined by) the prefix of the model up to that state. The added propositions effectively summarize the past execution prefix up to and
 including the current state.
 This differs from 
-the use of auxiliary variables in QLTL, where the auxiliary variables do not have to extend the execution
-states in a fixed way throughout the interpretation of 
+the use of auxiliary variables in QLTL, where the values assigned to the
+auxiliary variables do not have to extend the 
+states of the model in a unique way throughout the interpretation of 
 the property over a model. The constraint that auxiliary variables appearing in the formulas $\varphi_i$ 
 must occur within the scope of a $\ominus$ operator
 is required to help preventing that the values
-of the auxiliary variables are not conflicting, as in
+of the auxiliary variables are conflicting, as in
 $a_1 := \neg a_2$ and $a_2 := a_1$, which makes a formula
-that uses $a_1$ and $a_2$ uniformly $\false$. Still, one can write conflicting rules, e.g., by simlpy 
-adding the rule $a: = \false$.
+that uses $a_1$ and $a_2$ uniformly $\false$. Still, one can write conflicting rules, e.g., by using the rule $a_1 : = \false$.
 
 \begin{lemma} \label{fourone}
 Let $\varphi$ be an ELTL formula
@@ -326,9 +326,8 @@ model $\sigma'$ such that $\sigma' |_A = \sigma$ and $\sigma' \models \Box \bigw
 %$\varphi$s and the $\psi$s. Do we need a special greek symbol for it?}
 
 \noindent {\bf Sketch of proof.} By induction on the state index. Each auxiliary variable
-is defined, via a PLTL formula by the current state of the model over the values of the propositions $B$, and by the values of $A \cup B$ in previous states. A PLTL
-property depends in a state only on the prefix
-of the model that precedes and includes that state. \qed
+is defined, via a PLTL formula by the current state of the model over the values of the propositions $B$, and by the values of $A \cup B$ in previous states.  \qed
+%A PLTL property depends in a state only on the prefix of the model that precedes and includes that state. 
 
 
 \begin{theorem}
@@ -338,15 +337,17 @@ ELTL is the same as QLTL.
 \end{theorem}
 \noindent {\bf Proof.}
 Each ELTL formula $\eta$, as defined above,
-is expressible in QLTL using the following formula:
+is expressible using the following equivalent QLTL formula:
 
 \[   \Exists a_1 \ldots \Exists a_n  ( \psi  \wedge   \Box \bigwedge_{1 \leq j \leq n} ( a_j \leftrightarrow \varphi_j))
 \]
 
 %\klaus{How do we know that the ``other direction'' below is possible?}
 
+\noindent
 For the other direction, one can translate the QLTL property first into
-a second order monadic logic formula, then to a deterministic Muller automata and then constructs an ELTL formula that holds for the accepting executions of this automaton. The details of the
+a second order monadic logic formula, then to a deterministic Muller automata and then construct an ELTL formula that holds for the accepting executions of this automaton. The rules of this formula encode the automata states, and the statement describes the acceptance condition of the Muller automaton.
+The details of the
 constructions are given in the appendix. \qed
 
 %EPLTL, where the Muller automaton can be
@@ -374,9 +375,9 @@ used for extending the expressiveness of LTL model checking.
 %\klaus{First sentence below sounds wrong: (1) PLTL already does not have future time operators, and (2) why mention infinite sequences?}
 \fi
 
-We extend PLTL into EPLTL by disallowing the future temporal operators (except an implied prefixing $\Box$). This results in
-a formalism that is equivalent to finite automata, where all the states except one are accepting and where the nonaccepting state is a sink. 
-We can use related, but simpler construction than in Theorem~\ref{theo1} to prove the following:
+We define EPLTL by disallowing the future temporal operators (except an implied prefixing $\Box$) in ELTL. This results in
+a formalism that is equivalent to finite automata, where all the states except one are accepting and where the non-accepting state is a sink. 
+We can use a related, but simpler construction than in Theorem~\ref{theo1} to prove the following:
 
 
 \iffalse
@@ -394,7 +395,7 @@ accepting.$A$ are the accepting states of the finite automaton.
 \begin{lemma}
 \label{simplecase}
 The expressive power of 
-ELTL is the same as QLTL.
+EPLTL is the same as QPLTL.
 %Any safety QPLTL property can be expressed using the following restricted
 %ELTL form:
 %\[  \Box p {\ where\ } a_j  = \varphi_j \, : \, 
@@ -404,7 +405,9 @@ ELTL is the same as QLTL.
 In fact, it is easy to show that EPLTL can be restricted to the following form, while retaining its expressive power.
 \[  \Box p {\ where\ } a_j  = \varphi_j \, : \, 
 {j \in \{1, \ldots , n\}}  \] 
-with $p$ being one of the auxiliary variables $a_j$. The relative expressive power between the propositional temporal logics discussed in this section is summarized in Figure~\ref{prop}.
+with $p$ being one of the auxiliary variables $a_j$. Yet, this may not be the preferred form
+of an EPLTL property, and the use of further past-time temporal operators, and a non trivial statement  part, may provide a more intuitive specification.
+The relative expressive power between the propositional temporal logics discussed in this section is summarized in Figure~\ref{prop}. An arrow from A to B means that logic  B is more expressive than A. A double headed arrow shows same expressiveness
 
 \iffalse
 \noindent {\bf Proof.} The proof of the Lemma follows from the
@@ -434,8 +437,10 @@ auxiliary variables definitions.
 \begin{figure}
 \begin{center}
 %\includegraphics[height=0.6in,width=2in]{PROP.jpg}
-\includegraphics[width=3.5in]{PROP.jpg}
-\caption{\label{prop} An arrow from A to B means that logic  B is more expressive than A. A double headed arrow shows same expressiveness}
+\includegraphics[width=2.8in]{PROP.jpg}
+\caption{\label{prop}
+Comparing the expressive power of the temporal logics in Section~\ref{propLTL}
+}
 \end{center}
 \end{figure}
 
@@ -445,8 +450,9 @@ auxiliary variables definitions.
 \section{RV for Propositional Past-Time LTL and its Extension}
 \label{LTLruntime}
 
-Runtime verification of temporal specification often
-concentrates on the past portion of the logic.  Past-time  specifications have the important property that one can distinguish when they are violated. For an extended discussion of this issue of {\em monitorability}, see e.g.,~\cite{Ugly,FFM}.
+Runtime verification of temporal specifications often
+concentrates on the past portion of the logic.  Past-time  specifications have the important property that one can distinguish when they are violated after observing a finite prefix of
+an execution. For an extended discussion of this issue of {\em monitorability}, see e.g.,~\cite{Ugly,FFM}.
 
 The algorithm for PLTL, first presented in \cite{HR}, 
 is based on the observation that the semantics of the 
@@ -462,22 +468,25 @@ more directly applicable for runtime verification.
 $( \sigma , i)  \models \varphi$ and 
 $(\sigma , i-1 ) \models ( \varphi \, \since \, \psi )$.
 \end{itemize}
-Runtime verification exploits the fact that
-the semantic definition is recursive in both the structure of the property, where subformulas
+Runtime verification for a PLTL formula $\eta$ exploits the fact that
+the semantic definition is recursive in both the structure of the property. Thus, subformulas
 are evaluated based on smaller subformulas, and the
 evaluation of subformulas in the previous state.
-The algorithm, shown below, operates on two vectors (arrays) of values indexed by subformulas:  $\old$ that summarizes the truth values of the
-subformulas just {\em before} the new state, and $\current$ for the {\em current} state. The order of calculating $\current$ for subformulas is bottom up, according to the syntax tree.
+The algorithm, shown below, uses two vectors (arrays) of values indexed by subformulas:  $\old$, which summarizes the truth values of the
+subformulas for the execution prefix that
+ends just {\em before} the new state, and $\current$, for the execution prefix that
+ends with the {\em current} state. The order of calculating $\current$ for subformulas is bottom up, according to the syntax tree.
 \begin{enumerate}
-\item Initially, for each subformula $\varphi$,
+\item Initially, for each subformula $\varphi$
+of $\eta$,
 %$B ( \varphi , \current ) = \bfalse $.
 $\current ( \varphi ) := \false$.
-\item Observe a new event (as a set of ground predicates) $s$ as input. 
+
+\item Observe a new event (as a set propositions) $s$ as input. 
 \item Let $\old := \current$.
 \item Make the following updates for each subformula. If $\varphi$ is
       a subformula of $\psi$ then $\current ( \varphi )$ is updated before 
       $\current ( \psi )$.
-
 \begin{itemize}
   \item $\current ( \true ) := \true$.
   \item $\current (  \varphi \wedge \psi  ) := 
@@ -488,41 +497,52 @@ $\current ( \varphi ) := \false$.
       \old ( ( \varphi \since  \psi )))$.
 %DAP: I removed the \; around \since, since it penetrated the 2nd column!
   \item $\current ( \ominus \; \varphi ) := \old ( \varphi )$.
-  
 \end{itemize}
+\item If $\current (\eta) = \false$ then
+report a violation and terminate.
 \item Goto step~2.
 \end{enumerate}
 
 \subsubsection*{Runtime verification for QPLTL.}  This can be performed by translating a
-formula into a deterministic finite automaton. Then the sequence of states to be checked forms the input for this automaton. 
-However, QPLTL can be extremely compact, in particular when using alternating existential and universal 
+formula into a deterministic finite automaton, where one distinguished states, $s$, in a sink state.
+Then the sequence of states to be checked forms the input for this automaton, and violation is
+announced if $s$ is reached.
+QPLTL can be extremely compact, in particular when using alternating existential and universal 
 quantifiers, which can result in a huge (non-elementary) explosion of
 the automaton representing the same
 specification~\cite{Thomas}.
 
 
 \subsubsection*{Runtime verification for EPLTL.} For EPLTL,  we need to  add to the above
-algorithm calculations for the rules of
-the form $a_j := \varphi_j$ (calculations
-for the statement part $\psi$ remain the same).
-$\current ( a_j )$ and $\old ( a_j )$,
-and perform the following between steps~3 and~4 for each $a_j$: $\current ( a_j ) := \current ( \varphi_j )$.
+algorithm calculations 
+of $\current ( a_j )$ and
+$\current ( \varphi_j )$, for each of the rules of
+the form $a_j := \varphi_j$ (the corresponding
+$\old$ entries will be updated as in line~3 in the above algorithm).
 
-For PLTL, we can calculate  $\current$, for subformulas,
-bottom up. But
-because
-auxiliary variables can appear recursively in EPLTL rules, i.e., both on the left and the right sides,
-this would not work correctly. To see this, consider, for example, the formula~(\ref{form3}). It contains
+%(calculations
+%for the statement part $\psi$ remain the same).
+%$\current ( a_j )$ and $\old ( a_j )$,
+%and perform the following between steps~3 and~4 %for each $a_j$: $\current ( a_j ) := \current ( %\varphi_j )$.
+
+%For PLTL, we can calculate  $\current$, for subformulas,
+%bottom up. But
+Because the
+auxiliary variables can appear recursively in EPLTL rules, the order of calculation is
+subtle. To see this, consider, for example, the formula~(\ref{form3}). It contains
 the definition $q := \ominus \neg q$. Now, we cannot calculate this
-bottom up, since the left-hand $q$ is not calculated yet, and we need its value to compute the right-hand side $q$ leaf node.
-If we calculate it top down, we will encounter the same problem.
-However, notice that the top down calculation does not need the
-value of $q$ to calculate $\ominus \neg q$; this value should already be available as $\old ( \neg q )$.
+bottom up, as we did for PLTL, since $\current ( q )$ is not computed yet, and we need 
+to calculate $\current ( \ominus \neg q )$ in order 
+to compute $\current ( q )$.
+However, notice that the calculation is not dependent on the
+value of $q$ to calculate $\ominus \neg q$; 
+in Step~4 above, we have that
+$\current ( \ominus \; \varphi ) := \old ( \varphi )$
+so  $\current ( \ominus \neg q ) := \old ( \neg q )$.
 
 %\klaus{I don't see that we need to talk about the top-down evaluation.}
 
-Under {\em mixed evaluation order}, one calculates $\current$ in the following order. The calculation within each of the four categories can be performed top down or bottom up.
-
+Under {\em mixed evaluation order}, one calculates $\current$ in Step~4 in the following order. The first~4 steps are for the rules, and step~5 is for the statement $\eta$.
 \begin{enumerate}
 \item Calculate 
 $\current ( \delta )$ for each subformula $\delta$
@@ -535,10 +555,12 @@ $\current ( \ominus \gamma )$ is set to $\old ( \gamma )$.)
 $\current ( a_j )$ to $\current ( \varphi_j )$ for each $j$.
 \item Calculate $\current ( \delta )$ for each subformula $\delta$
 that appears in $\varphi_j$ of a rule
-$a_j = \varphi_j$ {\em  within} the scope of
+$a_j := \varphi_j$ {\em  within} the scope of
 a $\ominus$ operator.
 \item Calculate $\current ( \delta )$ for each subformula $\delta$
 that appears in the statement $\psi$, using the calculated $\current ( a_j )$.
+\item Calculate $\current ( \eta )$ for the statement
+$\eta$.
 \end{enumerate}
 
 
@@ -570,20 +592,19 @@ the values $5$ to $x$ and the value ``abc'' to $y$.
 We define models for FLTL based on {\em temporal} relations~\cite{Chomicki}. That is relations with
 last parameter
 that is a natural number represented a time instance. So a tuple of
-a relation $R$ can be $(``a'', 5, ``cbb'', 3)$, where
+a relation $R$ can be $(``a", 5, ``cbb", 3)$, where
 the $3$ is the time parameter. The last parameter $i$
 does not correspond to modeling physical time. This
 is rather used to allow the relations to have
 different tuples in different instances of $i$,
 corresponding to states, in the propositional temporal
-logics, so that we can define the temporal operators
-such as $\bigcirc$ or $\since$.
+logics.
 
 For a relation $R$, $R [ i ]$ is the relation obtained from $R$ by
 restricting it to the value $i$ in the last parameter, and removing that last $i$ from the tuples. For simplicity, we will describe henceforth
 the logic with relations $R$ that have exactly two parameters, 
-hence $R [ i ]$ will have just one parameter whose domain will be denoted as $d ( R )$. The definition of the logic over other numbers of parameters is quite straightforward. e.g., when $R$ has one parameter,
-$R [ i ]$ is a Boolean value. Our implementation of runtime verification described later fully supports relations with zero or more parameter.
+hence $R [ i ]$ will have just one parameter whose domain will be denoted as $d ( R )$. The definition of the logic over other numbers of parameters is quite straightforward. e.g., when $R$ has one parameter, $i$,
+$R [ i ]$ is a Boolean value. Our implementation of runtime verification described later fully supports relations with zero or more parameter. This also applies to the extensions of the logic in the rest of this section, and to some of the examples used.
 
 %\klaus{Above, what about instead of writing: ``this domain is fixed over all the values of the second parameter $i$'' to write:
 %``this domain is independent of the values of the second %parameter $i$'' - if that is what you mean to say.}
@@ -593,9 +614,8 @@ $R [ i ]$ is a Boolean value. Our implementation of runtime verification describ
 \subsubsection{Syntax} 
 
 The formulas of the core FLTL logic are 
-defined by the following grammar,
-where $p$ is a relation,
-$a$ is a constant and $x$ is a variable. 
+defined by the following grammar,where $p$ denotes a relation,
+$a$ denotes a constant and $x$ denotes a variable. 
 \begin{center}
 $\varphi ::= \true  \; | \;
     p ( a ) \; | \;
@@ -618,11 +638,10 @@ $\varphi ::= \true  \; | \;
 %file names.
 
 \noindent 
-
 Additional operators are defined as in the propositional logic. We define
 $\forall x \; \varphi = \neg \exists x \neg \varphi$.
 Restricting the modal operators to the past operators
-($\since$, $\ominus$ and the ones obtained from them) 
+($\since$, $\ominus$ and the ones derived from them) 
 forms the logic PFLTL.
 
 \subsubsection*{Semantics.}
@@ -883,14 +902,14 @@ the size of the formulas.
  \fi
 
 For an FLTL (PFLTL) formula with no free variables, denote ${\cal R} \models \varphi$ when $( \epsilon , {\cal R} , 1 ) \models \varphi$.
-We will henceforth sometimes abuse notation, as is very often done in logic, and use the same
+We will henceforth sometimes abuse notation, and use the same
 symbols both for the relations (semantics) and their representation in
 the logic (syntax).
-The quantification over values of variables here is `static' in the sense that they are independent of the state in the execution. We
+The quantification over values of variables here is {\em static} in the sense that they are independent of the state in the execution. We
 denote static quantification with $\exists$ and
 $\forall$.
-Dynamic quantification, as defined for LTL in Section~\ref{sec:extending-prop-ltl},
-and will extend FLTL below, is expressed with $\Exists$ and $\Forall$.
+%Dynamic quantification, as defined for LTL in Section~\ref{sec:extending-prop-ltl},
+%and will extend FLTL below, is expressed with $\Exists$ and $\Forall$.
 
 
 %\section*{Extending First-Order LTL}
@@ -903,10 +922,9 @@ carries over from LTL (PLTL) to FLTL (PFLTL).
 \vspace{1ex}
 \noindent {\bf Example 1.}
 Let $p$ and $q$ be temporal relations, where their
-restrictions to the state $s_i$, $p[i]$ and $q[i]$, respectively, are unary relations $p$ and $q$. The
+restrictions to the state $s_i$, $p[i]$ and $q[i]$, are unary relations $p$ and $q$. The
 specification that we want to monitor is that for each value
-$a$, $p(a)$ appears in all the states where $q(a)$ has appeared an even number of times so far (for the odd occurrences, $p(a)$ can also appear, but does not have to). This is an extension of
-Wolper's example over LTL, carried over to the first-order case. To show that this is not expressible in FLTL (and PFLTL),
+$a$, $p(a)$ appears in all the states where $q(a)$ has appeared an even number of times so far (for the odd occurrences, $p(a)$ can also appear, but does not have to). To show that this is not expressible in FLTL (and PFLTL),
 consider models (executions) where only one data element $a$ appears. We can prove by a structural induction on subformulas
 that in this case, for each property $\varphi$
 we can replace occurrences of variables within
@@ -917,39 +935,38 @@ an equivalent formula. This is then equivalent to
 an LTL formula that is obtained by replacing
 the occurrences of $p(a)$ and $q(a)$ by propositions
 $p_a$ and $p_b$, which reduces to Wolper's example~\cite{Wolper}.
+Using parametric automata as a specification formalism, as in~\cite{Grum,havelund-rv-data-2018,Meredith2011,Reger2015} can express this property, 
+where for each value $a$ there is a separate automaton that counts the number of times that $q(a)$ has occurred.
 
 \vspace{1ex}
 \noindent {\bf Example 2.}
 Consider the property that asserts that when
-$\mathit{inherent}(x , y)$ appears
-in a state, denoting that a process 
-$y$ wants to inherent variables from a process $x$,
-there were a chain of states with process spawning
+$\mathit{report}(y , x, d)$ appears
+in a state, denoting that  process 
+$y$ sends some data $d$ to a process $x$,
+there was a chain of states with process spawns
 $\mathit{spawn}(x, x_1)$, $\mathit{spawn} (x_1, x_2)$ $\ldots$
-$\mathit{spawn}(x_l , y)$. The reason
+$\mathit{spawn}(x_l , y)$. i.,e., $y$ is a descendent process of $x$. The reason
 is that the required property needs to
 assert about the transitive closure
 of the relation $\mathit{spawn}$. 
 FLTL can be translated in a way similar to a standard translation of $LTL$ to monadic first order logic~\cite{Thomas}. Here, the relations will be written with their explicit last ``time'' parameter, and the temporal operators are replaced with first order quantification.
-E.g., $\Box \forall x \, p(x) \rightarrow q(y)$ will be translated into $\forall t \, \forall x \, ((p(x, i) \rightarrow \exists t' p(x, j) )$
-\footnote{The obtained model will have, in addition
+E.g., $\Box \forall x \, p(x) \rightarrow q(y)$ will be translated into $\forall t \, \forall x \, ((p(x, t) \rightarrow \exists t' p(x, t') )$\footnote{The obtained model will have, in addition
 to the aforementioned relations, also
-the linear order $<$ over the naturals.}
+the linear order $<$ over the naturals.}.
 It is possible to show that the transitive closure of $\mathit{spawn}$ cannot be expressed in first order setting. The proof is based on the
 compactness theory of first order logic~\cite{Flum}.
 
-\subsubsection{Extending FLTL with Quantification.}
+\subsubsection{Extending FLTL with Dynamic Quantification.}
 
-This lack of expressiveness can be resolved by
-adding propositional variables (i.e., predicates that are
-only state dependent) with dynamic quantification over them.
-Using parametric automata as a specification formalism, as in~\cite{Grum,havelund-rv-data-2018,Meredith2011,Reger2015} can also express this property.
+
+
 
 Extending FLTL (PFLTL) with quantifiers over temporal relations, we obtain QFLTL
-(and the past-restricted version QPFLTL, respectively). 
+(and the past-restricted version QPFLTL). 
 The syntax includes $\Exists p \, \varphi$, 
 where $p$ denotes an auxiliary relation.
-We also allow $\Forall p\ \varphi = \neg \Exists \neg \varphi$. The semantics is as follows. %We denote by ${\cal R} |_Q$ the set of temporal relations obtained from ${\cal R}$ by removing the set of relations $Q$.
+We also allow $\Forall p\ \varphi = \neg \Exists \neg p \varphi$. The semantics is as follows. %We denote by ${\cal R} |_Q$ the set of temporal relations obtained from ${\cal R}$ by removing the set of relations $Q$.
 
 
 
@@ -957,10 +974,10 @@ We also allow $\Forall p\ \varphi = \neg \Exists \neg \varphi$. The semantics is
 
 \begin{itemize}
 \item $(\gamma ,  {\cal R}, i) \models \Exists q \, \varphi$ iff there exists
-${\cal R}'$ such that ${\cal R}' |_{\{ q \} } = {\cal R}$ and 
+${\cal R}'$ such that ${\cal R}' \setminus {\{ q \} } = {\cal R}$ and 
 $( \gamma, {\cal R}' , i) \models \varphi$.
 \end{itemize}
-Consequently, quantification over relations effectively extends the model ${\cal R}$ into a model ${\cal R}'$ within the scope of the quantifier. Note that quantification here is dynmaic (as in QLTL and QPLTL), since the relations are temporal and can have different sets of tuples in different states.
+Consequently, quantification over relations effectively extends the model ${\cal R}$ into a model ${\cal R}'$ within the scope of the quantifier. Note that quantification here is dynamic (as in QLTL and QPLTL), since the relations are temporal and can have different sets of tuples in different states.
 
 \subsubsection{Extending FLTL  with Rules.}
 
@@ -984,16 +1001,13 @@ of a previous-time operator $\ominus$.
 \end{enumerate}
 
 
-Again, it
-is simple to extend the syntax and semantics to include
-relations $r_j$ with different number of arguments, and, correspondingly, formulas $\varphi_j$ with corresponding number of free
-variables.
+
 The logic EPFLTL is obtained by restricting the temporal modalities of EFLTL to the past ones:
-$\since$ and $\ominus$, and those obtained from them.
+$\since$ and $\ominus$, and those derived from them.
 
 \begin{lemma} \label{samesame}
 The auxiliary temporal relations $r_1, \ldots r_n$ are
-uniquely defined from ${\cal R}$.
+uniquely defined by the rules for each model ${\cal R}$.
 \end{lemma}
 \noindent {\bf Proof.} By a simple induction, similar to Lemma~\ref{fourone}. \qed
 \vspace{1ex}
@@ -1006,8 +1020,8 @@ r(x) = ( q(x) \leftrightarrow \ominus \neg  r(x))
 \end{equation}
 
 \noindent
-We define\footnote{This is done for lack of space. Formal semantics 
-can be given by constructing a set of temporal relations extended
+We define\footnote{ Formal semantics 
+can also be given by constructing a set of temporal relations extended
 with the auxiliary ones
 inductively over growing prefixes, as would be done in a detailed proof of Lemma~\ref{samesame}.} the semantics for the EFLTL 
 specification (\ref{EFLTL}) 
@@ -1026,36 +1040,60 @@ need the past temporal operators besides $\ominus$.
 %\klaus{Something seems wrong in the above formulation.
 %E.g.: Is the $\Box$ a restriction?, what is ``fully quantified single occurrence of some auxiliary relation $r_j$''?}
 
+\ignore{
 \noindent {\bf Proof.} Basically, the proof is the same as Lemma~\ref{simplecase}, based on the axiomatization of the
-past temporal operators. \qed
+past temporal operators. \qed}
 
 %\klaus{Is the formula above really correct?}
 
-We showed in Theorem~\ref{theo1} that ELTL
-and QLTL have the same
+%We showed in Theorem~\ref{theo1} that ELTL (EPLTL)
+%and QLTL (PQLTL, respectively) have the same
 expressive power. We study now the relationship between
-EFLTL and QFLTL.
+%EFLTL (EPFLTL) and QFLTL (QPFLTL, respectively).
 
 \begin{theorem}
 \label{theo2}
-The expressive power of EFLTL is stricktly weaker than that of QFLTL.
+The expressive power of EPFLTL is strictly weaker than that of QFLTL.
 \end{theorem}
-The proof of this theorem, which includes the encoding of a nontrivial property, and a combinatorial argument, appears in an appendix.
-The relative expressive power between the first-order temporal logics presented in this Section
-appear in Figure~\ref{fsfr}.
 
-It follows from~(\ref{equiv}) that EFLTL (EPFLTL, respectively) has the same
-expressive power as QFLTL (EPFLTL, respectively) restricted to having its
-dynamic 
-quantification to being existential, and prefixing the
-rest of the formula. Thus, we immediately obtain from Theorem~\ref{theo2} the following:
+\noindent {\bf Sketch of Proof.}
+The proof of this theorem, which includes encoding of a nontrivial property, where the property
+observes the data elements (appearing as $v (a)$)
+in between states where $r$ appears (a relation with
+one parameter, the time or index parameter $i$).
+The property asserts that there are no two sets of events that are equivalent.
+This property can be expressed in QPFLTL, and hence
+also in QFLTL. The details appear in the appendix.
+
+We use a combinatorial argument to show by contradiction that one cannot express this property
+using EFLTL, and also using EPFLTL. The reason is that every prefix of an EFLTL model, extended uniquely with the
+auxiliary relations, according to Lemma~\ref{samesame}, can be summarized with a finite number of relations, the ones in
+the model, the auxiliary relations and the
+assignments satisfying the subformulas. The size of
+each such relation is bounde by ${\cal O} (  m ^ N )$
+where $m$ is the number of values appearing in the
+prefix, and $N$ is the sum of the number of parameters on all the above mentioned relations.
+However, the number of different subsets over $m$ values is
+$2^m$. This means that with large enough number of different values, EPFLTL can have two prefixes with the same summary. It would then not be able to distinguish between two executions that extend
+this prefix, where one of them is extended with a set of values that appeared before and the other with 
+a set that already appeared. \qed
+
+%The relative expressive power between the first-order %temporal logics presented in this Section
+%appear in Figure~\ref{fsfr}.
+
+%It follows from~(\ref{equiv}) that EFLTL (EPFLTL, %respectively) has the same
+%expressive power as QFLTL (EPFLTL, respectively) %restricted to having its
+%dynamic 
+%quantification to being existential, and prefixing %the
+%rest of the formula.
+The following follows immediately from Theorem~\ref{theo2} the following:
 
 \begin{corollary}
 Constraining the dynamic quantification of QFLTL (QPFLTL) to existential quantification prefixing the
 formula strictly weakens its expressive power.
 \end{corollary}
 
-
+\ignore{
 
 \begin{figure}
 \begin{center}
@@ -1064,9 +1102,10 @@ formula strictly weakens its expressive power.
 \caption{\label{fsfr} An arrow from A to B means that logic  B is more expressive than A}
 \end{center}
 \end{figure}
+}
 
-
-\section{RV for First-Order Past-Time LTL and its Extension}
+\section{RV for past-time
+first-order  LTL and its Extension}
 \label{EPLTLRV}
 
 Runtime verification of FLTL is performed on an
@@ -1075,14 +1114,15 @@ tuples. In our notation, the input
 consists of a sequence ${\cal R}[1] \, {\cal R}[2]  \ldots$,
 which we earlier identified with states, where each
 ${\cal R}[i]$ consists of the relations in
-${\cal R}$,
-where the last parameter is restricted to  $i$. A typical use
+${\cal R}$ with
+the last parameter is restricted to  $i$. A typical use
 of runtime verification restricts the
-events (tuples) for
+events (tuples from the relations in ${\cal R}$) for
 each state to a finite number, and often even to a single event.
 The RV algorithm will also make
 use of sets of assignments over a set of variables for satisfying a subformula at
-some state (corresponding to $\old$ and $\current$, which were used with propositional values in Section~\ref{LTLruntime});  these also form a relation over the domains of these variables (having some fixed order).
+some state, corresponding to $\old$ and $\current$, which had Boolean values in the 
+algorithm for propositional LTL in Section~\ref{LTLruntime}.
 
 \ignore{
 \klaus{In the text above there are some imprecisions, such as
@@ -1098,9 +1138,6 @@ relations (I think).
 \ignore{
 \klaus{Below: (\ref{EFLTL}) was not a EPFLTL form of specification.}}
 
-
-Consider again the EPFLTL form
-of specification, described in~(\ref{EFLTL}).
 
 \iffalse
 , restricted to the past operators. We now present the definition of EPFLTL, the final main logic proposed in this paper. 
@@ -1188,73 +1225,59 @@ over the set of variables $W \cup W'$.
 %union. Accordingly, $\mathbf{T}$ is idempotent to intersection.
 
 
-\klaus{One may of course ask whether the following section on the 
-set semantics is needed. Maybe it is needed, since we probably need a semantics. Something to consider.}
+%\klaus{One may of course ask whether the following section on the 
+%set semantics is needed. Maybe it is needed, since we probably need a semantics. Something to consider.}
 \fi
 
-\subsubsection{Semantics}
+\subsubsection{Set Semantics}
 
-We denote by $A_{\vars ( \varphi )}$ the set of all possible assignments
-of values to the variables that appear free
-in $\varphi$. Thus,
-$I [ \varphi, {\cal R} , i] \subseteq A_{\vars ( \varphi )}$.
-To simplify definitions, we add
-a dummy position $0$ for sequence $\sigma$ (which starts with $s_1$), 
-where every formula is interpreted as an empty set.
-Observe that the value $\emptyset$ and $\{ \epsilon \}$, behave
-as the Boolean constants $0$ and $1$, respectively.
-The set semantics is defined as follows, where $i \ge 1$.
+The RV algorithm for
+(E)PLTL, presented in~Section \ref{LTLruntime}
+calculates
+$\current ( \eta )$, for $\eta$ a
+subformula of the monitored property, to be the
+truth value of $\varphi$ over the
+prefix inspected by the RV algorithm so far. For (E)PFLTL,
+$\current (\eta )$ consists of the
+sets of assignments (in the form of relations
+over the free variables in the subformula),
+rather than Boolean variables.
 
-\klaus{Above: assignments are introduced without any gentle introduction. Remember: you are not communicating with Moshe Vardi. You are communicating with John Fingelstein who had three glasses of wine at dinner.}
 
-\klaus{Above: $I [ \varphi, {\cal R} , i]$ is introduced out of the blue without any explanation.}
+We redefine the semantics for EPFLTL in
+equivalent way, which will be more directly related to the calculation of values
+in $\current$ by the
+RV algorithm that will be presented below. 
+Under the  {\em set semantics}
+(introduced in~\cite{HPU} for PFLTL, and extended here for EPFLTL),
+$I [ \varphi , \sigma, i ]$ is a function that returns
+a set of assignments such that $\gamma \in I [ \varphi , \sigma, i ]$ 
+iff $( \gamma , \sigma , i ) \models \varphi$.
 
+We present here only two simple cases of the set semantics. The full set semantics appears in the appendix. 
 \begin{itemize}
-\item $I [ \varphi , {\cal R} , 0 ] = \emptyset$.
-\item $I [ \true , {\cal R} , i ] = \{ \epsilon \}$.
-\item $I [ p ( a ) , {\cal R} , i ] =$ if $p ( a ) \in \sigma [ i ]$ then
-$\{ \epsilon \}$ else $\emptyset$.
-\item $I [ p ( x ) , {\cal R} , i ] = \{ [ x \mapsto a ] | p ( a ) \in
-\sigma [ i ] \}$.
-%\item $I [ \true , \sigma , i ] = D^n$.
-%\item $I [ ( \varphi \vee \psi ) , \sigma , i ] = 
-%I [ \varphi , \sigma , i ] \cup I [ \psi , \sigma , i ]$.
 \item $I [ ( \varphi \wedge \psi ) , \sigma , i ] = 
 I [ \varphi , {\cal R} , i ] \;  \bigcap \; I [ \psi , \sigma , i ]$.
-\item $I [ \neg \varphi , {\cal R} , i ] = 
-A_{\vars ( \varphi )} \; \setminus \; I [ \varphi , {\cal R} , i ]$.
 \item $I [ ( \varphi \; \since \; \psi ) , {\cal R} , i ] = 
 I [ \psi , {\cal R}, i ] \; \bigcup \;
-( I [ \varphi , {\cal R} , i ] \bigcap 
+( I [ \varphi , {\cal R} , i ] \ \bigcap \ 
 I [ (\varphi \since \psi ) , {\cal R} , i - 1 ] )$.
-\item $I [ \ominus \varphi , {\cal R} , i ] = I [ \varphi , {\cal R} , i-1 ]$.
-\item $I [ \exists x \; \varphi , \sigma , i ] = 
-\proj ( I [ \varphi , {\cal R} , i ] , \{ x \} )$.
-\item $I [ \psi \mathrm{\ where\ } r_j ( x_j) := 
-\varphi_j (x_j) : j \in \{ 1 , \ldots , n \} , {\cal R} , i ] = 
- I [ \psi , {\cal Q} ] $ where ${\cal Q} = {\cal R} \cup
-\{ r_j | r_j [ i ] =  I [ 
-\varphi_j , {\cal Q} , i ] \}$
 \end{itemize}
 
-\klaus{Above: as the semantics is presented, it looks as if 
-the `$\psi\ where ...$' is just another subformula.}
 
-\klaus{Above: hide is not defined.}
 
-\klaus{Above: the semantics of $p(a)$ and $p(x)$ do not refer to 
-${\cal R} $.}
-
-In the last item, the extended model ${\cal Q}$ appears both on the left and the right of the equality sign. It is well defined because of Lemma~\ref{samesame}.
-
-\subsubsection{Runtime Verification Algorithm for PFLTL}
+\subsubsection{Runtime Verification Algorithm for PFLTL.}
 
 We start by describing an algorithm for monitoring 
 PFLTL properties, first presented in~\cite{HPU} and implemented
 in the tool~\dejavu. 
-Instead of storing the data values occurring in events, 
-we enumerate these data values as soon as we see them and use Boolean
-encodings of this enumeration, represented as BDDs.
+We enumerate data values appearing in
+monitored events, as soon as we first see them. We
+represent relations over the Boolean
+encodings of these enumeration, rather than over the data values themselves. A hash function is used to connect the data values to their enumerations to maintain consistency
+between these two representations.
+The relations are
+represented as BDDs~\cite{Bryant}. 
 For example, if the runtime verifier sees the input 
 events 
 $\mathit{open}(\text{``a''})$, 
@@ -1274,16 +1297,20 @@ Since we want to be able to deal with infinite domains
 (where only a finite number of elements may appear in a given observed prefix) and maintain the ability to perform
 complementation, unused enumerations represent the
 values that have not been seen and their relations
-to all other values. The algorithm maintains that these unseen values are correctly represented, as shown in~\cite{HPU}. In fact, it is sufficient to have just one enumeration representing these values per each variable of the LTL formula. However, it is important to guarantee that at least one such enumeration
-exists. We guarantee that by preserving the enumeration $11\ldots11$, i.e., the highest Boolean representation,
-to represent values not yet seen.
+to all other values. 
+%The algorithm maintains that these unseen values are correctly represented, as shown in~\cite{HPU}. 
+In fact, it is sufficient to have just one enumeration representing these values per each variable of the LTL formula. 
+%However, it is important to guarantee that at least one such enumeration exists. 
+We guarantee that at least one such enumeration exists by preserving for that purpose the enumeration $11\ldots11$.
+%, i.e., the highest Boolean representation,
+%to represent values not yet seen.
 We present here only the basic algorithm. For versions that
 allow extending the number of bits used for enumerations and garbage collection of enumerations, consult~\cite{HP}.
 
-Our preferred representation of a set of values 
-(assignments) is as an Ordered Binary Decision
+\iffalse
+Our preferred representation of a set of values (assignments) is as an Ordered Binary Decision
 Diagram (OBDD, although we write simply BDD)~\cite{Bryant}.
-A BDD is essentially a compact representation 
+A BDD~\cite{Bryant} is essentially a compact representation 
 of a Boolean tree, where compaction glues together isomorphic subtrees. Each non-leaf node is labeled with one of the
 Boolean variables $b_0,\ldots,b_{k-1}$ (where $k$ is the number of bits used to represent the values of a variable). A non-leaf node $b_i$ 
 is the source of two 
@@ -1296,6 +1323,7 @@ absent along some paths, when the result of the Boolean function does not
 depend on the value of the corresponding Boolean variable. Each path leads 
 to a leaf node that is marked by either a $0$ or a $1$, representing the 
 Boolean value returned by the function for the Boolean values on the path.
+\fi
 
 The use of BDDs can be replaced by other representations that
 can compactly and efficiently represent sets of values (e.g., ZDDs), and to which one can apply set operations like complementation, intersection, union (which are simply negation, conjunction and disjunction
@@ -1347,13 +1375,14 @@ $( \gamma , \sigma , i-1 ) \models ( \varphi \, \since \, \psi )$.
 %then this is the Boolean function 
 %$(\neg b_0 \wedge b_1) \vee (b_0 \wedge \neg b_1)$.
 
-Given some ground predicate $p ( a )$ observed in the execution 
+Given some ground predicate $p ( a )$, observed in the monitored execution, 
 matching with $p ( x )$ in the monitored property,
-let $\lookup ( x, a )$ be the enumeration of $a$. If this
+let $\lookup ( x, a )$ be the enumeration of $a$ (a lookup in the hash table). If this
 is $a$'s first occurrence, then it will be assigned a new enumeration.
 Otherwise, $\lookup$ returns the enumeration that $a$ received before. We can use a counter, for each variable $x$, counting the number of different values appearing so far for $x$. When a new value appears, this counter is incremented, and the value is converted to
-a Boolean representation. Enumerations that were not yet used represent
-the values not seen yet. 
+a Boolean representation. 
+%Enumerations that were not yet used represent
+%the values not seen yet. 
 %In particular, we always leave at least
 %one enumeration, $11\ldots 11$, for this purpose.
 %In the next section we introduce data reclaiming, which allows 
@@ -1410,19 +1439,17 @@ $0$ or $1$, respectively.
 %a priory, where these bits represent a set of values that is
 %exponentially larger.
 
-The algorithm shown below works similarly to the algorithm for the 
-propositional case shown in
-Section~\ref{LTLruntime}. That is,
-it operates on two vectors (arrays) of values indexed by subformulas: 
+\iffalse
+The algorithm shown below uses two vectors (arrays) of values indexed by subformulas: 
 $\old$ for the state before that event, and
 $\current$ for the current
 state (after the last seen event).
-However, while in the propositional case the vectors contain Boolean values, here
-they contain BDDs. The temporal relations are
-represented by
-sets of events, each being a tuple of one of the relations. Thus, $R_k [ i ]$ refers to the set
-of tuples of the relation $R_k$ at time instant $i$. Often (and in our implementation), the set of events consists of a singleton tuple of a single relation.
+While in the propositional case, in Section~\ref{LTLruntime}, the vectors contain Boolean values, here
+they contain BDDs. The temporal relations,
+restricted to each state, are
+represented also as BDDs.
 The algorithm follows.
+\fi
 
 \begin{enumerate}
 \item Initially, for each subformula $\varphi$,
@@ -1442,7 +1469,7 @@ $\current ( \varphi ) := \bfalse$.
   \item $\current ( ( \varphi \wedge \psi ) ) := 
   \bddwedge ( \current ( \varphi ) , \current ( \psi ))$.
   \item $\current ( \neg \varphi  ) := \bddneg ( \current ( \varphi ))$.
-  \item $\current ( ( \varphi\ \since\ \psi ) ) := \\ 
+  \item $\current ( ( \varphi\ \since\ \psi ) ) :=  
   \bddvee ( \current ( \psi  ) , \bddwedge ( \current ( \varphi ) ,
       \old ( ( \varphi \ \since \ \psi ))))$.
 %DAP: I removed the \; around \since, since it penetrated the 2nd column!
@@ -1457,15 +1484,12 @@ $\current ( \varphi ) := \bfalse$.
 
 We extend now the algorithm to capture EPFLTL.
 The auxiliary relations $r_j$ extend the model, and we need to keep 
-a BDDs representing $\current ( r_j )$ and
+BDDs representing $\current ( r_j )$ and
 $\old (r_j)$ for each relation $r_j$. We also need to calculate the subformulas $\varphi_i$ that appear in
 a specification, as part of the runtime verification,
-as per the above FPLTL algorithm. The auxiliary relations $r_j$ are calculated with respect to
-a variable $x_j$, which is the one appearing
-free in $\varphi_j$ (this can be generalized to any number of variables). However, $r_j$ can be used
-as a subformula with other parameters in other rules or in the statement. Thus,
-$r_j ( y )$ constructing a relation
-that is the same as $r_j$, but over the variable $y$. This can be achieved by the BDD renaming function $\rename ( r_j (x_j ) , y)$, which is easy to implement in BDDs.
+as per the above FPLTL algorithm. One subtle point is that the auxiliary relations $r_j$ may be defined in a rule with respect to
+a variable $x_j$ (as $r_j (x_j ):= \varphi_j (x_j)$ (this can be generalized to any number of variables) נוא $r_j$ can be used
+as a subformula with other parameters in other rules or in the statement e.g., as $r_j ( y )$. This can be resolved by a BDD renaming function $\rename ( r_j (x_j ) , y)$.
 
 
 We then have to add
@@ -1478,10 +1502,10 @@ $\psi$.
 \item{\ \ }  $\current ( r_j )  := \current (\varphi_j)$;
 \item{\ \ } $\current ( r_j ( y ) )$ := $\rename ( r_j(x_j) ,  y )$;
 \item{\ \ } $\current ( r_j ( a ) )$ := if $\current ( r_j ) ( a )$
-then $\btrue$ else $\bfalse$; 
+then $\btrue$ else $\bfalse$
 \end{description}
 
-\klaus{Above: $\current ( r_j ) ( a )$ has not been defined I think.}
+%\klaus{Above: $\current ( r_j ) ( a )$ has not been defined I think.}
 
 \noindent
 As in the propositional case, the evaluation order cannot be

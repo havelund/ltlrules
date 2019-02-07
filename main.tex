@@ -47,8 +47,11 @@ doron.peled@gmail.com}
 }
 }
 
+%\author{Submitted Anonymosly}
+
 %\thanks{Copyright 2018. All rights reserved.}
 
+\iffalse
 \author{ 
 Klaus Havelund~\thanks{The research performed by this author was carried out at Jet Propulsion Laboratory, California Institute of Technology, under a contract with the National Aeronautics and Space Administration.} 
 \and
@@ -68,7 +71,7 @@ Department of Computer Science \\
 Bar Ilan University, Israel
 }
 
-
+\fi
 
 
 %\hfill
@@ -87,10 +90,10 @@ Linear Temporal Logic (LTL).
 LTL offers a succinct notation for writing useful 
 specification properties. However, it is limited in 
 expressiveness in the propositional case, and several 
-theoretic (non-operational) extensions have therefore been proposed. Furthermore, for many practical cases, there is a need to monitor properties 
+theoretic extensions have therefore been proposed. Furthermore, for many practical cases, there is a need to monitor properties 
 that carry data, where one can use formalisms like 
 first-order LTL. We show that 
-first-order LTL has similar expressive
+first-order LTL has similar expressiveness
 limitations as the propositional version. We suggest here 
 two related extensions for increasing the expressive power: 
 one for propositional LTL and one for 
@@ -101,7 +104,7 @@ propositional extension has the same expressiveness as the
 classical extensions, and demonstrate its
 adoption for runtime verification of first-order safety 
 properties. Finally, we expand the BDD-based runtime verification 
-tool \dejavu{}  to support our extension and perform some 
+tool \dejavu{}\footnote{The actual tool name is not given due to anonymous reviewing.}  to support our extension and perform some 
 experiments.
 
 \end{abstract}
@@ -119,19 +122,18 @@ experiments.
 
 \section{Appendix}
 
-\klaus{In the text below mention what $i$ is (time point, position, ...}
+%\klaus{In the text below mention what $i$ is (time point, position, ...}
 
-\subsubsection{Sketch of proof of Theorem~\ref{theo2}.}
-As we defined the semantics of
-EFLTL by translating into QFLTL, QFLTL is at least as
-expressive as EFLTL. We show here that 
-the expressive power of EFLTL is strictly smaller than that of
-QFLTL through the following example. It consists of
-a temporal relation\footnote{We abuse notation and
-use the same name for the relation and for its
-denotation in the logic. Also, $r [ i ]$ has zero
-parameters; as noted before, this is a natural extension to the syntax and semantics presented above.} $r$ with only one parameter, so $r [ i ]$
-has a Boolean value. We will henceforth say that $r$ occurs
+\subsubsection{Construction of a property
+for Theorem~\ref{theo2}.}
+The model consists of
+a temporal relation.
+%\footnote{We abuse notation and
+%use the same name for the relation and for its
+%denotation in the logic. Also, $r [ i ]$ has zero
+%parameters; as noted before, this is a natural %extension to the syntax and semantics presented %above.} 
+$r$ with only the time parameter, so $r [ i ]$
+has a Boolean value at the $i$th state. We will henceforth say that $r$ occurs
 in state $i$. Another relation is $v$, with
 two parameters. For each $i$, if $r$ does not appear in the
 state, 
@@ -140,11 +142,14 @@ such that $v ( a, i )$,
 i.e., $v(a)$ appears in $i$.
 The property requires that there are no two sets of values appearing within the relation $v$ (as $v(a)$) between successive occurrences of $r$ that are the same.
 
-\klaus{Below: isn't it the other way around, the first is not a model and the second is a model?}
+%\klaus{Below: isn't it the other way around, the first is not a model and the second is a model?}
 
 Hence, the sequence of states 
-\[ \{ r \} \{ v(1) \}  \{ v(2) \} \{ v(3) \}  \{ r\}  \{ v(2) \}  \{  v(1) \}  \{  v(3) \} \{  r \} \] is a model of this formula, while \[ \{ r \} \{ v(1) \}  \{ v(2) \}  \{ v(2) \}  \{ r\}  \{ v(2) \}  \{  v(1) \}  \{  v(5) \}  \{  r \}\] is not.
-The QFLTL formula is a bit involved, hence given in several parts (macros).
+\[ \{ r \} \{ v(1) \}  \{ v(2) \}  \{ v(2) \}  \{ r\}  \{ v(2) \}  \{  v(1) \}  \{  v(5) \}  \{  r \}\]
+is a model of this formula, while 
+\[ \{ r \} \{ v(1) \}  \{ v(2) \} \{ v(3) \}  \{ r\}  \{ v(2) \}  \{  v(1) \}  \{  v(3) \} \{  r \} \]
+is not.
+The QFLTL formula is a bit involved, hence given in several parts (macros), where the main formula appears last.
 
 \begin{itemize}
 \item $add(P) ::= \forall x \, (P(x) \leftrightarrow (v(x) \vee \ominus P(x))$ [The set $P$ differs in the current state from the previous one only by values $a$ that appear in $v(a)$.]
@@ -162,19 +167,24 @@ $P$ and $Q$ contain the same elements {\em in the current state}.]
        since the previous state where $r$ 
        and $\psi$ held.]
 \item $init ::= r \wedge \Box (r \leftrightarrow \neg \exists x \, v(x))$ [$r$ holds in the first state, and $v(a)$ with some value $a$ holds in states where $r$ does not hold.]
-\item $init \wedge \neg \Exists A \Exists B (equal (A, B) \wedge \\
+\item $init \wedge \Box \neg \Exists A \Exists B (equal (A, B) \wedge \\
 collect(B, same(A),\, same(A)) \ \since \ collect(A, true, true))$
 [There are no two sequences of states where $v(a)$ holds
 with various values $a$, between a pair of states satisfying $r$ that contain exactly the same elements (regardless of repetition).]
 \end{itemize}
 
-\klaus{Above: maybe need to point out what the top formula is.}
+%\klaus{Above: maybe need to point out what the top formula is.}
 
-\klaus{Above: isn't there missing a $\Box$ in the main formula?}
+%\klaus{Above: isn't there missing a $\Box$ in the main formula?}
 
-We prove that the above property cannot be expressed in EFLTL.
-We use a combinatorial argument.
-In EFLTL, after every prefix of the input, it is
+\iffalse
+We prove that the above property cannot be expressed in EPFLTL.
+We use a combinatorial argument, showing that
+the information that is available in any EPFLTL
+property
+after a prefix is not sufficient to distinguish between two models (executions), one satisfying and one not satisfying it.
+
+In EPFLTL, after every prefix of the input, it is
 sufficient to keep a finite set of (non temporal) relations over the
 data elements seen in the input, which
 summarizes the prefix. This follows from the set
@@ -183,15 +193,27 @@ where the interpretation of
 each subformula, and the auxiliary relations,
 at a particular state is a relation, and the interpretation 
 of a property a prefix of length $i$ only depends on
-these relations. Now, the number of such possible relations
-for a fixed number of data elements $N$ is polynomial
-in $N$. However, the above property checks whether
-a set of values that appear within the relation $v$, between two consecutive appearances
-of $r$'s, are the same. For that, one needs to keep a set of
-subsets of the elements that appeared in the input so far. 
+these relations. Now, the amount of information
+that summarizes an observed prefix for
+EPFLTL is is polynomial
+in $N$, consisting of a finite number
+of relations over
+$N$ elements. The number of different tuples
+for such relations can be shown, inductively, to
+be polynomial in $N$ (beach parameter
+of each relation can be one out of the $N$ possibilities, or a representation the values not seen yet).
+However, the above property depends on whether
+a set of values that appear as parameters to
+the relation $v$, between two consecutive appearances
+of $r$'s, are the same. For that, one needs to keep some representation of all the
+subsets of the elements that appeared in the input so far; by contradiction, any summary representation of the observed prefix that
+would identify two prefixes with some different sets, would not be able to distinguish between
+sequences that extend this prefix with the set
+of elements that appears in one prefix but not the other.
 But the number of such subsets is exponential in $N$. \qed
+\fi
 
-\klaus{Above: why set of subsets?}
+%\klaus{Above: why set of subsets?}
 
 \iffalse
 {\bf Comments.} First, note that the reason that QFLTL {\em can} express the property in Theorem~\ref{theo2}, is that it allows to augment the input relations with auxiliary relations that are not fixed. That is, for an auxiliary relation $R$,
@@ -238,6 +260,95 @@ where \\
 Basically, the assignments to the auxiliary variables are used to simulate the change of states\footnote{It is possible to use only $\lceil \log ( | S | ) \rceil$
 variables, at the expense of longer and more complicated formulas.}, and the main formula expresses the Muller acceptance condition. \qed
 
+
+\subsubsection*{Set Semantics.}
+
+Let $\Gamma$ be
+a set of assignments over the variables $W$, and
+$U \subseteq W$.
+Then $\proj ( \Gamma , U )$ (for ``projecting {\em out}'' or  ``hiding''
+the variables $U$)
+is the largest set of assignments over 
+$W \setminus U$, 
+each agreeing with some
+assignment of $\Gamma$ on all the variables in $W \setminus U$.
+Let $U \cap W = \emptyset$, then
+$\ext ( \Gamma , U )$ is the largest set of assignments
+over $W \cup U$, where each such assignment agrees 
+with some assignment in $\Gamma$ on the
+values assigned to the variables $W$. 
+\iffalse
+This means that we extend $\Gamma$ by
+adding arbitrary values to the variables in $U$ from their domains.
+Then $\proj ( \ext ( \Gamma , U ) , U ) = \Gamma$ holds.
+We define the union and intersection operators on sets of
+assignments, even if they are defined over non identical
+sets of variables. 
+In this case, the assignments are extended
+over the union of the variables. 
+\fi
+Thus, if $\Gamma$ is a
+set of assignments over $W$ and $\Gamma'$ is
+a set of assignments over $W'$, then
+$\Gamma \; \bigcup \;  \Gamma'$ is defined as $\ext (\Gamma , W' \setminus W ) \cup
+\ext ( \Gamma' , W \setminus W' )$ and
+$\Gamma \; \bigcap \; \Gamma'$ is $\ext (\Gamma , W' \setminus W ) \cap
+\ext ( \Gamma' , W \setminus W' )$.  Hence, both are defined
+over the set of variables $W \cup W'$.
+
+We denote by $A_{\vars ( \varphi )}$ the set of all possible assignments
+of values to the variables that appear free
+in $\varphi$. Thus,
+$I [ \varphi, {\cal R} , i] \subseteq A_{\vars ( \varphi )}$.
+To simplify definitions, we add
+a dummy position $0$ for sequence $\sigma$ (which starts with $s_1$), 
+where every formula is interpreted as an empty set.
+Observe that the value $\emptyset$ and $\{ \epsilon \}$, behave
+as the Boolean constants $0$ and $1$, respectively.
+The set semantics is defined as follows, where $i \ge 1$.
+
+%\klaus{Above: assignments are introduced without any gentle introduction. Remember: you are not communicating with Moshe Vardi. You are communicating with John Fingelstein who had three glasses of wine at dinner.}
+
+%\klaus{Above: $I [ \varphi, {\cal R} , i]$ is introduced out of the blue without any explanation.}
+
+\begin{itemize}
+\item $I [ \varphi , {\cal R} , 0 ] = \emptyset$.
+\item $I [ \true , {\cal R} , i ] = \{ \epsilon \}$.
+\item $I [ p ( a ) , {\cal R} , i ] =$ if $m (p )  ( a , i ) $ then
+$\{ \epsilon \}$ else $\emptyset$.
+\item $I [ p ( x ) , {\cal R} , i ] = \{ [ x \mapsto a ] | m (p) ( a , i)  \}$.
+%\item $I [ \true , \sigma , i ] = D^n$.
+%\item $I [ ( \varphi \vee \psi ) , \sigma , i ] = 
+%I [ \varphi , \sigma , i ] \cup I [ \psi , \sigma , i ]$.
+\item $I [ ( \varphi \wedge \psi ) , \sigma , i ] = 
+I [ \varphi , {\cal R} , i ] \;  \bigcap \; I [ \psi , \sigma , i ]$.
+\item $I [ \neg \varphi , {\cal R} , i ] = 
+A_{\vars ( \varphi )} \; \setminus \; I [ \varphi , {\cal R} , i ]$.
+\item $I [ ( \varphi \; \since \; \psi ) , {\cal R} , i ] = 
+I [ \psi , {\cal R}, i ] \; \bigcup \;
+( I [ \varphi , {\cal R} , i ] \bigcap 
+I [ (\varphi \since \psi ) , {\cal R} , i - 1 ] )$.
+\item $I [ \ominus \varphi , {\cal R} , i ] = I [ \varphi , {\cal R} , i-1 ]$.
+\item $I [ \exists x \; \varphi , \sigma , i ] = 
+\proj ( I [ \varphi , {\cal R} , i ] , \{ x \} )$.
+\item $I [ \psi \mathrm{\ where\ } r_j ( x_j) := 
+\varphi_j (x_j) : j \in \{ 1 , \ldots , n \} , {\cal R} , i ] = 
+ I [ \psi , {\cal Q} ] $ where ${\cal Q} = {\cal R} \cup
+\{ r_j | r_j [ i ] =  I [ 
+\varphi_j , {\cal Q} , i ] \}$
+\end{itemize}
+Note that the last time interprets a formula of
+the form defined in~(\ref{EFLTL}).
+
+%\klaus{Above: as the semantics is presented, it looks as if 
+%the `$\psi\ where ...$' is just another subformula.}
+
+%\klaus{Above: hide is not defined.}
+
+%\klaus{Above: the semantics of $p(a)$ and $p(x)$ do not refer to 
+%${\cal R} $.}
+
+In the last item, the extended model ${\cal Q}$ appears both on the left and the right of the equality sign. It is well defined because of Lemma~\ref{samesame}.
 \end{document}
 
 
