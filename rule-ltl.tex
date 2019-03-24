@@ -23,28 +23,28 @@ B\"{u}chi automata, regular expressions and quantified LTL.
 
 We then proceed to first-order LTL. We relativise Wolper's example to the first
 order case to motivate the need for
-extending first-order LTL. Another example is based on the in-expressiveness of transitive closure of a relation in first order logic, where, e.g., using a relation representing neighbors in a graph is not enough for representing that there is a path between nodes.
+extending first-order LTL. Another example is based on the unexpressiveness of the transitive closure of a relation in first order logic, where, e.g., using a relation representing neighbors in a graph is not enough for representing that there is a path between nodes.
 We present an extension where auxiliary relations, not appearing in the execution, are
 added. While this extension
 is capable of expressing the above
 properties, we show that for the first-order version, this has less 
-expressive power than adding alternating quantification over relations. This in distinction from adding quantification to propositional LTL, where prefixing existential quantification
-provides the full expressive power of, say B\"{u}chi automata.
+expressive power than adding full quantification over relations. This in distinction from adding quantification to propositional LTL, where prefixing existential quantification
+provides the full expressive power of, say, B\"{u}chi automata.
 
 The extensions we proposed to the logics are in particular natural for
 runtime verification of past (safety) temporal properties, since
 the values of propositional and first-order LTL are based
-on calculating and updating a summary of the prefix of the execution. Runtime verification is often restricted to a {\em past}  version of temporal logic~\cite{HR}, mainly because for past properties we can decide when the monitored property is violated immediately when this happens, while for future properties we may never know for sure. Consistent with that, 
+on calculating and updating a summary of the prefix of the execution. Runtime verification is often restricted to a {\em past}  version of temporal logic~\cite{HR}, mainly because for past properties we can decide when the monitored property is violated after monitoring a finite prefix of it, while for future properties we may never know for sure. Consistent with that, 
 we provide runtime verification algorithms for the past-time versions of the extended propositional and first-order
 logics. We further present an extension of the 
 \dejavu{} tool (publicly available on {\sf github},
 hidden here because of anonymous reviewing)
 \ignore{(https://github.com/havelund/dejavu)} that
-realizes the extended first-order past temporal logic verification. The \dejavu{} tool~\cite{HPU,HP} allows runtime verification on past time first-order temporal logic over infinite domains (e.g., the integers, strings). It achieves efficiency by BDD representation of enumerations of data (rather than over the data values themselves) and using
+realizes the extended first-order past temporal logic verification. The \dejavu{} tool~\cite{HPU,HP} allows runtime verification on past time first-order temporal logic over infinite domains (e.g., the integers, strings). It achieves efficiency by using BDD representation of enumerations of data, rather than over the data values themselves, and by using
 a garbage collection algorithm. 
 
 The contributions of this paper are both theoretical and practical. On the theory side, we present and study extensions for propositional and first order linear-temporal logics and show the relations between them and existing versions. 
-On the practical side, we also present RV algorithms for the extended logic, and 
+On the practical side, we present RV algorithms for the extended logic, and 
 show how to cast them specifically in an efficient BDD-based implementation. We present some experiments performed with our implementation and report on the results. 
 
 The structure of this paper is as follows. In Section~2 we first define the syntax and semantics of propositional temporal logic. We then review some of its classical extensions and present our own extension. In Section~3 we present a runtime verification algorithm for the extended past LTL. In Section~4 we review first order linear temporal logic, present our extension and study the relationships between the presented versions of first-order LTL. In Section~5 we present a runtime verification algorithm for the past version of the extended first-order LTL. Section~6 describes the implementation and provides experimental results. Finally, Section~7 concludes the paper.
@@ -54,11 +54,10 @@ The structure of this paper is as follows. In Section~2 we first define the synt
 
 \vspace{1ex}
 \noindent {\bf Related work.}
-For propositional LTL, the logic ETL~\cite{WVS,Wolper} extends
+For propositional LTL, the logic ETL~\cite{Wolper,WVS} extends
 the set of temporal operators 
-by using automata (or, equivalently a right linear grammar). Each automaton defines a temporal operator,
-where the input letters of the automaton correspond to future temporal subformulas. Each accepted run defines then the places
-where the subformulas (corresponding to the occurrences of the input letters in the run) need to hold. Another expressive-equivalent extension, 
+by using automata (or, equivalently a right linear grammar). Each automaton defines a temporal operator, where the input letters of that automaton correspond to future temporal subformulas. Each accepted run of such an automaton defines then the places
+where the subformulas need to hold. Another expressive-equivalent extension, 
 in~\cite{Wolper}, adds dynamic, i.e.,
 state-dependent, quantification over propositions to LTL.
 
@@ -71,8 +70,8 @@ functions (sums, maxima) over the sequence of states. Aggregations were also use
 % --- other less directly related work: ---
 %
 Numerous other systems have been produced for monitoring
-execution traces against formal specifications. 
-These include e.g. \cite{Meredith2011,larva,Reger2015,halle-beepbeep-ieee-12,LOLA}. 
+execution traces eith data against formal specifications. 
+These include e.g. \cite{LOLA,larva,halle-beepbeep-ieee-12,Meredith2011,Reger2015}. 
 
 % ----------------
 
@@ -94,7 +93,7 @@ the presentation, we prefix LTL with letters as follows:
 \item{P} restricts to P{\em ast} temporal operators.
 \item{F} allows F{\em irst-order} quantification over
 data assigned to variables that is uniform for all states. This quantification is referred to as {\em static} quantification.
-\item{Q} adds (second-order) Q{\em uantification} that is dynamic (state-dependent). This is referred to as {\em dynamic} quantification.
+\item{Q} adds (second-order) Q{\em uantification} that is state-dependent. This is referred to as {\em dynamic} quantification.
 \item{E} allows E{\em xtending} the 
 set of objects that occur in the input with
 new auxiliary predicates (for the propositional versions) or relations (for the first-order cases) using past temporal logic rules that define them.
@@ -244,7 +243,7 @@ be rewritten in PQLTL as:
 {\bf H} (( q \leftrightarrow \ominus \neg q )   \wedge (q \rightarrow p ) )\end{equation}
 %In fact, it can be shown that a single existential quantifier is sufficient. 
 Since $\ominus \varphi $ is interpreted as  $\false$ in the first state of any sequence, regardless of $\varphi$, then
-$q$ is $\false$ in the initial state. Then $q$ alternates between even and odd states.
+$q$ is $\false$ in the first state. Then $q$ alternates between even and odd states.
 
 
 %Note that since finite automata over finite sequences can be determinized, it is always sufficient to translate a
@@ -308,7 +307,7 @@ must occur within the scope of a $\ominus$ operator
 is required to help preventing that the values
 of the auxiliary variables are conflicting, as in
 $a_1 := \neg a_2$ and $a_2 := a_1$, which makes a formula
-that uses $a_1$ and $a_2$ uniformly $\false$. Still, one can write conflicting rules, e.g., by using the rule $a_1 : = \false$.
+that uses $a_1$ and $a_2$ uniformly $\false$. Still, one can write unsatisfiable rules, e.g., by using the rule $a_1 : = \false$.
 
 \begin{lemma} \label{fourone}
 Let $\varphi$ be an ELTL formula
@@ -376,7 +375,7 @@ used for extending the expressiveness of LTL model checking.
 \fi
 
 We define EPLTL by disallowing the future temporal operators (except an implied prefixing $\Box$) in ELTL. This results in
-a formalism that is equivalent to finite automata, where all the states except one are accepting and where the non-accepting state is a sink. 
+a formalism that is equivalent to finite (B\"{u}chi) automata, where all the states except one are accepting and where the non-accepting state is a sink. 
 We can use a related, but simpler construction than in Theorem~\ref{theo1} to prove the following:
 
 
@@ -406,7 +405,7 @@ In fact, it is easy to show that EPLTL can be restricted to the following form, 
 \[  \Box p {\ where\ } a_j  = \varphi_j \, : \, 
 {j \in \{1, \ldots , n\}}  \] 
 with $p$ being one of the auxiliary variables $a_j$. Yet, this may not be the preferred form
-of an EPLTL property, and the use of further past-time temporal operators, and a non trivial statement  part, may provide a more intuitive specification.
+of an EPLTL property, and the use of further past-time temporal operators, and a non trivial statement  part may provide a more intuitive specification.
 The relative expressive power between the propositional temporal logics discussed in this section is summarized in Figure~\ref{prop}. An arrow from A to B means that logic  B is more expressive than A. A double headed arrow shows same expressiveness
 
 \iffalse
@@ -454,7 +453,7 @@ Runtime verification of temporal specifications often
 concentrates on the past portion of the logic.  Past-time  specifications have the important property that one can distinguish when they are violated after observing a finite prefix of
 an execution. For an extended discussion of this issue of {\em monitorability}, see e.g.,~\cite{Ugly,FFM}.
 
-The algorithm for PLTL, first presented in \cite{HR}, 
+The algorithm for PLTL first presented in \cite{HR} 
 is based on the observation that the semantics of the 
 past time formulas $\ominus \varphi$ and $(\varphi\, \since \,\psi)$ in the current step $i$ is defined in terms of the semantics
 in the previous step $i - 1$ of a subformula.
@@ -541,26 +540,26 @@ so  $\current ( \ominus \neg q ) := \old ( \neg q )$.
 
 %\klaus{I don't see that we need to talk about the top-down evaluation.}
 
-Under {\em mixed evaluation order}, one calculates $\current$ in Step~4 in the following order. The first~4 steps are for the rules, and step~5 is for the statement $\eta$.
-\begin{enumerate}
-\item Calculate 
+Under {\em mixed evaluation order}, one calculates $\current$ as part of Step~4 of the above algorithm in the following order. The first~four steps, $a$-$d$, are for the rules, and the fifth step $e$ is for the statement $\eta$.
+\begin{description}
+\item{\em a.} Calculate 
 $\current ( \delta )$ for each subformula $\delta$
 that appears in $\varphi_j$ of a rule
 $a_j := \varphi_j$, but {\em not} within the scope of
 a $\ominus$ operator. (This is not
 a problem, since
 $\current ( \ominus \gamma )$ is set to $\old ( \gamma )$.)
-\item Set 
+\item{\em b.} Set 
 $\current ( a_j )$ to $\current ( \varphi_j )$ for each $j$.
-\item Calculate $\current ( \delta )$ for each subformula $\delta$
+\item{\em c.} Calculate $\current ( \delta )$ for each subformula $\delta$
 that appears in $\varphi_j$ of a rule
 $a_j := \varphi_j$ {\em  within} the scope of
 a $\ominus$ operator.
-\item Calculate $\current ( \delta )$ for each subformula $\delta$
+\item{\em d.} Calculate $\current ( \delta )$ for each subformula $\delta$
 that appears in the statement $\psi$, using the calculated $\current ( a_j )$.
-\item Calculate $\current ( \eta )$ for the statement
+\item{\em e.} Calculate $\current ( \eta )$ for the statement
 $\eta$.
-\end{enumerate}
+\end{description}
 
 
 
@@ -592,7 +591,7 @@ We define models for FLTL based on {\em temporal} relations~\cite{Chomicki}. Tha
 last parameter
 that is a natural number represented a time instance. So a tuple of
 a relation $R$ can be $(``a", 5, ``cbb", 3)$, where
-the $3$ is the time parameter. The last parameter $i$
+the  value $3$ is the time parameter. The last parameter $i$
 does not correspond to modeling physical time. This
 is rather used to allow the relations to have
 different tuples in different instances of $i$,
@@ -934,7 +933,7 @@ an equivalent formula. This is then equivalent to
 an LTL formula that is obtained by replacing
 the occurrences of $p(a)$ and $q(a)$ by propositions
 $p_a$ and $p_b$, which reduces to Wolper's example~\cite{Wolper}.
-Using parametric automata as a specification formalism, as in~\cite{Grum,havelund-rv-data-2018,Meredith2011,Reger2015} can express this property, 
+Using parametric automata as a specification formalism, as in~\cite{Grum,havelund-rv-data-2018,Meredith2011,Reger2015}, can express this property, 
 where for each value $a$ there is a separate automaton that counts the number of times that $q(a)$ has occurred.
 
 \vspace{1ex}
@@ -999,25 +998,6 @@ scope
 of a previous-time operator $\ominus$. 
 \end{enumerate}
 
-
-
-The logic EPFLTL is obtained by restricting the temporal modalities of EFLTL to the past ones:
-$\since$ and $\ominus$, and those derived from them.
-
-\begin{lemma} \label{samesame}
-The auxiliary temporal relations $r_1, \ldots r_n$ are
-uniquely defined by the rules for each model ${\cal R}$.
-\end{lemma}
-\noindent {\bf Proof.} By a simple induction, similar to Lemma~\ref{fourone}. \qed
-\vspace{1ex}
-The following formula expresses the property that was shown to be 
-not expressible using FLTL, at the beginning of this section.
-\begin{equation}
-\Box \forall x \, (r(x)\rightarrow p(x)) \mathrm{\ where\ }
-r(x) = ( q(x) \leftrightarrow \ominus \neg  r(x)) 
-\label{eq:wolper-first-order}
-\end{equation}
-
 \noindent
 We define\footnote{ Formal semantics 
 can also be given by constructing a set of temporal relations extended
@@ -1032,7 +1012,27 @@ QFLTL (QPFLTL, respectively) formula:
 \varphi_i ( x_j) )
 \end{equation}
 
-\noindent 
+The logic EPFLTL is obtained by restricting the temporal modalities of EFLTL to the past ones:
+$\since$ and $\ominus$, and those derived from them.
+
+\begin{lemma} \label{samesame}
+The auxiliary temporal relations $r_1, \ldots r_n$ are
+uniquely defined by the rules for each model ${\cal R}$.
+\end{lemma}
+\noindent {\bf Proof.} By a simple induction, similar to Lemma~\ref{fourone}. \qed
+\vspace{1ex}
+The following formula expresses the property described in Example~1, which was shown to be 
+not expressible using FLTL.
+\begin{equation}
+\Box \forall x \, (r(x)\rightarrow p(x)) \mathrm{\ where\ }
+r(x) = ( q(x) \leftrightarrow \ominus \neg  r(x)) 
+\label{eq:wolper-first-order}
+\end{equation}
+The property that corresponds to Example~2 appears as the third checked example in the implementation section~\ref{implement}.
+
+
+
+
 Analogously to the propositional case, it is easy to show that EPFLTL does not
 need the past temporal operators besides $\ominus$.
 
@@ -1047,7 +1047,7 @@ past temporal operators. \qed}
 
 %We showed in Theorem~\ref{theo1} that ELTL (EPLTL)
 %and QLTL (PQLTL, respectively) have the same
-expressive power. We study now the relationship between
+%expressive power. We study now the relationship between
 %EFLTL (EPFLTL) and QFLTL (QPFLTL, respectively).
 
 \begin{theorem}
@@ -1060,7 +1060,7 @@ The proof of this theorem includes encoding of a  property that
 observes sets of data elements $a$, appearing separately, one per state as $v (a)$,
 in between states where $r$ appears. The domain of data elements is unbounded.
 %(i.e., $r$ is a relation with
-%one parameter: the time/state-index parameter $i$).
+%one parameter: the time parameter $i$).
 The set of $a$-values observed in between two consecutive $r$'s is called a {\em data set}.
 The property asserts that there are no two consecutive data sets that are equivalent.
 This property can be expressed in QPFLTL. The details appear in the appendix.
