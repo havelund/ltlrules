@@ -235,11 +235,6 @@ accepts a run if it
 passes infinitely often in exactly
 one of the specified accepting sets. To formulate an equivalent ELTL formula,
 the auxiliary variables represent the states $S$ of $M$, i.e., $a_s$ represents the state $s \in S$.
-
-%\klaus{The following formulation above is not not clear: ``where an accepted input needs to pass infinitely often in exactly
-%one of the specified sets''.}
-
-\noindent
 Then we translate $M$ into an ELTL formula
 of the form: 
 
@@ -339,16 +334,12 @@ I [ (\varphi \since \psi ) , {\cal R} , i - 1 ] )$.
 \end{itemize}
 Note that the last time interprets a formula of
 the form defined in~(\ref{EFLTL}).
-
 %\klaus{Above: as the semantics is presented, it looks as if 
 %the `$\psi\ where ...$' is just another subformula.}
-
 %\klaus{Above: hide is not defined.}
-
 %\klaus{Above: the semantics of $p(a)$ and $p(x)$ do not refer to 
 %${\cal R} $.}
-
-In the last item, the extended model ${\cal Q}$ appears both on the left and the right of the equality sign. It is well defined because of Lemma~\ref{samesame}.
+In the last item, the extended model ${\cal Q}$ appears both on the left and the right of the equality sign. It is well defined because of Lemma~\ref{samesame} (equivalently, a more verbose definition can include a stepwise construction of ${\cal Q}$ from ${\cal R}$).
 \end{document}
 
 
