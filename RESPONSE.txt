@@ -266,7 +266,41 @@ introduction did not clarify the structure well enough.
 > Functional Reactive Programs' by Finkbeiner et. al
 > https://arxiv.org/abs/1712.00246.
 
-*** TODO ***
+The paper referred to indeed introduces a concept of assignments in
+the temporal logic TSL.  An interesting read (nice paper)! we were not
+aware of this work. There are some essential differences though.
+
+First of all, assignments in TSL are to simple variables that along
+one trace only can hold one value at a time. This in contrast to our
+solution, where rules (and quantified variables in general) can keep
+track of multiple values (sets of values, they are relations in
+general), which is necessary for expressing the kind of properties we
+are interested in. E.g. it is as far as we understand (we may be
+wrong) not possible in TSL to express the following property, assuming
+that file identifiers range over the infinite domain of strings:
+
+  "whenever a file x is opened, file x should not be zip'ed
+   until file x has been closed"
+
+Assume that numerous files can be open at the same time, an unknown
+number up front.  If in TSL one uses a variable that stores a single
+file name this will not work.  To handle such a property, a variable
+storing file identifiers would need to be able to store all files
+opened so far and not yet closed. This of course can be programmed by
+letting a variable store a set of file names. However, this is like
+programming, and it becomes more complicated with more complicated
+properties. Another way of phrasing this is that TSL is closer to the
+concept of extended state machines, where there is one state machine
+with one state of data values that is updated in addition to the
+control states changing. In our framework we can say that we have a
+state machine for each value x.
+
+Second, TSL does not support the transitive closure of relations,
+whereas our logic does.  This is non-trivial as well.
+
+Finally, TSL is a future time logic, whereas our logic is a past time
+logic. There is a substantial difference in how algorithms in these
+two different spaces work.
 
 > Finally, the paper contains typos that create problematic ambiguities.
 > As an example, the top of page 5 notes that the logic PQLTL is
