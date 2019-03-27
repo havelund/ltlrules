@@ -1,0 +1,313 @@
+
+General comment: Two of the reviews seem to ask (more or less
+directly) what the contribution of the paper is.  We admit that the
+introduction may not have provided a sufficiently clear overview over
+this work, since many logics are introduced, but in the following we
+try to briefly outline this (and we will of course later improve the
+introduction).
+
+In previous work [23,24] we presented a BDD-based monitoring algorithm
+for:
+
+  PFLTL : Past-time First-order LTL
+
+as defined on page 9. This logic has limitations in expressiveness as
+shown with two examples on page 10. As main contribution, we
+consequently present an extension of this logic, called:
+
+  EPFLTL: Extended Past-time First-ordrer LTL
+
+See page 11 equation (5). The extension coniststs of adding rules to
+temporal properties.  Example properties (not expresssible in PFLTL)
+are shown in Figure 2 page 16.  This logic is strictly more expressive
+than PFLTL by allowing e.g. Wolper's in-every-even-state property and
+generally transitive closures over data in the trace to be
+expressed. The algorithm is presented on page 14.  The corresponding
+tool has been extended as well (and is availbale open source).
+
+The paper is structured in such a way that it gradually builds up this
+result in steps, with some intermediate results, first making the
+argument for the propositional LTL case in Sections 2 and 3, and then
+for the first-order LTL case in Sections 4 and 5, as follows.
+
+For the propositional case:
+
+- LTL is introduced and its limitation to past time operartors PLTL
+  (known results)
+
+- QLTL (and its past time version QPLTL) is LTL (PLTL) with (so-called
+  dynamic) quantification over states. This is a known extension
+  described by Wopler in [21]. This extends the expressiveness of LTL
+  to allow formulation of the property: "every even state satisfies
+  p", not expressible in LTL. However it is not obvious how to design
+  an algorithm for efficiently monitoring QLTL properties. Therefore
+  we alternatively propose (and this is the main theme in the paper):
+  
+- ELTL (and its past time version EPLTL) that instead extends LTL
+  (PLTL) with rules, achieving the same expressivness as QLTL (QPLTL)
+  but with a well defined monitoring algorithm. This is a new result.
+
+For the first-order case we repeat the above story, ending with the final
+contribution:
+
+- FLTL and specifically PFLTL are introduced. The logic PFLTL and its
+  monitoring algorithm was introduced in previous work by us [23,24].
+
+- QFLTL (and its past time version QPFLTL) is introduced, showing how
+  to extend FLTL with quantification over states as in the
+  propositional case. This is a new theoretic result. However, as in
+  the propositional case, it is not clear how to construct an
+  efficient monitoring algorithm. This therefore leads us to the final
+  result and main contribution:
+
+- EFLTL and specifically the past time version EPFLTL are introduced,
+  and a monitoring algorithm for EPFLTL is presented.
+
+----------------------- REVIEW 1 ---------------------
+
+> The authors claim that these extensions are useful for runtime
+> verification and present some minimal experimental results from
+> running a BDD-based implementation of the extensions.
+
+As for experiments with BDDs, we have performed many experiments, they
+are mentioned in our past papers, and are publically available with
+our tool. But due to anonymous reviewing, we cannot reveal it. We only
+here presented experiments to show the strength of the extension of
+the logic.
+
+> I am not quite on board with the motivation of the paper. In runtime
+> verification, the truth values of formulas are determined on a single
+> trace, hence, in particular, LTL and CTL are equivalent, and the
+> verification is hence polynomial. It is also quite standard in
+> model-checking to augment the intermediate states on the path with the
+> truth values of subformulas (this is how CTL model checking is done,
+> and hence also LTL for a single trace). Wouldn't it address at least
+> some of the concerns of the authors (that is, which subformulas are
+> satisfied in which states)?
+
+*** TODO ***
+
+We do not quite understand this comment.
+
+> Also, I see no reference to PSL, which is the IEEE standard for
+> property specification languages, or to ForSpec, which is Intel's
+> specification language. I am wondering whether these would already
+> provide the necessary functionality.
+
+We should definitely cite the excellent well known work on
+PSL/ForSpec. However, PSL and other standards are limited in the way
+they handle data, and are basically strong propositional logics. They
+are equivalent to logics that we cited, e.g. regular expressions and
+2nd order monadic logic (this is not a logic with data!). We
+introduced the propositional extension with rules (ELTL/EPLTL) to
+demonstrate how simple (not more expressive than regular expressions)
+our extension is, and as an easy to read motivation for a related
+extension for first-order LTL (EFLTL/EPFLTL).  The subject of our
+paper is not about expressiveness of propositional LTL, but a
+practical extension to first-order LTL. As a side effect, the
+propositional introduction also makes a new nice style of expressive
+LTL properties.
+
+> Adding quantification is solvable, in general, with a QBF solver, and
+> in some cases even without it. In the Intel's paper about enhanced
+> vacuity from the beginning of 2000's, they studied the problem of
+> model-checking a quantified formula and demonstrated that for the
+> types of formulas they constructed it is no harder than
+> model-checking.
+
+We assume you are referring to the paper:
+
+  Enhanced Vacuity Detection in Linear Temporal Logic
+  R. Armoni, L. Fix, A. Flaisher, O. Grumberg, N. Piterman, A. Tiemeyer, M. Vardi
+  CAV 2003
+
+The main difference is the first-order nature of our logic, in
+contrast to the logic presented in that paper, which is propositional
+(and by the way limited in where quantifiers can appear). However,
+thanks for the reference, we will explore this work.
+
+> Finally, I might be wrong, but it seems to me that BDDs are no longer
+> widely used in model-checking, replaced by SAT and SMT solvers. I am
+> wondering whether the implementation with BDDs is interesting enough.
+
+The main problem studied in this paper is that of a linear temporal
+logic with data, i.e., (past) first order linear temporal logic. For
+this reason, a representation that can efficiently handle relations
+over (basically unbounded) data is important. The BDD representation
+is used to represent such big relations, where the BDDs hold
+enumerations of the seen data values rather than that (hashed) data
+values themselves. Consequently, we can use efficient standard Boolean
+operators on BDDs to implement intersection, union and complementation
+of sets (since the sets are only semi infinite, there is a special
+encoding value for "all values not seen"). This is a surprisingly
+efficient representation which works with first-order LTL.  BDDs are
+nowdays less frequently used for model checking, but (a) this is not
+model checking but runtime verification (b) they are used for the
+specific and ingenious way of representing relations, and (c) SAT
+solvers are not needed here. We are aware of (and will cite) work on
+using SMT for runtime verification:
+
+  Monitoring Modulo Theories
+  Normann Decker, Martin Leucker, and Daniel Thoma
+
+but it is not particularly efficient.
+
+----------------------- REVIEW 2 ---------------------
+
+> While the paper explores a potentially useful abstraction for runtime
+> verification, it was hard to fully understand the motivation for this
+> work. Some ways that the work could be strengthened are listed below.
+
+Sure, see also leading comment above.
+
+> Thm. 1 and Lemma 2 show that the introduced logics (ELTL and EPLTL)
+> have the same expressive power as Q(P)LTL. The authors should make the
+> benefit of introducing these new logics more clear.
+> 
+> Thm. 2 shows that
+> QPFLTL is more expressive than EPFLTL, but the authors do not provide
+> any complexity results on the decidability of these logics - for what
+> benefit are we trading the expressivity?
+
+As explained in the general introduction of this response, the main
+reason for moving from 'Q' to 'E', e.g. from QPFLTL to EPFLTL, is that
+we can show how to construct an efficient monitoring algorithm for 'E'
+(e.g. EPFLTL), whereas we do not see how to do this for more theoretic 'Q'
+(e.g. QPFLTL). That is the main message of the paper.
+
+> Thm 2 also opens the question
+> of whether EQPFLTL makes sense and if so how it relates to the other
+permutations of (E/Q/F/PLTL).
+
+There is no need to extend QPFLTL with rules since the rule extension 'E'
+is an easier monitorable *alternative* to the dynamic quantification 'Q'.
+
+> The limitations of existing runtime verification systems for data
+> intensive systems could be made more clear through an evaluation that
+> compares the use of EFPLTL for runtime verification with the
+> alternative existing approaches. At the moment the evaluation only
+> presents benchmarks for the introduced tool, but does not situate this
+> evaluation in the context of existing runtime verification tools.
+
+That is a fair comment.
+
+> Furthermore, the evaluation includes a 'spawning' trace where analysis
+> time appears to scale exponentially in the size of the trace. The
+> authors mention this is possibly due to the increasingly large amount
+> of data that must be stored as the trace grows. As the system is
+> intended to be used for runtime verification, what practical
+> consideration must be made given the exponentially scaling with
+> respect to the lifecycle of the task being monitored?
+
+It is certainly true that dealing with data introduces the problem
+that monitoring becomes trace length dependent.  To tackle this
+problem, the original version of the tool performs a clever form of
+garbage collection, described in [24], where data no longer needed are
+dropped from the BDDs.  In the here (artificially created) property
+and trace, there is indeed a problem if too many threads are spawned.
+We have not in this work studied how to limit monitoring to become
+less trace length dependent. We consider this as an orthogonal,
+although very important, line of work in the field of runtime
+verification. Only little work has been done in this direction so far.
+
+> In addition, a more thorough analysis of memory usage should be
+> included in the evaluation. No information is provided on the system
+> that ran these evaluation results. Do these benchmarks' memory usage
+> exceed the available RAM and trigger disk operations? As the temporal
+> relations of (P)FLTL require increasingly large hash tables to save
+> their evaluations, what impact will this have on memory limited
+> systems? This is especially relevant for the many use cases of runtime
+> verification on embedded systems.
+
+Indeed, memory analysis should be included. This information was not
+directly visible when running our scripts (not a good excuse,
+admitted). Memory is of course critical. As mentioned above, we do
+perform garbage collection on unused values as described in [24]. For
+example for the property
+
+  forall x . p(x) -> !q(x) S r(x)
+
+(meaning: forall x . if p(x) then in the past r(x) and since then no
+q(x)), the monitor will drop any value x for which we in the past saw
+an r(x) and since then saw! a q(x). But the general problem of
+monitoring embedded systems is challenging. Not all problems can be
+solved at once.
+
+> Another issue is that it was hard to identify the paper's
+> contribution. The section on 'Runtime verification algorithm for
+> PFLTL' has already been described in [24]. To handle EPFLTL, Sec 5
+> introduces a single 'rename' function which seems a relatively small
+> delta with respect to [24]. The authors point us back to section 3
+> (mixed evaluation order) for further contributions with respect to
+> [24] to handle EPFLTL, but it is then not clear why Section 3 is
+> separate from Section 5.
+
+See general introduction to this response for a more general outline
+of the work. The handling of EPFLTL, compared to PFLTL, is not trivial
+and was quite difficult to implement. We do not consider it a
+relatively small delta, although the theory perhaps is small (and
+elegant). Concering the question why Section 3 is separate from
+Section 5: as outlined in the introductory text above, Section 3 deals
+with the propositional case whereas Section 5 deals with the
+first-order case.
+
+> The paper should better position its contributions wrt. related work.
+> Throughout the paper, the authors should make it more obvious to the
+> reader that only logics prefixed with an E are new logics introduced
+> in this work (if I understood the paper correctly).
+
+Well, QFLTL and QPFLTL are new (first-order LTL extended with dynamic
+quantification).  But yes, the comment is largely correct. Our
+introduction did not clarify the structure well enough.
+
+> Additionally, the use of predicates to encode information about the
+> prefix of the state (system inputs seen so far), and thereby allowing
+> arbitrary data over infinite domains, was explored in 'Synthesizing
+> Functional Reactive Programs' by Finkbeiner et. al
+> https://arxiv.org/abs/1712.00246.
+
+*** TODO ***
+
+> Finally, the paper contains typos that create problematic ambiguities.
+> As an example, the top of page 5 notes that the logic PQLTL is
+> obtained by restricting QPLTL to past modalities. From context, it
+> appears this should read as QLTL, not QPLTL.
+
+Indeed.
+
+> Furthermore, by page 6
+> the authors are proving properties of QPLTL, but PQLTL is no longer
+> referenced. Although from context the reader can infer that QPLTL and
+> PQLTL these should be taken as the same logic (except on page 5 when
+> QPLTL refers to QLTL), these inferences should not be left to the
+> reader. I also believe that there is an issue with Theorem 2 - when
+> comparing the expressive power of EPFLTL and QFPLTL, the statement
+> instead reads as comparing EPFLTL and QFLTL.
+
+
+Indeed to all observations here, we should have used/should use latex
+macros for this!
+
+----------------------- REVIEW 3 ---------------------
+
+> The experimental results seem
+> preliminary: apart from the fact that the examples are made up, it's
+> unclear how the collection of traces was generated.
+
+The artificial traces were generated by a trace generating program
+parameterized with various constants, indicating how many events of
+various kinds should be generated, and the patterns with which they
+are generated. The objectieve was to generate as many data values in
+the trace as possible, while at the same time also cause repetition of
+patterns.
+
+> It would be more
+> convincing to see this applied to more realistic examples (esp the
+> transitive closure property surely has many applications).  However,
+> the tool is apparently available publicly (links hidden due to blind
+> review).
+
+Yes, it would be better with more realistic examples. The tool is
+publicly available.
+
+------------------------------------------------------
