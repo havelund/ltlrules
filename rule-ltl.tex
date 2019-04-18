@@ -7,7 +7,7 @@ to evaluate the state of the observed system. Processing can take numerous
 forms. We focus here on {\em specification-based} runtime verification, where an execution trace is checked against a property expressed in a formal logic, in our case variants of linear temporal logic.
 
 Linear Temporal Logic (LTL) is a common specification formalism for reactive and concurrent systems. It is often used in e.g. model checking and runtime verification. Another formalism that is used for the same purpose is finite automata, often over infinite words. This includes B\"{u}chi, Rabin, Street, Muller and Parity automata~\cite{Thomas}, all having the same expressive power. In fact, model checking of an LTL specification
-is usually performed by first translating the specification into a B\"{u}chi automaton. The automata formalisms are more expressive than LTL, with a classical example By Wolper~\cite{Wolper} showing that
+is usually performed by first translating the specification into a B\"{u}chi automaton. The automata formalisms are more expressive than LTL, with a classical example by Wolper~\cite{Wolper} showing that
 it is not possible to express in LTL that every even state in
 the sequence satisfies $p$. This has motivated extending LTL
 in various ways.
@@ -23,7 +23,7 @@ B\"{u}chi automata, regular expressions and quantified LTL.
 
 We then proceed to first-order LTL. We relativise Wolper's example to the first
 order case to motivate the need for
-extending first-order LTL. Another example is based on the unexpressiveness of the transitive closure of a relation in first order logic, where, e.g., using a relation representing neighbors in a graph is not enough for representing that there is a path between nodes.
+extending first-order LTL. Another example is based on the inexpressiveness of the transitive closure of a relation in first order logic, where, e.g., using a relation representing neighbors in a graph is not enough for representing that there is a path between nodes.
 We present an extension where auxiliary relations, not appearing in the execution, are
 added. While this extension
 is capable of expressing the above
@@ -235,10 +235,10 @@ Wolper's property can be expressed in QLTL as follows:
 \begin{equation} \label{form0} \Exists q \,
 ( (  \neg q \wedge \Box (q \leftrightarrow \bigcirc \neg q )  )  \wedge \Box (q \rightarrow p ) )\end{equation}
 
-Restricting QPLTL to the past modalities, one obtain the logic PQLTL. PQLTL has the same expressive
+Restricting QLTL to the past modalities, one obtains the logic QPLTL. QPLTL has the same expressive
 power as regular expressions and finite automata.
 Equation~(\ref{form0}) can
-be rewritten in PQLTL as:
+be rewritten in QPLTL as:
 \begin{equation} \label{form1} \Exists q \,
 {\bf H} (( q \leftrightarrow \ominus \neg q )   \wedge (q \rightarrow p ) )\end{equation}
 %In fact, it can be shown that a single existential quantifier is sufficient. 
@@ -247,7 +247,7 @@ $q$ is $\false$ in the first state. Then $q$ alternates between even and odd sta
 
 
 %Note that since finite automata over finite sequences can be determinized, it is always sufficient to translate a
-%PQLTL property into a deterministic
+%QPLTL property into a deterministic
 %automaton.
 
 
@@ -270,7 +270,7 @@ An ELTL property $\eta$ has the following form:
  {j \in \{1, \ldots , n\}} \end{equation}
 where each $a_j$ is a distinct auxiliary proposition from $A$,
 $\psi$ is an LTL property and each $\varphi_i$ 
-is a PLTL property where propositions from $B$ can
+is a PLTL property where propositions from $A$ can
 only occur within the scope of a $\ominus$ operator.
 The semantics can be defined as follows. We refer to $\psi$
 as the {\em statement} of $\eta$ and to 
@@ -314,7 +314,7 @@ Let $\varphi$ be an ELTL formula
 over the auxiliary propositions $A = \{ a_1 , \ldots , a_n \}$ and basic propositions $B$, with
 a set of rules $a_j  := \varphi_j \, : \, 
  {j \in \{1, \ldots , n\}}$. 
-Let $\sigma$ be a model with states over the $B$. 
+Let $\sigma$ be a model with states over $B$. 
 Then there is at most one
 model $\sigma'$ such that $\sigma' |_A = \sigma$ and $\sigma' \models \Box \bigwedge_{1 \leq j \leq n} ( a_j \leftrightarrow \varphi_j) $
 
@@ -502,7 +502,7 @@ report a violation, otherwise goto step~2.
 \end{enumerate}
 
 \subsubsection*{Runtime verification for QPLTL.}  This can be performed by translating a
-formula into a deterministic finite automaton, where one distinguished states, $s$, in a sink state.
+formula into a deterministic finite automaton, where one distinguished state, $s$, is a sink state.
 Then the sequence of states to be checked forms the input for this automaton, and violation is
 announced if $s$ is reached.
 QPLTL can be extremely compact, in particular when using alternating existential and universal 
@@ -993,7 +993,7 @@ free variable $x_j$,
 \item $r_j$ is an auxiliary temporal relation with $2$ parameters; the first parameter is of the same 
 type as $x_j$ and the second one is, as usual,
 a natural number that is omitted in the temporal formulas. 
-An auxiliary relations $r_j$ can appear within $\psi$. They can also appear in $\varphi_k$ of a {\em rule} $r_k := \varphi_k$, but only within the
+An auxiliary relation $r_j$ can appear within $\psi$. They can also appear in $\varphi_k$ of a {\em rule} $r_k := \varphi_k$, but only within the
 scope
 of a previous-time operator $\ominus$. 
 \end{enumerate}
@@ -1046,13 +1046,13 @@ past temporal operators. \qed}
 %\klaus{Is the formula above really correct?}
 
 %We showed in Theorem~\ref{theo1} that ELTL (EPLTL)
-%and QLTL (PQLTL, respectively) have the same
+%and QLTL (QPLTL, respectively) have the same
 %expressive power. We study now the relationship between
 %EFLTL (EPFLTL) and QFLTL (QPFLTL, respectively).
 
 \begin{theorem}
 \label{theo2}
-The expressive power of EPFLTL is strictly weaker than that of QFLTL.
+The expressive power of EPFLTL is strictly weaker than that of QPFLTL.
 \end{theorem}
 
 \noindent {\bf Sketch of Proof.}
@@ -1066,7 +1066,7 @@ The property asserts that there are no two consecutive data sets that are equiva
 This property can be expressed in QPFLTL. The details appear in the appendix.
 
 We use a combinatorial argument to show by contradiction that one cannot express this property
-in EPFLTL. The reason is that every prefix of an a model for an EPFLTL property is extended uniquely with
+in EPFLTL. The reason is that every prefix of a model for an EPFLTL property is extended uniquely with
 auxiliary relations, according to Lemma~\ref{samesame}. Each prefix can be summarized by a finite number of relations: the ones in
 the model, the auxiliary relations and the
 assignments satisfying the subformulas. The size of

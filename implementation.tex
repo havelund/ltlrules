@@ -12,11 +12,11 @@ The tool uses the JavaBDD library for BDD manipulations \cite{javabdd}.
 
 \vspace{1ex}\noindent {\bf Example properties.}
 Figure \ref{fig:properties} shows three properties in the 
-input format of the tool, related to the examples in Section~\ref{sec:syntax-semantics}, which
+input ASCII format of the tool, related to the examples in Section~\ref{sec:syntax-semantics}, which
 are not expressible in (P)FLTL.
-These properties are not expressible in the original first-order logic of \dejavu{} presented in \cite{HPU}. The properties are 
+These properties are not expressible in the original first-order logic of \dejavu{} presented in \cite{HPU}. 
 %
-The ASCII version of the logic here uses 
+The ASCII version of the logic uses 
 \idsl{@} for $\ominus$,
 \idsl{|} for $\vee$,
 \idsl{&} for $\wedge$, and
@@ -37,7 +37,7 @@ rules, more closely reflecting how we would model this using a state machine wit
 (the only state where \idsl{@true} is false), and there is no \idsl{toggle(x)} event. The next alternative states that
 \idsl{closed(x)} was true in the previous state and there is
 no \idsl{toggle(x)} event.
-The third alternative states that we in the previous state were
+The third alternative states that in the previous state we were
 in the \idsl{open(x)} state and we observe a \idsl{toggle(x)} 
 event. Similarly for the \idsl{open(x)} rule.
 
