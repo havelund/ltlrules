@@ -165,11 +165,56 @@
 
 \definecolor{light-gray}{gray}{0.95}
 
+\newcommand\ignore[1]{}
+
 %%%%%%%%%%%%%%%%
 % Mathematics: %
 %%%%%%%%%%%%%%%%
 
 \newcommand{\boolty}{\mathbb{B}}
+
+%%%%%%%%%%%
+% Logics: %
+%%%%%%%%%%%
+
+% --- standard as before: ---
+
+%\ignore{
+\newcommand\QPFLTL{QPFLTL}
+\newcommand\QFLTL{QFLTL}
+\newcommand\QPLTL{QPLTL}
+\newcommand\QLTL{QLTL}
+\newcommand\EPFLTL{EPFLTL}
+\newcommand\EFLTL{EFLTL}
+\newcommand\EPLTL{EPLTL}
+\newcommand\ELTL{ELTL}
+\newcommand\PFLTL{PFLTL}
+\newcommand\PLTL{PLTL}
+\newcommand\FLTL{FLTL}
+%}
+
+% --- experiments: ---
+
+% If we change the format of logics, note that the following need attention:
+% (E)\PFLTL
+% (E)\PLTL
+% (P)\FLTL
+
+% --- experiment 1: ---
+
+\ignore{
+\newcommand\QPFLTL{LTL($\Forall,\forall,\bullet$)}
+\newcommand\QFLTL{LTL($\Forall,\forall$)}
+\newcommand\QPLTL{LTL($\Forall,\bullet$)}
+\newcommand\QLTL{LTL($\Forall$)}
+\newcommand\EPFLTL{LTL($:=,\forall,\bullet$)}
+\newcommand\EFLTL{LTL($:=,\forall$)}
+\newcommand\EPLTL{LTL($:=,\bullet$)}
+\newcommand\ELTL{LTL($:=$)}
+\newcommand\PFLTL{LTL($\forall,\bullet$)}
+\newcommand\PLTL{LTL($\bullet$)}
+\newcommand\FLTL{LTL($\forall$)}
+}
 
 %%%%%%%%%%%%
 % Symbols: %
@@ -191,8 +236,6 @@
 %%%%%%%%%%%%%
 % Comments: %
 %%%%%%%%%%%%%
-
-\newcommand\ignore[1]{}
 
 \newif\ifcomments
 \commentstrue

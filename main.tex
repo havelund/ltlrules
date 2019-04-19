@@ -149,7 +149,7 @@ Hence, the sequence of states
 is a model of this formula, while 
 \[ \{ r \} \{ v(1) \}  \{ v(2) \} \{ v(3) \}  \{ r\}  \{ v(2) \}  \{  v(1) \}  \{  v(3) \} \{  r \} \]
 is not.
-The QFLTL formula is a bit involved, hence given in several parts (macros), where the main formula appears last.
+The \QFLTL{} formula is a bit involved, hence given in several parts (macros), where the main formula appears last.
 
 \begin{itemize}
 \item $add(P) ::= \forall x \, (P(x) \leftrightarrow (v(x) \vee \ominus P(x))$ [The set $P$ differs in the current state from the previous one only by values $a$ that appear in $v(a)$.]
@@ -178,13 +178,13 @@ with various values $a$, between a pair of states satisfying $r$ that contain ex
 %\klaus{Above: isn't there missing a $\Box$ in the main formula?}
 
 \iffalse
-We prove that the above property cannot be expressed in EPFLTL.
+We prove that the above property cannot be expressed in \EPFLTL{}.
 We use a combinatorial argument, showing that
-the information that is available in any EPFLTL
+the information that is available in any \EPFLTL{}
 property
 after a prefix is not sufficient to distinguish between two models (executions), one satisfying and one not satisfying it.
 
-In EPFLTL, after every prefix of the input, it is
+In \EPFLTL{}, after every prefix of the input, it is
 sufficient to keep a finite set of (non temporal) relations over the
 data elements seen in the input, which
 summarizes the prefix. This follows from the set
@@ -195,7 +195,7 @@ at a particular state is a relation, and the interpretation
 of a property a prefix of length $i$ only depends on
 these relations. Now, the amount of information
 that summarizes an observed prefix for
-EPFLTL is is polynomial
+\EPFLTL{} is is polynomial
 in $N$, consisting of a finite number
 of relations over
 $N$ elements. The number of different tuples
@@ -216,10 +216,10 @@ But the number of such subsets is exponential in $N$. \qed
 %\klaus{Above: why set of subsets?}
 
 \iffalse
-{\bf Comments.} First, note that the reason that QFLTL {\em can} express the property in Theorem~\ref{theo2}, is that it allows to augment the input relations with auxiliary relations that are not fixed. That is, for an auxiliary relation $R$,
+{\bf Comments.} First, note that the reason that \QFLTL{} {\em can} express the property in Theorem~\ref{theo2}, is that it allows to augment the input relations with auxiliary relations that are not fixed. That is, for an auxiliary relation $R$,
 $R [ i ]$ is not fixed, and can change per different
 prefixes (of length at least $i$), or even in different
-subformulas. Second, given a simple extension to EFLTL, where 
+subformulas. Second, given a simple extension to \EFLTL{}, where 
 one can use a variable that represents an updatable
 counter (or a generator of distinct values), one can express the property used in~\ref{theo2}, by
 keeping a relation where values between different occurrences of the event $r$ are paired with distinct values, hence, representing an unbounded set of sets.
@@ -227,15 +227,15 @@ keeping a relation where values between different occurrences of the event $r$ a
 
 %%%M
 \subsection*{Details of left to right direction of Theorem~\ref{theo1}.}
-One can translate any QLTL property into a second-order monadic logic in a standard
+One can translate any \QLTL{} property into a second-order monadic logic in a standard
 way~\cite{Thomas}, and then from
 second-order monadic logic to a deterministic Muller automaton $M = (S, \iota , \Sigma, \Delta, {\cal F})$ (a B\"{u}chi automaton may not always be deterministic), where $S$ is the set of states, $\iota \in S$ is the initial state, $\Sigma$ is the set of inputs, each $\alpha \in \Sigma$ is a minterm (i.e., conjunction of
 each variable in the set negated or non-negated) of the variables in $B$, $\Delta : S \times \Sigma \mapsto S$ is the transition function, and ${\cal F} = \{ F_1 , \ldots , F_k \}$ is the accepting set. A muller automaton 
 accepts a run if it 
 passes infinitely often in exactly
-one of the specified accepting sets. To formulate an equivalent ELTL formula,
+one of the specified accepting sets. To formulate an equivalent \ELTL{} formula,
 the auxiliary variables represent the states $S$ of $M$, i.e., $a_s$ represents the state $s \in S$.
-Then we translate $M$ into an ELTL formula
+Then we translate $M$ into an \ELTL{} formula
 of the form: 
 
 \begin{tabbing}
