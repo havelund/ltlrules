@@ -1,4 +1,5 @@
 \documentclass{llncs}
+\usepackage{authblk}
 %\documentclass[converence,10pt]{IEEEtran}
 %\IEEEoverridecommandlockouts
 %\usepackage{cite}
@@ -17,8 +18,54 @@
 
 \begin{document}
 
-\title{An Extension of LTL with Rules and its application to Runtime Verification}
+\title{An Extension of LTL with Rules\\ and its Application to Runtime Verification}
 
+
+
+%\ignore{
+%\author{\IEEEauthorblockN{Klaus Havelund} 
+%\IEEEauthorblockA{\textit{Laboratory for Reliable 
+%Software} \\
+%\textit{NASA Jet Propulsion Laboratory}\\
+%Pasadena, USA \\
+%klaus.havelund@jpl.nasa.gov}\\\mbox{}\\
+%\and
+%\IEEEauthorblockN{Doron Peled} 
+%\IEEEauthorblockA{\textit{Dep. of Computer Science} \\
+%\textit{Bar Ilan University}\\
+%Ramat Gan, Israel \\
+%doron.peled@gmail.com}
+%}
+
+
+%\author{Submitted Anonymosly}
+
+%\thanks{Copyright 2018. All rights reserved.}
+
+
+\author{Klaus Havelund$^1$ \and Doron Peled$^2$}
+
+%\ignore{
+%Klaus Havelund~\thanks{The research performed by this %author was carried out at Jet Propulsion Laboratory, %California Institute of Technology, under a contract %with the National Aeronautics and Space %Administration.} 
+%\and
+%Doron Peled
+%~\thanks{The research performed by this author was %partially funded by Israeli Science Foundation grant %1464/18: 
+%``Efficient Runtime Verification for Systems with Lots %of Data and its Applications''.
+
+
+
+
+
+\institute{
+Jet Propulsion Laboratory, 
+California Institute of Technology, USA 
+\and
+Department of Computer Science,
+Bar Ilan University, Israel
+}
+
+
+\iffalse
 \author{
 \begin{tabular}{ccc}
 Klaus Havelund & \vspace{0.2cm} & 
@@ -28,91 +75,22 @@ Bar Ilan University, Ramat Gan, Israel \\
 klaus.havelund@jpl.nasa.gov & & doron.peled@gmail.com
 \end{tabular}
 }
-
-
-\ignore{
-\author{\IEEEauthorblockN{Klaus Havelund} 
-\IEEEauthorblockA{\textit{Laboratory for Reliable 
-Software} \\
-\textit{NASA Jet Propulsion Laboratory}\\
-Pasadena, USA \\
-klaus.havelund@jpl.nasa.gov}\\\mbox{}\\
-\and
-\IEEEauthorblockN{Doron Peled} 
-\IEEEauthorblockA{\textit{Dep. of Computer Science} \\
-\textit{Bar Ilan University}\\
-Ramat Gan, Israel \\
-doron.peled@gmail.com}
-}
-}
-
-%\author{Submitted Anonymosly}
-
-%\thanks{Copyright 2018. All rights reserved.}
-
-
-\author{ 
-Klaus Havelund~\thanks{The research performed by this author was carried out at Jet Propulsion Laboratory, California Institute of Technology, under a contract with the National Aeronautics and Space Administration.} 
-\and
-Doron Peled~\thanks{The research performed by this author was partially funded by Israeli Science Foundation grant 1464/18: 
-``Efficient Runtime Verification for Systems with Lots of Data and its Applications''.
-}
-}
-
-
-
-
-\institute{
-Jet Propulsion Laboratory, \\
-California Institute of Technology, USA 
-\and
-Department of Computer Science \\
-Bar Ilan University, Israel
-}
-
-
-
+\fi
 
 %\hfill
 \maketitle
 
-\begin{abstract}
+\input{abstract}
 
-Runtime Verification (RV) consists of analyzing execution 
-traces using formal techniques. 
-%RV is scalable and 
-%therefore has a big potential for infusion in software 
-%engineering practices. 
-It includes monitoring the 
-execution of a system against properties formulated in 
-Linear Temporal Logic (LTL). 
-LTL offers a succinct notation for writing useful 
-specification properties. However, it is limited in 
-expressiveness in the propositional case, and several 
-theoretic extensions have therefore been proposed. Furthermore, for many practical cases, there is a need to monitor properties 
-that carry data, where one can use formalisms like 
-first-order LTL. We show that 
-first-order LTL has similar expressiveness
-limitations as the propositional version. We suggest here 
-two related extensions for increasing the expressive power: 
-one for propositional LTL and one for 
-first-order LTL. These extensions have a simple incremental operational 
-semantics that is more suitable for RV than previously 
-suggested extensions. We show that the 
-propositional extension has the same expressiveness as the 
-classical extensions, and demonstrate its
-adoption for runtime verification of first-order safety 
-properties. Finally, we expand the BDD-based runtime verification 
-tool \dejavu{} to support our extension and perform some 
-experiments.
-
-\end{abstract}
+\input{introduction}
 
 \input{rule-ltl}
 
 \input{implementation}
 
 \input{conclusion}
+
+%\newpage
 
 \input{prop.bib}
 
@@ -228,7 +206,7 @@ keeping a relation where values between different occurrences of the event $r$ a
 \subsection*{Details of left to right direction of Theorem~\ref{theo1}.}
 One can translate any \QLTL{} property into a second-order monadic logic in a standard
 way~\cite{Thomas}, and then from
-second-order monadic logic to a deterministic Muller automaton $M = (S, \iota , \Sigma, \Delta, {\cal F})$ (a B\"{u}chi automaton may not always be deterministic), where $S$ is the set of states, $\iota \in S$ is the initial state, $\Sigma$ is the set of inputs, each $\alpha \in \Sigma$ is a minterm (i.e., conjunction of
+second-order monadic logic to a deterministic Muller automaton $M = (S, \iota , \Sigma, \Delta, {\cal F})$ (a deterministic B\"{u}chi automaton may not always be possible), where $S$ is the set of states, $\iota \in S$ is the initial state, $\Sigma$ is the set of inputs, each $\alpha \in \Sigma$ is a minterm (i.e., conjunction of
 each variable in the set negated or non-negated) of the variables in $B$, $\Delta : S \times \Sigma \mapsto S$ is the transition function, and ${\cal F} = \{ F_1 , \ldots , F_k \}$ is the accepting set. A muller automaton 
 accepts a run if it 
 passes infinitely often in exactly
@@ -338,7 +316,7 @@ the form defined in~(\ref{EFLTL}).
 %\klaus{Above: hide is not defined.}
 %\klaus{Above: the semantics of $p(a)$ and $p(x)$ do not refer to 
 %${\cal R} $.}
-In the last item, the extended model ${\cal Q}$ appears both on the left and the right of the equality sign. It is well defined because of Lemma~\ref{samesame} (equivalently, a more verbose definition can include a stepwise construction of ${\cal Q}$ from ${\cal R}$).
+In the last item, the extended model ${\cal Q}$ appears both on the left and the right of the equality sign. It is well defined because of Lemma~\ref{samesame} (equivalently, a more verbose definition can include a prefix-inductive construction of ${\cal Q}$ from ${\cal R}$).
 \end{document}
 
 

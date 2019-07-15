@@ -10,11 +10,38 @@ This program takes as input the
 trace file and analyzes it.
 The tool uses the JavaBDD library for BDD manipulations \cite{javabdd}.
 
+\begin{figure}
+\begin{center}
+\begin{lstlisting}[language=dsl,frame=single,linewidth=0.95\textwidth,backgroundcolor=\color{white},linewidth=\columnwidth,breaklines=true,basicstyle=\small]
+prop telemetry1: Forall x . closed(x) -> !telem(x) where 
+  closed(x) := toggle(x) <-> @!closed(x) 
+
+prop telemetry2: Forall x . closed(x) -> !telem(x) where
+  closed(x) := (!@true & !toggle(x)) | (@closed(x) & !toggle(x)) | 
+               (@open(x) & toggle(x)),
+  open(x) := (@open(x) & !toggle(x)) | (@closed(x) & toggle(x))
+
+prop spawning : Forall x . Forall y . Forall d . report(y,x,d) -> spawned(x,y) where
+  spawned(x,y) := @spawned(x,y) | spawn(x,y) | 
+                  Exists z . (@spawned(x,z) & spawn(z,y))
+
+prop commands : Forall c . dispatch(c) -> ! already_dispatched(c) where
+  already_dispatched(c) := @ [dispatch(c) , complete(c)),
+  dispatch(c) := Exists t . CMD_DISPATCH(c,t),
+  complete(c) := Exists t . CMD_COMPLETE(c,t)
+\end{lstlisting}
+\caption{Properties stated in \dejavu's logic}
+\label{fig:properties}
+\end{center}
+\end{figure}
+
 \vspace{1ex}\noindent {\bf Example properties.}
-Figure \ref{fig:properties} shows three properties in the 
-input ASCII format of the tool, related to the examples in Section~\ref{sec:syntax-semantics}, which
-are not expressible in (P)\FLTL{}.
-These properties are not expressible in the original first-order logic of \dejavu{} presented in \cite{HPU}. 
+Figure \ref{fig:properties} shows four properties in the 
+input ASCII format of the tool, the first three of which are related 
+to the examples in Section~\ref{sec:syntax-semantics}, which
+are not expressible in (P)\FLTL{}. That is,
+these properties are not expressible in the original first-order 
+logic of \dejavu{} presented in \cite{HPU}. The last property illustrates the use of rules to perform conceptual abstraction.
 %
 The ASCII version of the logic uses 
 \idsl{@} for $\ominus$,
@@ -25,14 +52,12 @@ The ASCII version of the logic uses
 The first property \idsl{telemetry1} is a variant of
 formula \ref{eq:wolper-first-order}, illustrating the use of a 
 rule to express a first-order version of Wolper's example \cite{Wolper}, that all the states with even indexes of a sequence satisfy a property.
-In this case we consider a radio on board a spacecraft, which communicates over different channels (quantified over in the formula), which can be turned on and off with a \idsl{toggle(x)} - they are initially off.
+In this case we consider a radio on board a spacecraft, which communicates over different channels (quantified over in the formula) that can be turned on and off with a \idsl{toggle(x)}; they are initially off.
 Telemetry can only be sent to ground over a channel \idsl{x} with the \idsl{telem(x)} event when radio channel \idsl{x} is toggled on.
-
-%%%%
 
 The second property, \idsl{telemetry2}, expresses the same 
 property as \idsl{telemetry1}, but in this case using two 
-rules, more closely reflecting how we would model this using a state machine with two states for each channel \idsl{x}: 
+rules, reflecting how we would model this using a state machine with two states for each channel \idsl{x}: 
 \idsl{closed(x)} and \idsl{open(x)}. The rule \idsl{closed(x)} is defined as a disjunction between three alternatives. The first states that this predicate is true if we are in the initial state 
 (the only state where \idsl{@true} is false), and there is no \idsl{toggle(x)} event. The next alternative states that
 \idsl{closed(x)} was true in the previous state and there is
@@ -40,7 +65,7 @@ no \idsl{toggle(x)} event.
 The third alternative states that in the previous state we were
 in the \idsl{open(x)} state and we observe a \idsl{toggle(x)} 
 event. Similarly for the \idsl{open(x)} rule.
-
+ 
 The third property, \idsl{spawning}, expresses a property
 about threads being spawned in an operating system. We want to 
 ensure that when a thread \idsl{y} reports some data \idsl{d} 
@@ -51,28 +76,30 @@ and \idsl{report(y,x,d)} (thread \idsl{y} reports data \idsl{d}
 back to thread \idsl{x}).
 For this we need to compute a transitive closure of spawning relationships, here expressed with the rule \idsl{spawning(x,y)}.
 
-\begin{figure}
-\begin{center}
-\begin{lstlisting}[language=dsl,frame=single,linewidth=0.95\textwidth,backgroundcolor=\color{white},linewidth=\columnwidth,breaklines=true,basicstyle=\small]
-prop telemetry1: 
-  Forall x . closed(x) -> !telem(x) where closed(x) := toggle(x) <-> @!closed(x) 
+The fourth property, \idsl{commands}, 
+concerns a realistic log from from the Mars rover Curiosity 
+\cite{msl}. The log consists of events 
+(here renamed) \idsl{CMD_DISPATCH(c,t)} and \idsl{CMD_COMPLETE(c,t)}, 
+representing the dispatch and subsequent completion  of a command 
+\idsl{c} at time \idsl{t}. The property to be verified is that a command, once 
+dispatched, is not dispatched again before completed. Rules 
+are used to break down the formula to conceptually simpler pieces. 
+%The example
+%illustrates how rules elegantly replace the role of macros, a non-trivial extension 
+%introduced in an earlier version of \dejavu.
 
-prop telemetry2: 
-  Forall x . closed(x) -> !telem(x) where
-    closed(x) := (!@true & !toggle(x)) | (@closed(x) & !toggle(x)) | 
-                 (@open(x) & toggle(x)),
-    open(x) := (@open(x) & !toggle(x)) | (@closed(x) & toggle(x))
-
-prop spawning :
-  Forall x . Forall y . Forall d . report(y,x,d) -> spawned(x,y) where
-    spawned(x,y) := @ spawned(x,y) | spawn(x,y) | 
-                    Exists z . (@spawned(x,z) & spawn(z,y))
-\end{lstlisting}
-\caption{Three properties stated in \dejavu's logic}
-\label{fig:properties}
-\end{center}
-\end{figure}
-
+% Out of 25,463 dispatches and 23,740 completions, there were 2,466
+% violations of this property.
+%
+% A formulation of this property without using rules is:
+%
+% prop commands :
+%   Forall c .
+%     (Exists t1 . CMD_DISPATCH(c,t1)) -> 
+%       ! @ [
+%             Exists t2 . CMD_DISPATCH(c,t2), 
+%             Exists t3 . CMD_COMPLETE(c,t3)
+%           )   
 
 \iffalse
 \subsubsection{Monitor Synthesis}
@@ -156,13 +183,44 @@ as a BDD in Figure \ref{fig:bdd1}. A dashed line leaving a node means the node h
 
 \fi
 
-\vspace{1ex}\noindent {\bf Evaluation.}
-We evaluated the three properties in Figure 
-\ref{fig:properties} on a collection of traces. Table \ref{tab:evaluation} shows the  
-analysis time (excluding time to compile the generated 
-monitor) for different traces (format is `trace length : seconds'). The telemetry traces will repeatedly open hundreds of channels and send telemetry over them. 
+\vspace{1.5ex}\noindent {\bf Evaluation.}
+In \cite{HPU,HPU-FMSD} we evaluated \dejavu{}
+without the rule extension against the \monpoly{} tool \cite{agrebasin}, which supports a logic close to \dejavu's. In \cite{HP} we evaluated \dejavu's garbage collection capability. In this section we evaluate the rule extension for the properties in Figure 
+\ref{fig:properties} on a collection of 
+traces. Table \ref{tab:evaluation} shows the  
+analysis time (excluding time to compile the 
+generated monitor) and maximal memory usage in 
+MB for different 
+% ---
+traces
+%\footnote{
+%For the first two properties the same traces were used, generated as follows for varying constants $P$, $Q$ and $R$.
+%Repeat $P$ times the following: toggle $Q$ 
+%channels; then for each channel send telemetry $R$ %times; then toggle the channels again.
+%For the third property, traces were 
+%generated as follows for varying constants $S$ 
+%and $T$: spawn $S$ threads from the main thread 0, and %let each report back to thread 0; then repeat $T$ times %the following: each newly spawned thread in previous %step
+%spawns a new thread, which reports back to the main %thread 0.
+%}
+% ---
+(format is `trace length : time / memory'). 
 %
-The spawning traces consist of 50\% spawning events and 50\% reporting events. The spawning property  requires larger processing time compared to the telemetry properties since more data (the transitive closure) has to be computed and stored.
+%The telemetry traces will repeatedly open 
+%hundreds of channels and send telemetry over 
+%them. 
+%
+%The spawning traces consist of 50\% spawning 
+%events and 50\% reporting events. 
+%
+The processing time is generally
+very reasonable for very large traces. However,
+the spawning property  requires considerably larger 
+processing time and memory compared to the other 
+properties since more data (the transitive 
+closure) has to be computed and stored.
+%
+The evaluation was performed on a Mac laptop, with the Mac OS X 10.10.5 operating 
+system, on a 2.8 GHz Intel Core i7 with 16 GB of memory.
 
 \ignore{
   // repeat: repeat the following
@@ -175,22 +233,39 @@ The spawning traces consist of 50\% spawning events and 50\% reporting events. T
   // repeat: how many times new threads from new threads are spawned
   // number of spawned threads correspond to number of events
 }
-
 \begin{table}[h!]
 \centering
 \begin{tabular}{|l|c|c|c|}
 \hline
 Property   & Trace 1 & Trace 2 & Trace 3 \\
 \hline
-telemetry1 & 1,200,001\,:\,3.3s & 5,200,001\,:\,7.1s & 10,200,001\,:\,12.8s \\
+telemetry1 & 1,200,001\;:\;2.6s / 194 MB & 5,200,001\;:\;5.9s / 210 MB & 10,200,001\;:\;10.7s / 239 MB \\
 \hline
-telemetry2 & 1,200,001\,:\,4.4s & 5,200,001\,:\,9.9s & 10,200,001\,:\,17.9s \\
+telemetry2 & 1,200,001\;:\;3.8s / 225 MB & 5,200,001\;:\;8.7s / 218 MB & 10,200,001\;:\;16.6s / 214 MB \\
 \hline
-spawning   & 9,899\,:\,42.7s & 19,999\,:\,127.6s & 39,799\,:\,572.4s \\
+spawning   & 9,899\;:\;29.5s / 737 MB & 19,999\;:\;117.3s / 1,153 MB & 39,799\;:\;512.5s / 3,513 MB \\
+\hline
+commands   & 49,999\;:\;1.5s / 169 MB & N/A & N/A \\
 \hline
 \end{tabular}
-\caption{Evaluation - trace lengths and analysis time in seconds}
+\caption{  Evaluation - trace lengths, analysis time in seconds, and maximal memory use}
 \label{tab:evaluation}
 \end{table}
 
+%\begin{table}[h!]
+%\centering
+%\begin{tabular}{|l|c|c|c|}
+%\hline
+%Property   & Trace 1 & Trace 2 & Trace 3 \\
+%\hline
+%telemetry1 & 1,200,001\,:\,3.3s & 5,200,001\,:\,7.1s & 10,200,001\,:\,12.8s \\
+%\hline
+%telemetry2 & 1,200,001\,:\,4.4s & 5,200,001\,:\,9.9s & 10,200,001\,:\,17.9s \\
+%\hline
+%spawning   & 9,899\,:\,42.7s & 19,999\,:\,127.6s & 39,799\,:\,572.4s \\
+%\hline
+%\end{tabular}
+%\caption{Evaluation - trace lengths and analysis time in seconds}
+%\label{tab:evaluation}
+%\end{table}
 

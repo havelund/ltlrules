@@ -1,26 +1,39 @@
 
+\vspace{-1.7cm} \quad 
+
+
 \section{Conclusions}
 
 Propositional linear temporal logic (LTL) and automata are two common specification formalisms for software and hardware systems. While temporal logic has a more declarative
 flavor, automata are more operational, describing how the specified system
 progresses. There has been several proposed extensions to LTL that extend
-its expressive power to that of related automata formalisms. We proposed here
-a simple extension for propositional LTL that is based on adding propositions that summarize the prefix of an execution. Conceptually, this extension puts the specification in between propositional LTL and automata, as the additional
+its expressive power to that of related automata formalisms.
+
+We proposed here
+a simple extension for propositional LTL that adds auxiliary propositions that summarize the prefix of the execution, based on rules written as past formulas. Conceptually, this extension puts the specification in between propositional LTL and automata, as the additional
 variables can be seen as representing the state of an automaton
 that is synchronized with the temporal property. It is shown to have
-the same expressive power as automata models, and is in particular
+the same expressive power as B\"{u}chi automata, and is in particular
 appealing for runtime verification of past (i.e., safety) temporal properties,
 which already are based on summarizing the value of subformulas over
 observed prefixes.
+
 %
 We demonstrated that first-order linear temporal logic (\FLTL{}), which
-can be used to assert properties about systems with data, also has expressiveness deficiencies, and extended it with relations that summarize prefixes.
-We showed that for the first-order case, unlike the propositional case,
+can be used to assert properties about systems with data, also has expressiveness deficiencies, and similarly
+extended it with rules
+that define {\em relations} that summarize prefixes of the execution.
+We proved that for the first-order case, unlike the propositional case,
 this extension is not identical to the addition of dynamic (i.e., state dependent) quantification.
 %
 We presented a monitoring
-algorithm for propositional past time temporal logic, extending a classical algorithm, and similarly presented an algorithm for 
-first-order past temporal logic.
-Finally we described the implementation of this extension in the \dejavu{} tool and provided experimental results.
+algorithm for propositional past-time temporal logic with rules, extending a classical algorithm, and similarly presented an algorithm for 
+first-order past temporal logic with rules.
+Finally we described the implementation of this extension in the \dejavu{} tool and provided experimental results. The
+code and many more examples appear on:
+\begin{center}
+\url{https://github.com/havelund/dejavu}
+\end{center}
+
 %
-Future work includes performing additional experiments, and making further comparisons to other formalisms. Finally we would like to study further extensions, exploring the space between logic and programming.
+Future work includes performing additional experiments, and making further comparisons to other formalisms. We intend to study further extensions, exploring the space between logic and programming.
